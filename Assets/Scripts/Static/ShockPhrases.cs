@@ -1,0 +1,65 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public static class ShockPhrases {
+	public static string[] phrases = new string[]{
+		"Alack!",
+		"Alas!",
+		"Ahhh!",
+		//"Applesauce!",
+		"Argh!",
+		//"Bah humbug!",
+		"Balderdash!",
+		//"Baloney!",
+		"Barf!",
+		"Blarg!",
+		"Blimey!",
+		"Criminy!",
+		"Cripes!",
+		"Dear me!",
+		"Eeek!",
+		"Egads!",
+		//"Fiddlesticks!",
+		"Gadzooks!",
+		"Gasp!",
+		"Golly!",
+		"Golly gee!",
+		"Good heavens!",
+		"Great Scott!",
+		"Hello?",
+		"Help!",
+		"Holy mackerel!",
+		"Holy smoke!",
+		"Is that you?",
+		"Is someone there?",
+		"Jeepers!",
+		"Jiminy cricket!",
+		//"Jinkies!",
+		//"Just the wind, I guess...",
+		"Leaping lizards!",
+		"Malarkey!",
+		//"My stars and garters!",
+		"No more!",
+		"Nuts!",
+		"Oh my!",
+		"Oh no!",
+		"Save me!",
+		"Scram!",
+		"Somebody help!",
+		//"Tarnations!",
+		"Uncle!",
+		"What?",
+		"What was that?",
+		"Who's there?",
+		"Woe is me!",
+		"Yikes!",
+		"Yow!",
+		"Yowzers!",
+		"Zounds!",
+	};
+
+	public static string Phrase(){
+		int index = UnityEngine.Random.Range (0,phrases.Length-1);
+		return phrases[index];//+"("+dam.ToString ()+")";
+	}
+}

@@ -1,0 +1,99 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2008
+
+Project("{D0746B90-DEDB-DE3C-FAEC-AC60DFF083F5}") = "fearmonger", "Assembly-CSharp.csproj", "{4426453A-0BE0-918E-3B53-720B85C78630}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4426453A-0BE0-918E-3B53-720B85C78630}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4426453A-0BE0-918E-3B53-720B85C78630}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4426453A-0BE0-918E-3B53-720B85C78630}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4426453A-0BE0-918E-3B53-720B85C78630}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+																																																																																																																																																																																																																																																																																																																																																																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																																																																																																																																																																																																																																																																																																																																																															GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 38f45f8aa0f3f67119d6ba3a0928aa72a0fbc256
+=======
+																																																																																																																																																																																																																																																																																																																																																																	GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> ae82248417b95a4f91c0e8c842ac8eee6914fdd4
+=======
+																																																																																																																																																																																																																																																																																																																																																																GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> a95403adf93785d63924b9b3d6da99c302199d1c
+=======
+																																																																																																																																																																																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 151e14bde543622309419234b1ddb0df145beeee
+=======
+																																																																																																																				GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> a0708b986c4136fcfc910cee0ddf0b0ba35d96eb
+=======
+																																																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 78dd48aa47a8cb9ba9c1b31557600e23afde81f2
+=======
+																																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 1f858c59cbb69d7ee9bb14b275e0413e62908c04
+=======
+																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 0993973fdbaa049d8879311095c47fe0b6984cc8
+=======
+																																																													GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 70e29920fa68ae5fd77d0517e394c7bed7162832
+		StartupItem = Assembly-CSharp.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+	EndGlobalSection
+																																																																																																																																																																																																																																																				GlobalSection(MonoDevelopProperties) = preSolution
+=======
+																																																																																																																				GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> a0708b986c4136fcfc910cee0ddf0b0ba35d96eb
+=======
+																																																																																																																										GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 78dd48aa47a8cb9ba9c1b31557600e23afde81f2
+=======
+																																																																																																																											GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 1f858c59cbb69d7ee9bb14b275e0413e62908c04
+=======
+																																																																																																									GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 0993973fdbaa049d8879311095c47fe0b6984cc8
+=======
+																																																													GlobalSection(MonoDevelopProperties) = preSolution
+>>>>>>> 70e29920fa68ae5fd77d0517e394c7bed7162832
+		StartupItem = Assembly-CSharp.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+	EndGlobalSection
+
+EndGlobal

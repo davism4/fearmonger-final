@@ -1,0 +1,15 @@
+/Library/metadata
+/Library/metadata/*/*
+*.userprefs
+*.meta
+*.dwlt
+/Library/CurrentLayout.dwlt
+/Library/CurrentMaximizeLayout.dwlt
+/Library/InspectorExpandedItems.asset
+/Library/guidmapper
+*.zip
+Library/assetDatabase3
+
+*.dwlt
+
+Library/CurrentLayout.dwlt
