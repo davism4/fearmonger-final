@@ -9,8 +9,7 @@ public class Ability_Spiders : Ability {
 		Description = "Spiders come out of the ground and walk around the room.";
 		//MinLevel=1;
 		Duration = GameVars.duration_spiders;
-		EnergyCost = 2;
-		BuyCost = 10;
+		minFearCost=0;
 		//HazardTransform=Resources.Load<GameObject>("Sprites/Abilities/SpiderParticles").transform;
 		cooldownStart = 3f;
 	}

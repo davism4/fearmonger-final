@@ -9,7 +9,7 @@ using System.Collections.Generic;
 public class RoomObject : MonoBehaviour {
 
 	/*======== VARIABLES ========*/
-	private string roomNumber;
+	/*private string roomNumber;
 	public string RoomName { get {return ("Room "+roomNumber);}}
 	public Person[] occupants;
 	//public List<Ability> ActiveAbilityEffects = new List<Ability>();
@@ -46,7 +46,7 @@ public class RoomObject : MonoBehaviour {
 	}
 
 	/*======== ROOM MANAGEMENT ========*/
-
+	/*
 	private void ResetFurniture()
 	{
 		Debug.Log("Checking in to "+RoomName);
@@ -218,5 +218,5 @@ public class RoomObject : MonoBehaviour {
 				}
 			}
 		}
-	}
+	}*/
 }

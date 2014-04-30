@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Person_Candle : Person {
-
+/*
 	private Light lightSource;
 	private float lightTimer=0f, lightTimerMax=1.5f; // how long to turn the light back on
 	private bool isLightOff=false;
@@ -38,5 +38,5 @@ public class Person_Candle : Person {
 	public void TurnOff(){
 		lightSource.enabled = false;
 		isLightOff=true;
-	}
+	}*/
 }

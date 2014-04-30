@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class LampObject : MovableObject {
-
+/*
 	[HideInInspector] public bool IsOn=false;
 	private Light lightSource;
 	protected RoomObject room;
@@ -42,7 +42,7 @@ public class LampObject : MovableObject {
 				p.currentSanity++;
 			}
 		}
-		*/
+		*//*
 	}
 
 	public void AssignToPerson(){
@@ -92,5 +92,5 @@ public class LampObject : MovableObject {
 				else TurnOn();
 			}
 		}
-	}
+	}*/
 }

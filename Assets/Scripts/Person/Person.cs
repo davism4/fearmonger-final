@@ -5,11 +5,11 @@ using System.Collections;
 
 // Base class for all Person AI
 public abstract class Person : MonoBehaviour {
-
+	/*
 	public bool IS_FACING_UP=false, IS_FACING_DOWN=false, IS_FACING_RIGHT=false, IS_FACING_LEFT=false;
 
 	/*======== VARIABLES ========*/
-	protected RoomObject myRoom;
+	/*protected RoomObject myRoom;
 	//public string roomName;
 	protected Game game;
 	protected PlayerLevel leveling;
@@ -54,7 +54,7 @@ public abstract class Person : MonoBehaviour {
 	/*======== FUNCTIONS ========*/
 
 	// HEY ANIMATION PEOPLE!!! USE THIS!!!
-	public void Animate(){
+	/*public void Animate(){
 		SetFacingDirection (); // -> Sets IS_FACING_UP, etc, for you -> don't recalculate them.
 		if (isHurt && hurtTimer<hurtTimerMax/2){
 			GetComponent<SpriteRenderer>().color=Color.red;
@@ -161,7 +161,7 @@ public abstract class Person : MonoBehaviour {
 		else {
 			healthBar.enabled=false;
 		}*/
-		Animate ();
+	/*	Animate ();
 	}
 
 	public void ShowHPBar(){
@@ -228,7 +228,7 @@ public abstract class Person : MonoBehaviour {
 			walkDirection = ((Vector2)destination-(Vector2)other.transform.position).normalized;
 			motionTimerMax*=1.5f;
 		}
-		else */if (!isLeaving && other.transform.CompareTag ("Hazard")){
+		else if (!isLeaving && other.transform.CompareTag ("Hazard")){
 			///bump into (or get too close to) a hazard
 			walkDirection = ((Vector2)transform.position-(Vector2)other.transform.position).normalized;
 			motionTimerMax*=2.2f;
@@ -379,5 +379,5 @@ public abstract class Person : MonoBehaviour {
 			sanityCurrent -= delta;
 			leveling.AddExperience(delta);
 		}
-	}
+	}*/
 }

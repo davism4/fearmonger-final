@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Hazard_Darkness : Hazard {
 
-	CircleCollider2D circle;
+//	CircleCollider2D circle;
 	//SpriteRenderer renderer;
 	Vector3 dtscale, rotvector;
 	Vector2 origin;
@@ -15,7 +15,7 @@ public class Hazard_Darkness : Hazard {
 		duration = GameVars.duration_darkness;
 		dtscale = transform.localScale/duration;
 		rotvector = Vector3.back*300f;
-		circle = transform.GetComponent<CircleCollider2D>();
+	//	circle = transform.GetComponent<CircleCollider2D>();
 	}
 
 	// Update is called once per frame

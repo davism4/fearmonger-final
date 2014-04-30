@@ -8,10 +8,10 @@ public class Ability : MonoBehaviour {
 	[HideInInspector] public string Name, Description;
 	[HideInInspector] public bool Locked=true;
 	//public int MinLevel; // we might not use this
-	[HideInInspector] public int BuyCost, EnergyCost, FearDamage;
+	[HideInInspector] public int minFearCost, FearDamage;
 	protected float Duration; // in seconds
 	protected GameObject hazard=null;
-	protected MainGame game;
+	protected Game2 game;
 	public AudioClip effectSound;
 
 	// protected MainGame game
@@ -37,7 +37,7 @@ public class Ability : MonoBehaviour {
 
 	public string ShowName(){
 		if (Locked)
-			return Name+"\n($"+BuyCost.ToString()+" to buy)";// round up
+			return Name+"\n("+minFearCost.ToString()+" fear to use)";// round up
 		else if (isCooldown)
 			return Name+"\n(Ready in "+Mathf.CeilToInt (cooldownTimer).ToString ()+"s)";// round up
 		else
@@ -53,7 +53,7 @@ public class Ability : MonoBehaviour {
 	// args = depends on ability
 	public virtual void UseAbility(Game game, Vector2 clickLocation){
 		//game.currentRoom.ActiveAbilityEffects.Add (this);
-		game.playerLevel.UseEnergy(EnergyCost);
+		///game.playerLevel.UseEnergy(EnergyCost);
 		// normalize to proper Z-depth
 		Debug.Log("Used ability "+ this.Name);
 		Vector3 clickLocation3d = new Vector3(clickLocation.x, clickLocation.y, 0);
@@ -79,6 +79,11 @@ public class Ability : MonoBehaviour {
 
 	private void Update(){
 		//Debug.Log (CooldownSeconds());
+		if (game.fearLevel>=minFearCost){
+			Locked=false;
+		} else {
+			Locked=true;
+		}
 		if (isCooldown){
 			if (cooldownTimer>0){
 				cooldownTimer -= Time.deltaTime;
@@ -90,7 +95,7 @@ public class Ability : MonoBehaviour {
 	}
 	
 	protected virtual void Start(){
-		game = transform.GetComponent<MainGame>();
+		game = transform.GetComponent<Game2>();
 		cooldownTimer=cooldownStart;
 	}
 

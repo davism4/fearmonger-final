@@ -9,9 +9,10 @@ public class Ability_Claw : Ability {
 		Description = "A hand appears and reaches out, pulling the closest victim toward its origin.";
 		//MinLevel=6;
 		Duration = GameVars.duration_claw; // instant
-		EnergyCost = 6;
-		BuyCost = 30;
+		//EnergyCost = 6;
+		//BuyCost = 30;
 		cooldownStart = 5f;
+		minFearCost=40;
 	}
 
 	protected override void Start(){

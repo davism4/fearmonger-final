@@ -29,7 +29,6 @@ public class Lamp: Furniture {
 			if (other.CompareTag("Person")){
 				Person2 p = other.transform.GetComponent<Person2>();
 				p.Interact (this);
-				Flip (p);
 			}
 		}
 	}

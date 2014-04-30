@@ -8,8 +8,7 @@ public class Ability_Possess : Ability {
 		Description = "Selected person becomes possessed, scaring the other people in the room.";
 		//MinLevel=12;
 		Duration = GameVars.duration_possession;
-		EnergyCost = 8;
-		BuyCost = 60;
+		minFearCost=80;
 		FearDamage=GameVars.damage_possession;
 		cooldownStart=30f;
 	}

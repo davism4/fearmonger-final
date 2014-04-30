@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class DoorObject : MonoBehaviour {
-
+	/*
 	//BoxCollider2D box;
 	//RoomObject myRoom;
 	Person p;
@@ -22,5 +22,5 @@ public class DoorObject : MonoBehaviour {
 			}
 		}
 	}
-
+*/
 }

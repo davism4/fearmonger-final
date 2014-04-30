@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Person_Child : Person
-{
+{/*
 	// Nothing special. Weakest victim.
 	protected override void Start () {
 		isAdult=false;
@@ -11,5 +11,5 @@ public class Person_Child : Person
 		sanityMax=15;
 		sanityCurrent=sanityMax;
 		base.Start ();
-	}
+	}*/
 }

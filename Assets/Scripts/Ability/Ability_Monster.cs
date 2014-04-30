@@ -9,8 +9,7 @@ public class Ability_Monster : Ability {
 		Description = "A monster that chases people around. Explodes into fear damage on impact.";
 		//MinLevel=5;
 		Duration = GameVars.duration_monster;
-		EnergyCost = 4;
-		BuyCost = 40;
+		minFearCost=60;
 		cooldownStart = 15f;
 	}
 

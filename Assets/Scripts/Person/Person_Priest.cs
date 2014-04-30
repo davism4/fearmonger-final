@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Person_Priest : Person {
-
+/*
 	//List<Ability> activeSpells;
 	private float healTimer=0f, healTimerMax=3f;
 
@@ -41,5 +41,5 @@ public class Person_Priest : Person {
 		}
 		base.Update ();
 
-	}
+	}*/
 }

@@ -55,6 +55,7 @@
      <Compile Include="Assets\Scripts\CameraObject.cs" />
      <Compile Include="Assets\Scripts\CursorAppearance.cs" />
      <Compile Include="Assets\Scripts\Game.cs" />
+     <Compile Include="Assets\Scripts\Game2.cs" />
      <Compile Include="Assets\Scripts\Grid2D.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Claw.cs" />
@@ -62,11 +63,14 @@
      <Compile Include="Assets\Scripts\Hazards\Hazard_Monster.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Possess.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Spiders.cs" />
-     <Compile Include="Assets\Scripts\MainGame.cs" />
      <Compile Include="Assets\Scripts\Person\FloatingHealthBar.cs" />
      <Compile Include="Assets\Scripts\Person\Person.cs" />
      <Compile Include="Assets\Scripts\Person\Person2.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Light.cs" />
+     <Compile Include="Assets\Scripts\Person\Person2_Adult.cs" />
+     <Compile Include="Assets\Scripts\Person\Person2_Child.cs" />
+     <Compile Include="Assets\Scripts\Person\Person2_Priest.cs" />
+     <Compile Include="Assets\Scripts\Person\Person2_Rich.cs" />
+     <Compile Include="Assets\Scripts\Person\Person2_Thug.cs" />
      <Compile Include="Assets\Scripts\Person\Person_Adult.cs" />
      <Compile Include="Assets\Scripts\Person\Person_Candle.cs" />
      <Compile Include="Assets\Scripts\Person\Person_Child.cs" />
@@ -81,6 +85,7 @@
      <Compile Include="Assets\Scripts\Room\Pickup.cs" />
      <Compile Include="Assets\Scripts\Room\Room.cs" />
      <Compile Include="Assets\Scripts\Room\RoomObject.cs" />
+     <Compile Include="Assets\Scripts\Room\Trap.cs" />
      <Compile Include="Assets\Scripts\Static\GameInput.cs" />
      <Compile Include="Assets\Scripts\Static\GameVars.cs" />
      <Compile Include="Assets\Scripts\Static\PersonLists.cs" />

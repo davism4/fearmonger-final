@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class MainGame : MonoBehaviour {
+public class Game2 : MonoBehaviour {
 	/**
 	 * bonusLevel = restarts each night, determines $ bonuses from fear
 	 * xp = collected fear, restarts each night
@@ -9,8 +10,7 @@ public class MainGame : MonoBehaviour {
 	 */
 
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond; // don't edit this
-	public int money=0, xp=0, bonusLevel=0, xpNextBonusLevel=0;
-	public int energy, energyMax;
+	public int money=0, fearLevel=0;
 	/* Gametime config:
 	 * This is a way to configure how long a nighttime round lasts, both
 	 * in real time and in the game time. Example: real time round is
@@ -25,6 +25,7 @@ public class MainGame : MonoBehaviour {
 	//LayerMask defaultLayers = LayerMask.NameToLayer("Default");
 	//GameObject[] roomGameObjects;
 	[HideInInspector] public Room[] rooms;
+	[HideInInspector] public List<Room> roomsWithTraps;
 	public int currentRoomNumber=0;
 	private bool isChangingRooms=true;
 	private float dyCam=99f;
@@ -42,25 +43,14 @@ public class MainGame : MonoBehaviour {
 	// PUBLIC FUNCTIONS
 	void StartDay(){
 		GameVars.IsNight=false;
-		bonusLevel=0;
 		days++;
 	}
 	
 	void StartNight(){
 		GameVars.IsNight=true;
-		bonusLevel=0;
-	}
-
-	public void AddXP(int x){
-		xp += x;
-		if (xp >= xpNextBonusLevel){
-			xp -= xpNextBonusLevel;
-			bonusLevel++;
-			// Level up stuff... $ bonus
-			int temp1 = xpNextBonusLevel;
-			money += temp1;
-			xpNextBonusLevel = (1+bonusLevel)*10;
-			//Debug.Log("LEVEL UP! Earned $"+ temp1+", next level at "+xpNextBonusLevel);
+		foreach (Room r in rooms){
+			if (r.enabled)
+				r.CheckIn();
 		}
 	}
 
@@ -92,7 +82,6 @@ public class MainGame : MonoBehaviour {
 
 	// PRIVATE FUNCTIONS 
 	private void Start () {
-		AddXP (0); // set it up
 		cam = Camera.main.transform.gameObject; // two distinct references
 		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
 		for (int i=1;i<=rooms.Length;i++){
@@ -125,16 +114,16 @@ public class MainGame : MonoBehaviour {
 	private void BuyAbility(int index){
 		if (listAbilities[index].Locked){
 			listAbilities[index].Unlock();
-			money -= listAbilities[index].BuyCost;
+			//money -= listAbilities[index].BuyCost;
 		}
 	}
 
 	private void OnGUI(){
 		for (int i=0;i<listAbilities.Length;i++){
-			if(listAbilities[i].Locked){ 
-				if (listAbilities[i].BuyCost <= money)
-					GUI.contentColor=Color.white;
-				else
+			if(fearLevel < listAbilities[i].minFearCost){ 
+				//if (listAbilities[i].BuyCost <= money)
+				//	GUI.contentColor=Color.white;
+				//else
 					GUI.contentColor=Color.gray;
 			} else {
 				if (listAbilities[i].isCooldown)
@@ -146,20 +135,8 @@ public class MainGame : MonoBehaviour {
 			}
 			if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40, Screen.width/5, 40), listAbilities [i].ShowName())) {
 				//cursorAppearance.SetSprite (2);
-				if(listAbilities[i].Locked && listAbilities[i].BuyCost <= money)
-				{
-					BuyAbility(i);
+				if(fearLevel >= listAbilities[i].minFearCost){
 					currentAbility = listAbilities[i];
-					//Debug.Log("New ability: "+listAbilities[i].Name+".");
-				}
-				else if(listAbilities[i].Locked && listAbilities[i].BuyCost > money)
-				{
-					GUI.color=Color.red;
-					//Debug.Log("You need $"+listAbilities[i].BuyCost+" to buy "+listAbilities[i].Name+".");
-				}
-				else{
-					currentAbility = listAbilities[i];
-					//Debug.Log("Current ability: "+listAbilities[i].Name+".");
 				}
 			}
 			
@@ -196,16 +173,22 @@ public class MainGame : MonoBehaviour {
 		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		hit = Physics2D.Raycast(ray.origin,ray.direction);
 		if (hit){
+			//Debug.Log (hit.collider.gameObject.name);
 			if (hit.collider.gameObject.CompareTag ("Money")){
 				DestroyObject (hit.collider.gameObject);
 				money++;
-				//Debug.Log ("Money = $"+money);
-			} /*else if (GameVars.IsNight && hit.collider.gameObject.CompareTag ("Person")){
+			} else if (hit.collider.gameObject.CompareTag("FearPickup")){
+				DestroyObject (hit.collider.gameObject);
+				fearLevel++;
+			} else if (hit.collider.gameObject.CompareTag ("Person")){
 				Person2 p = hit.collider.gameObject.GetComponent<Person2>();
 				p.DisplayHP ();
 				//Debug.Log("Person");
-			}*/
-			else if (Input.GetMouseButtonDown (0)){
+			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
+				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
+				
+			}
+			if (Input.GetMouseButtonDown (0)){
 				if (currentRoomNumber<rooms.Length-1 && hit.collider.gameObject.CompareTag("Triangle Up")){
 					//Debug.Log("Going up");
 					currentRoomNumber++;

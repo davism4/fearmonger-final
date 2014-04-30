@@ -6,23 +6,24 @@ public class hudText : MonoBehaviour {
 	private Rect roomStringRect, moneyStringRect, timeStringRect, fearStringRect;
 	private string roomCameraCenter;
 
-	public MainGame game;
+	[HideInInspector] public Game2 game;
 
 	// Use this for initialization
 	private void Start () {
 		if (game==null){
-			game = GameObject.Find ("MainGame").GetComponent<MainGame>();
+			game = GameObject.Find ("Main Game").GetComponent<Game2>();
 		}
 		timeStringRect = new Rect(0,0,70,45);
 		moneyStringRect = new Rect(0,60,70,45);
 		fearStringRect = new Rect(0,120,70,45);
 		roomStringRect = new Rect(0,180,60,45);
+		
 	}
 
 	private void OnGUI(){
 		GUI.Box (timeStringRect, "Time\n"+game.DigiClock());
 		GUI.Box (moneyStringRect, "Money\n$ "+game.money);
-		GUI.Box (fearStringRect, "Fear\n"+game.xp+"/"+game.xpNextBonusLevel);
+		GUI.Box (fearStringRect, "Fear\n"+game.fearLevel);
 		GUI.Box (roomStringRect, roomCameraCenter);
 	}
 	

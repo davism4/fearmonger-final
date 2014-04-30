@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Person_Adult : Person {
-
+/*
 	// Nothing special.
 	protected override void Start () {
 		isAdult=true;
@@ -11,5 +11,5 @@ public class Person_Adult : Person {
 		sanityMax=20;
 		sanityCurrent=sanityMax;
 		base.Start ();
-	}
+	}*/
 }

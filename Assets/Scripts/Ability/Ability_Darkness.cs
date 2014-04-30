@@ -9,8 +9,7 @@ public class Ability_Darkness : Ability {
 		Description = "The air turns dark and cold, and nearby lights go out.";
 		//MinLevel=2;
 		Duration = GameVars.duration_darkness;
-		EnergyCost = 3;
-		BuyCost = 20;
+		minFearCost=20;
 		cooldownStart = 2f;
 	}
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class PlayerLevel : MonoBehaviour {
 	
 	/*======== VARIABLES ========*/
-	private int currentlevel=1,maxlevel=1,
+/*	private int currentlevel=1,maxlevel=1,
 	buyPoints=2,
 	// when energy is below minimum energy, it regenerates
 	energyMax=10,
@@ -36,7 +36,7 @@ public class PlayerLevel : MonoBehaviour {
 	}
 	
 	/*======== FUNCTIONS ========*/
-
+	/*
 	void CHEAT_DEBUG(){
 		if (Input.GetKeyDown ("space")){
 			expCurrent=expToNextLevel;
@@ -106,7 +106,7 @@ public class PlayerLevel : MonoBehaviour {
 	
 	public void BuyAbility(Ability ability) {
 		ability.Unlock();
-		buyPoints -= ability.BuyCost;
+		//buyPoints -= ability.BuyCost;
 	}
 	
 	public bool CanUseAbility(Ability ability) {
@@ -156,5 +156,5 @@ public class PlayerLevel : MonoBehaviour {
 		         ", XP: "+expCurrent+"/"+expToNextLevel + 
 		         "\t\t\tEnergy: " + energyCurrent + "/" + energyMax +
 		         "\t\t\tPurchase Points: " + buyPoints, guistyle);
-	}
+	}*/
 }

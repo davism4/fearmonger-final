@@ -24,14 +24,14 @@ public static class GameVars {
 	public static bool IsPaused=false;
 	public static bool IsNight=false;
 
-	public static float duration_spiders=7.5f;
-	public static int damage_spiders=2;
-	public static float duration_darkness=8f;
-	public static int damage_darkness=3;
+	public static float duration_spiders=3f;
+	public static int damage_spiders=1;
+	public static float duration_darkness=2f;
+	public static int damage_darkness=2;
 	public static float duration_claw=8f;
-	public static int damage_claw=6;
-	public static float duration_monster=10f;
-	public static int damage_monster=7;
-	public static float duration_possession=20f;
-	public static int damage_possession=15;
+	public static int damage_claw=3;
+	public static float duration_monster=18f;
+	public static int damage_monster=4;
+	public static float duration_possession=12f;
+	public static int damage_possession=5;
 }

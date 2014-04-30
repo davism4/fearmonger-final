@@ -16,7 +16,7 @@ public class CursorAppearance : MonoBehaviour {
 	public AudioClip mouseClickSound;
 	private Texture2D[] texes;
 	private int texw, texh;
-	private int offsetx=-3, offsety=2;
+	//private int offsetx=-3, offsety=2;
 
 	// Use this for initialization
 	private void Start () {
@@ -54,7 +54,7 @@ public class CursorAppearance : MonoBehaviour {
 
 
 
-
+	/*
 	private void OnGUI(){
 		// draw the cursor on GUI level?
 	//	ray = Camera.main.ScreenPointToRay(Input.mousePosition);    
@@ -82,5 +82,5 @@ public class CursorAppearance : MonoBehaviour {
 		}
 
 
-	}
+	}*/
 }

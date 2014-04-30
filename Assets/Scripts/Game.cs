@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 public class Game : MonoBehaviour {
-
+/*
 	// GLOBAL VARIABLES GO HERE:
 	public enum View { Start, Room, Map, Menu}
 	public View currentView;
@@ -168,6 +168,7 @@ public class Game : MonoBehaviour {
 	
 	private void OnGUI(){
 		//int orginalFontSize = GUI.skin.button.fontSize;
+		/*
 		GUI.skin.font=typewriterFont;
 
 		// main HUD text
@@ -217,7 +218,7 @@ public class Game : MonoBehaviour {
 					GUI.color = Color.red;
 					GUI.Box(new Rect(115, (61 + (i * 30)), 20, 30), listAbilities[i].BuyCost.ToString());
 				}
-			}*/
+			}
 		}
 
 		//GUI.skin.button.fontSize = orginalFontSize;
@@ -237,7 +238,7 @@ public class Game : MonoBehaviour {
 					                         Screen.height*(.7f-0.1645f*y),
 					                         Screen.width*0.085f,
 					                         Screen.height*0.12f),
-					                rooms[y,x].MapName()))*/
+					                rooms[y,x].MapName()))
 
 					if (GUI.Button (new Rect(Camera.main.WorldToScreenPoint(rooms[y,x].transform.position).x-w/2,// Screen.width*(.273f+0.12f*x),
 					                         Camera.main.WorldToScreenPoint(rooms[3-y,x].transform.position).y-h/4,// Screen.height*(.7f-0.1645f*y),
@@ -326,10 +327,10 @@ public class Game : MonoBehaviour {
 					l.Switch ();
 				}
 				else if (currentAbility!=null){
-					if (playerLevel.EnergyCurrent>=currentAbility.EnergyCost){
+					//if (playerLevel.EnergyCurrent>=currentAbility.EnergyCost){
 						if( !hit.collider.gameObject.CompareTag("Solid") && !hit.collider.gameObject.CompareTag("Background"))
 							currentAbility.UseAbility(this, clickLocation2D);
-					}
+					//}
 					else {
 						WriteText("Not enough energy!");
 						//Debug.Log ("Not enough energy!"); // play a "fail" sound
@@ -342,5 +343,5 @@ public class Game : MonoBehaviour {
 				//}
 			}
 		}
-	}
+	}*/
 }
