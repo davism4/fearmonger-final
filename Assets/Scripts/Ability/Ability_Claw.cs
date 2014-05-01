@@ -20,8 +20,4 @@ public class Ability_Claw : Ability {
 		effectSound=Resources.Load<AudioClip>("Sounds/reaching_claw");
 		base.Start ();
 	}
-	
-	public override void UseAbility(Game game, Vector2 clickLocation){
-		base.UseAbility(game, clickLocation);
-	}
 }

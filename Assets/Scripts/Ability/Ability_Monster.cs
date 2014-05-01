@@ -18,8 +18,5 @@ public class Ability_Monster : Ability {
 		effectSound=Resources.Load<AudioClip>("Sounds/ghost_giggle_3");
 		base.Start ();
 	}
-	
-	public override void UseAbility(Game game, Vector2 clickLocation){
-		base.UseAbility(game, clickLocation);
-	}
+
 }

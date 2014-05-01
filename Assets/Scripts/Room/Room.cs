@@ -6,12 +6,9 @@ public class Room : MonoBehaviour {
 
 	public Game2 game;
 	public List<Person2> occupants=null;
-	public List<Furniture> furnitureList=null;
-	public List<Trap> trapList=null;
 	private Vector3 spawnPosition;
-	public int index;
-
-	new public bool enabled=false;
+	public AudioClip doorSound;
+	public bool open=false;
 	private float yfloor, yceiling, xleft, xright;
 	private BoxCollider2D box;
 	public float numberOccupants;
@@ -24,14 +21,13 @@ public class Room : MonoBehaviour {
 	public float YCeiling { get {return yceiling;} }
 	public float XRight { get {return xright;} }
 	public float XLeft { get {return xleft;} }
-
 	private GameObject[,] people;
+
+	// GRID LOGIC HERE
 
 	// Use this for initialization
 	private void Start () {
 		game = GameObject.Find ("Main Game").GetComponent<Game2>();
-		furnitureList = new List<Furniture>();
-		trapList = new List<Trap>();
 		occupants = new List<Person2>();
 		box = transform.GetComponent<BoxCollider2D>();
 		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
@@ -62,6 +58,20 @@ public class Room : MonoBehaviour {
 	
 	}
 
+	public void PlayDoorSound(){
+		
+		if (doorSound!=null)
+			AudioSource.PlayClipAtPoint (doorSound, transform.position);
+	}
+
+	public int TrapCount(){
+		return 0;
+	}
+
+	public int NonTrapFurnitureCount(){
+		return 0;
+	}
+
 	// Generates a random person based on the quality of the room
 	// Chance of a rich person appearing is proportional to the quality
 	private GameObject RandomPerson(bool adult){
@@ -88,32 +98,31 @@ public class Room : MonoBehaviour {
 
 	// the priest or thug enters/exits a room
 	public void AddEnemy(GameObject enemy){
-		Instantiate(enemy,spawnPosition,Quaternion.identity);
+		//Instantiate(enemy,spawnPosition,Quaternion.identity);
+		enemy.transform.position = spawnPosition;
 		Person2 p = enemy.GetComponent<Person2>();
 		p.SetRoom (this);
 		occupants.Add (p);
 	}
-	public void RemoveEnemy(GameObject enemy){
+	public void RemoveEnemy(GameObject enemy, bool stay){
 		Person2 p = enemy.GetComponent<Person2>();
+		enemy.transform.position -= new Vector3(-100,0,0);// hide off-screen for a bit
 		occupants.Remove (p);
-		if (p is Person2_Priest){
-			game.CheckOutPriest ();
-		} else {
-			game.CheckOutThug();
-		}
+		game.CheckOutEnemy (p, stay);
 	}
 
 	// Called at the beginning of the night
 	public void CheckIn() {
-		foreach(Trap t in trapList){
-			t.sprung=false; // reset all traps
-		}
-		if (enabled) {
+		if (open) {
 			// calculate quality
 			int totalcost=0;
-			foreach (Furniture f in furnitureList){
+			// Get a list of furniture from the Grid
+			/*foreach (Furniture f in the list){
 				totalcost += f.buyCost;
-			}
+				if (f is Trap)
+					(f as Trap).Reset();
+
+			}*/
 			quality = (totalcost/100)+1;
 			GameObject personGen = RandomPerson (true);
 			Instantiate(personGen,spawnPosition,Quaternion.identity);

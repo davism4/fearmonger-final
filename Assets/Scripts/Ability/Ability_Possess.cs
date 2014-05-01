@@ -18,8 +18,5 @@ public class Ability_Possess : Ability {
 		effectSound=Resources.Load<AudioClip>("Sounds/PLACEHOLDER-darksound");
 		base.Start();
 	}
-	
-	public override void UseAbility(Game game, Vector2 clickLocation){
-		base.UseAbility(game, clickLocation);
-	}
+
 }

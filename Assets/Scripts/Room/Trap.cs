@@ -24,6 +24,12 @@ public class Trap : Furniture {
 				}
 			}
 			sprung=true;
+			// Change sprite to used appearance
 		}
+	}
+
+	public void Reset(){
+		sprung=false;
+		// Change sprite to unused appearance
 	}
 }

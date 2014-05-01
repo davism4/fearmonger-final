@@ -20,10 +20,10 @@ public class Ability_Spiders : Ability {
 		base.Start ();
 	}
 	
-	public override void UseAbility(Game game, Vector2 clickLocation){
+	/*public override void UseAbility(Game game, Vector2 clickLocation){
 		//Transform particles = Resources.Load<GameObject>("Sprites/Abilities/SpiderParticles").transform;
 	//	Vector3 clickLocation3d = new Vector3(clickLocation.x, clickLocation.y, GameVars.DepthPeopleHazards);
 		//GameObject.Instantiate(particles,clickLocation3d,Quaternion.identity);
 		base.UseAbility(game, clickLocation);
-	}
+	}*/
 }

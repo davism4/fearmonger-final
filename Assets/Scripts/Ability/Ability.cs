@@ -51,7 +51,7 @@ public class Ability : MonoBehaviour {
 	// this function is from ALPHA
 	// room = the current room (based on GameManager)
 	// args = depends on ability
-	public virtual void UseAbility(Game game, Vector2 clickLocation){
+/*	public virtual void UseAbility(Game game, Vector2 clickLocation){
 		//game.currentRoom.ActiveAbilityEffects.Add (this);
 		///game.playerLevel.UseEnergy(EnergyCost);
 		// normalize to proper Z-depth
@@ -60,26 +60,30 @@ public class Ability : MonoBehaviour {
 		GameObject.Instantiate(hazard,clickLocation3d,Quaternion.identity);
 		if(effectSound!=null)
 			AudioSource.PlayClipAtPoint (effectSound, hazard.transform.position);
-	}
+	}*/
 
 	// use this function for BETA
 	// CanUse() is ALWAYS called before this
-	public virtual void Activate(Vector2 point){
-		cooldownTimer = cooldownStart;
-		isCooldown=true;
-		Debug.Log("Used ability "+ this.Name);
-		if (hazard!=null) {
-			GameObject.Instantiate(hazard,new Vector3(point.x,point.y,-5),Quaternion.identity);
-			if(effectSound!=null)
-				AudioSource.PlayClipAtPoint (effectSound, hazard.transform.position);
+	public virtual void UseAbility(Vector2 point){
+		if (CanUse()){
+			cooldownTimer = cooldownStart;
+			isCooldown=true;
+			game.fearEnergy -= minFearCost;
+			Debug.Log("Used ability "+ this.Name);
+			if (hazard!=null) {
+				GameObject.Instantiate(hazard,new Vector3(point.x,point.y,-5),Quaternion.identity);
+				if(effectSound!=null)
+					AudioSource.PlayClipAtPoint (effectSound, hazard.transform.position);
+			}
 		}
+
 	}
 
 	// PROTECTED/PRIVATE
 
 	private void Update(){
 		//Debug.Log (CooldownSeconds());
-		if (game.fearLevel>=minFearCost){
+		if (game.fearEnergy>=minFearCost){
 			Locked=false;
 		} else {
 			Locked=true;

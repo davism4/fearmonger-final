@@ -23,7 +23,7 @@ public class hudText : MonoBehaviour {
 	private void OnGUI(){
 		GUI.Box (timeStringRect, "Time\n"+game.DigiClock());
 		GUI.Box (moneyStringRect, "Money\n$ "+game.money);
-		GUI.Box (fearStringRect, "Fear\n"+game.fearLevel);
+		GUI.Box (fearStringRect, "Fear\n"+game.fearEnergy);
 		GUI.Box (roomStringRect, roomCameraCenter);
 	}
 	

@@ -5,10 +5,8 @@ public class Person2_Priest : Person2 {
 
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
-	bool isDestroying=false;
-
-
-	// Use this for initialization
+	Trap target=null;
+	
 	protected override void Start () {
 		moneyDropMin=0;
 		moneyDropMax=0;
@@ -16,6 +14,7 @@ public class Person2_Priest : Person2 {
 		fearDropMax=2;
 		admireCooldownMin=15f;
 		admireCooldownMax=25f;
+		sanityMax=60;
 		speedNormal += UnityEngine.Random.Range (-0.1f,0.06f);
 		speedFast += UnityEngine.Random.Range (-0.1f,0f);
 		destroyCooldown=destroyCooldownMax;
@@ -23,22 +22,31 @@ public class Person2_Priest : Person2 {
 	}
 	
 	public override void Interact(Furniture f){
-		if (UnityEngine.Random.value<(1.0f)/room.trapList.Count){
-			isDestroying=true;
+		if (f is Trap){
+			if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
+				target=(f as Trap);
 		} else {
 			base.Interact (f);
 		}
 	}
 
+	public void Reset(){
+		sanity=sanityMax;
+		destroyCooldown=destroyCooldownMax;
+		target=null;
+		isHurt=false;
+	}
+
 	protected override void UpdateNormal(){
 		if (room!=null){
-			if (room.trapList.Count<1){
+			if (room.TrapCount ()<1){
 				isLeaving=true;
-			} else if (isDestroying){
+			} else if (target!=null){
 				if (destroyCooldown>0f){
 					destroyCooldown -= Time.deltaTime;
 				} else {
 					destroyCooldown=destroyCooldownMax;
+					Attack (target);
 				}
 			}
 			base.UpdateNormal ();
@@ -55,17 +63,17 @@ public class Person2_Priest : Person2 {
 
 	public override void Scare(int s){
 		// reset target trap
-		isDestroying=false;
+		target=null;
 		destroyCooldown=destroyCooldownMax;
 		base.Scare (s);
 	}
 
-	private void HarmTrap(Trap t){
+	private void Attack(Trap t){
 		destroyCooldown=destroyCooldownMax;
 		t.durability--;
 		if (t.durability<=0){
 			t.Break ();
-			isDestroying=false;
+			target=null;
 		}
 	}
 

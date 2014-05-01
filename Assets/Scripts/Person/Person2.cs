@@ -9,31 +9,28 @@ public class Person2 : MonoBehaviour {
 	protected GUITexture healthBar;
 	[HideInInspector] public bool CanMove=true; // manual movement
 
-	int sanity;
-	int sanityMax=20;
+	protected int sanity, sanityMax;
 	public float sanityPercent {
 		get {
 			return (100f*(float)sanity)/sanityMax;
 		}
 	}
 	[HideInInspector] public Room room;
-	public AudioClip doorSound;
 //	Game2 game;
 	SpriteRenderer spriteRenderer;
 	protected GUIText text;
-	private bool isMessage=false, isMoving=false, isFleeing=false;
+	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
 	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f;
-	private float moveTimeMax=2.5f, waitTimeMax=0.5f;
-	private const float hurtTimeMax=1.5f, messageTimeMax=1f;
-	public bool isHurt=false, isLeaving=false;
+	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f;
+	public bool isLeaving=false;
 //	private bool isPossessed=false;
 
-	protected int fearDropMin=0, fearDropMax=0, moneyDropMin=0, moneyDropMax=0;
+	protected int fearDropMin, fearDropMax, moneyDropMin, moneyDropMax;
 
+	// Determined by subclass
 	protected float speed;
 	protected float speedNormal=3f, speedFast=7f, admireCooldownMax=99f, admireCooldownMin=99f;
-//	private UnityEngine.Random random;
-	private GameObject pickupCoin, pickupFear;
+
 	
 	// PUBLIC FUNCTIONS
 
@@ -50,22 +47,21 @@ public class Person2 : MonoBehaviour {
 			isHurt=true;
 			hurtCooldown=hurtTimeMax;
 			speed=speedFast;
-			// (Drop fear?)
-			//game.AddXP (iTemp1);
-			float i = UnityEngine.Random.value; // Determine text response
-			if (i<0.35f){ // only show text sometimes
-				text.text=ShockPhrases.Phrase ();
-			} else if (i<0.5f){
-				text.text="!";
+			// Maybe show some text:
+			if (UnityEngine.Random.value<0.35f){
+				if (UnityEngine.Random.value<0.45f)
+					text.text=ShockPhrases.Phrase ();
+				else
+					text.text="!";
 			} else {
 				text.text = "-"+damage;
 			}
 			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage);
-			if (j>0){
+			if (room!=null && room.game.pickupFear!=null && j>0){
 				for (int k=0;k<j;k++){
-					Instantiate(pickupFear,transform.position +
+					// Use a circular/polygonal pattern
+					Instantiate(room.game.pickupFear,transform.position +
 					            0.7f*(new Vector3(Mathf.Cos(k*Mathf.PI/j),Mathf.Sin(k*Mathf.PI/j),-2f)),Quaternion.identity);
-					//Instantiate (pickupFear,transform.position+new Vector3(0.7f*iTemp3,0.7f*iTemp3,-2f),Quaternion.identity);
 				}
 			}
 			//Debug.Log(text.text);
@@ -75,15 +71,17 @@ public class Person2 : MonoBehaviour {
 	}
 	
 	private void DropMoney(){
-		int i = UnityEngine.Random.Range (moneyDropMin,moneyDropMax);
-		if (i>0){
-			for (int j=0;j<i;j++){
-				Instantiate(pickupCoin,transform.position +
-				            0.7f*(new Vector3(Mathf.Cos(j*Mathf.PI/i),Mathf.Sin(j*Mathf.PI/i),-2f)),Quaternion.identity);
-				//Instantiate (pickupFear,transform.position+new Vector3(0.7f*iTemp3,0.7f*iTemp3,-2f),Quaternion.identity);
+		if (room!=null && room.game.pickupCoin!=null){
+			int i = UnityEngine.Random.Range (moneyDropMin,moneyDropMax);
+			if (i>0){
+				for (int j=0;j<i;j++){
+					// use a circular/polygonal pattern
+					Instantiate(room.game.pickupCoin,transform.position +
+					            0.7f*(new Vector3(Mathf.Cos(j*Mathf.PI/i),Mathf.Sin(j*Mathf.PI/i),-2f)),Quaternion.identity);
+				}
 			}
+			admireCooldown = UnityEngine.Random.Range (admireCooldownMin,admireCooldownMax);
 		}
-		admireCooldown = UnityEngine.Random.Range (admireCooldownMin,admireCooldownMax);
 	}
 
 	// PROTECTED/PRIVATE FUNCTIONS
@@ -92,32 +90,14 @@ public class Person2 : MonoBehaviour {
 		speed = speedNormal;
 		sanity=sanityMax; 
 		spriteRenderer=GetComponent<SpriteRenderer>();
-		/*iTemp1 = UnityEngine.Random.Range (1,4);
-		if (iTemp1==1){
-			IS_FACING_RIGHT=false;
-			StartMoving(); // sometimes they start moving, sometimes they don't
-		} else if(iTemp1==2){	
-			IS_FACING_RIGHT=true; // sometimes they start moving, sometimes they don't
-			StartMoving();
-		} else if (iTemp1==3){
-			IS_FACING_RIGHT=false;
-			StopMoving ();
-		} else {
-			IS_FACING_RIGHT=true;
-			StopMoving ();
-		}*/
 		IS_FACING_RIGHT=true;
-		if (UnityEngine.Random.value>0.5f){
-			StartMoving ();
+		if (UnityEngine.Random.value<0.6f){
+			StartMoving(); // sometimes they start moving, sometimes they don't
 		}
-		pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
-		pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
 		healthBar=transform.GetChild (0).GetComponent<GUITexture>();
 		text=transform.GetChild (0).GetComponent<GUIText>();
 //		text = transform.GetComponent<GUIText>();
 		text.text="";
-		//game = GameObject.Find ("Main Game").GetComponent<Game2>();
-		//random = new UnityEngine.Random();
 	}
 
 	public void SetRoom(Room r){
@@ -153,7 +133,7 @@ public class Person2 : MonoBehaviour {
 		}
 	}
 
-	// Not being scared from the hotel
+	// Not leaving the room
 	float dt, dx;
 	protected virtual void UpdateNormal(){
 		dt = Time.deltaTime;
@@ -168,10 +148,10 @@ public class Person2 : MonoBehaviour {
 		} else {
 			if (admireCooldown<=0f){ // people drop cash on intervals, which is offset by room quality
 				DropMoney ();
+			} else {
+				admireCooldown -= Time.deltaTime;
 			}
 		}
-		if (admireCooldown >=0)
-			admireCooldown -= Time.deltaTime;
 		if (CanMove){
 			if (isMoving){
 				dx = speed*dt;
@@ -224,13 +204,20 @@ public class Person2 : MonoBehaviour {
 		}
 	}
 
-	// When sanity is 0
+	// When sanity is 0 - exit is on the left side of the room
 	protected virtual void UpdateLeaving(){
-		//dx = speed*dt;
+		if (isHurt){
+			if (hurtCooldown>0){ // recovering from hit
+				hurtCooldown -= dt;
+			} else {
+				isHurt=false; // vulnerable again
+				speed = speedNormal;
+			}
+		}
 		if (isFleeing){
 			speed=speedFast;
-		} else {
-			speed =speedNormal;
+		} else { // isLeaving must be true
+			speed = speedNormal;
 		}
 		if (IS_FACING_RIGHT){
 			IS_FACING_RIGHT=false;/*
@@ -242,8 +229,8 @@ public class Person2 : MonoBehaviour {
 			}*/
 		} else {
 			if (transform.position.x > GameVars.WallLeft){
-				//rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
-				transform.position -= new Vector3(speed*dt,0,0);
+				rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
+				//transform.position -= new Vector3(speed*dt,0,0);
 			} else {
 				Exit ();
 			}
@@ -260,26 +247,15 @@ public class Person2 : MonoBehaviour {
 					sanity++;
 				}
 			}
-			if (sanity<sanityMax && !(f is Lamp_Scary)){
-				sanity++;
-			}
 		}
 	}
 
 	// PRIVATE FUNCTIONS
 
 	protected virtual void Exit(){
-		if (doorSound!=null)
-			AudioSource.PlayClipAtPoint (doorSound, transform.position);
+		room.PlayDoorSound();
 		DestroyImmediate(gameObject);
 	}
-
-	/*void DropFear(int amount){
-		for (int1=0;int1<amount;int1++){
-			//
-			Instantiate(pickupFear,transform.position+new Vector3(int1,0,0),Quaternion.identity);
-		}
-	}*/
 
 	// Isn't moving yet -> start moving in a random direction
 	private void StartMoving(){

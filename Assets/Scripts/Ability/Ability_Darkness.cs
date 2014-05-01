@@ -18,8 +18,4 @@ public class Ability_Darkness : Ability {
 		effectSound = Resources.Load<AudioClip> ("Sounds/dark_orb");
 		base.Start ();
 	}
-	
-	public override void UseAbility(Game game, Vector2 clickLocation){
-		base.UseAbility(game, clickLocation);
-	}
 }
