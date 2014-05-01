@@ -25,7 +25,7 @@ public class Person2 : MonoBehaviour {
 	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f;
 	private float moveTimeMax=2.5f, waitTimeMax=0.5f;
 	private const float hurtTimeMax=1.5f, messageTimeMax=1f;
-	protected bool isHurt=false;
+	public bool isHurt=false, isLeaving=false;
 //	private bool isPossessed=false;
 
 	protected int fearDropMin=0, fearDropMax=0, moneyDropMin=0, moneyDropMax=0;
@@ -136,8 +136,8 @@ public class Person2 : MonoBehaviour {
 		} else {
 			spriteRenderer.color=Color.white;
 		}
-		if (isFleeing){
-			UpdateFleeing ();
+		if (isFleeing || isLeaving){
+			UpdateLeaving ();
 		} else {
 			UpdateNormal ();
 		}
@@ -225,8 +225,13 @@ public class Person2 : MonoBehaviour {
 	}
 
 	// When sanity is 0
-	protected virtual void UpdateFleeing(){
+	protected virtual void UpdateLeaving(){
 		//dx = speed*dt;
+		if (isFleeing){
+			speed=speedFast;
+		} else {
+			speed =speedNormal;
+		}
 		if (IS_FACING_RIGHT){
 			IS_FACING_RIGHT=false;/*
 			if (transform.position.x < GameVars.WallRight){
@@ -238,7 +243,7 @@ public class Person2 : MonoBehaviour {
 		} else {
 			if (transform.position.x > GameVars.WallLeft){
 				//rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
-				transform.position -= new Vector3(speedFast*dt,0,0);
+				transform.position -= new Vector3(speed*dt,0,0);
 			} else {
 				Exit ();
 			}
@@ -251,13 +256,19 @@ public class Person2 : MonoBehaviour {
 			if (!isHurt && !((Lamp)f).isOn) {
 				StopMoving();
 				((Lamp)f).Flip (this);
+				if (sanity<sanityMax && !(f is Lamp_Scary)){
+					sanity++;
+				}
+			}
+			if (sanity<sanityMax && !(f is Lamp_Scary)){
+				sanity++;
 			}
 		}
 	}
 
 	// PRIVATE FUNCTIONS
 
-	private void Exit(){
+	protected virtual void Exit(){
 		if (doorSound!=null)
 			AudioSource.PlayClipAtPoint (doorSound, transform.position);
 		DestroyImmediate(gameObject);

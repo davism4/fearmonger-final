@@ -12,7 +12,7 @@ public class Furniture : MonoBehaviour {
 	private bool isShowingDurability=false;
 	private float showCountdown=0.75f;
 	private const float showCountdownMax=0.75f;
-
+	public string description="";
 	public int buyCost=0;
 	public int durability=99;
 

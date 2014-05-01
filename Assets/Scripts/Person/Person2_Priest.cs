@@ -3,9 +3,10 @@ using System.Collections;
 
 public class Person2_Priest : Person2 {
 
-	[HideInInspector] public bool isDestroying=false;
 	private float destroyCooldown;
-	private const float destroyCooldownMax=0.5f;
+	private const float destroyCooldownMax=1.5f;
+	bool isDestroying=false;
+
 
 	// Use this for initialization
 	protected override void Start () {
@@ -20,28 +21,42 @@ public class Person2_Priest : Person2 {
 		destroyCooldown=destroyCooldownMax;
 		base.Start ();
 	}
-
+	
 	public override void Interact(Furniture f){
-		base.Interact (f);
-		if (f is Trap){
+		if (UnityEngine.Random.value<(1.0f)/room.trapList.Count){
 			isDestroying=true;
+		} else {
+			base.Interact (f);
 		}
 	}
 
 	protected override void UpdateNormal(){
-		if (isDestroying){
-			//CanMove=false;
-			if (destroyCooldown>0f){
-				destroyCooldown -= Time.deltaTime;
-			} else {
-				destroyCooldown=destroyCooldownMax;
+		if (room!=null){
+			if (room.trapList.Count<1){
+				isLeaving=true;
+			} else if (isDestroying){
+				if (destroyCooldown>0f){
+					destroyCooldown -= Time.deltaTime;
+				} else {
+					destroyCooldown=destroyCooldownMax;
+				}
 			}
+			base.UpdateNormal ();
 		}
-		base.UpdateNormal ();
+	}
+
+	protected override void Exit(){
+		if (GameVars.IsNight && sanityPercent>0f){
+
+		} else {
+			base.Exit();
+		}
 	}
 
 	public override void Scare(int s){
+		// reset target trap
 		isDestroying=false;
+		destroyCooldown=destroyCooldownMax;
 		base.Scare (s);
 	}
 

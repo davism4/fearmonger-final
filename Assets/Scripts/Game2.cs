@@ -10,6 +10,7 @@ public class Game2 : MonoBehaviour {
 	 */
 
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond; // don't edit this
+	public float enemyGenCooldown=0f, enemyGenCooldownMax=20f;
 	public int money=0, fearLevel=0;
 	/* Gametime config:
 	 * This is a way to configure how long a nighttime round lasts, both
@@ -25,11 +26,12 @@ public class Game2 : MonoBehaviour {
 	//LayerMask defaultLayers = LayerMask.NameToLayer("Default");
 	//GameObject[] roomGameObjects;
 	[HideInInspector] public Room[] rooms;
-	[HideInInspector] public List<Room> roomsWithTraps;
+	private List<Room> roomsWithQuality, roomsWithTraps;
+	private Room roomWithPriest, roomWithThug;
+	private GameObject priestObject, thugObject;
 	public int currentRoomNumber=0;
 	private bool isChangingRooms=true;
 	private float dyCam=99f;
-
 	public int days=0;
 	GameObject cam;
 
@@ -49,8 +51,59 @@ public class Game2 : MonoBehaviour {
 	void StartNight(){
 		GameVars.IsNight=true;
 		foreach (Room r in rooms){
-			if (r.enabled)
+			if (r.enabled){
 				r.CheckIn();
+			}
+		}
+		float f = UnityEngine.Random.value;
+		if (f<0.3f)
+			CheckInPriest ();
+		else if (f<0.6f)
+			CheckInThug ();
+		enemyGenCooldown=enemyGenCooldownMax;
+	}
+
+	public void CheckOutPriest(){
+		roomWithPriest=null;
+		enemyGenCooldown=enemyGenCooldownMax;
+	}
+
+	public void CheckOutThug(){
+		roomWithThug=null;
+		enemyGenCooldown=enemyGenCooldownMax;
+	}
+
+	// Find a room with at least 1 trap, and put the priest in it
+	void CheckInPriest(){
+		roomsWithTraps.Clear ();
+		foreach (Room r in rooms){
+			if (r.trapList.Count>0){
+				roomsWithTraps.Add (r);
+			}
+		}
+		if (roomsWithTraps.Count>0){
+			int roomIndex=UnityEngine.Random.Range (0,roomsWithTraps.Count-1);
+			roomWithPriest = roomsWithTraps[roomIndex];
+			roomWithPriest.AddEnemy(priestObject);
+			enemyGenCooldown = enemyGenCooldownMax;
+			Debug.Log("WARNING - PRIEST HAS ENTERED INTO "+roomWithPriest.name);
+		}
+	}
+
+	// Find a room with at least 1 furniture, and put the thug in it
+	void CheckInThug(){
+		roomsWithQuality.Clear ();
+		foreach (Room r in rooms){
+			if (r.furnitureList.Count>0){
+				roomsWithQuality.Add (r);
+			}
+		}
+		if (roomsWithQuality.Count>0){
+			int roomIndex=UnityEngine.Random.Range (0,roomsWithQuality.Count-1);
+			roomWithThug = roomsWithQuality[roomIndex];
+			roomWithThug.AddEnemy(thugObject);
+			enemyGenCooldown = enemyGenCooldownMax;
+			Debug.Log("WARNING - PRIEST HAS ENTERED INTO "+roomWithThug.name);
 		}
 	}
 
@@ -82,6 +135,8 @@ public class Game2 : MonoBehaviour {
 
 	// PRIVATE FUNCTIONS 
 	private void Start () {
+		GameVars.IsNight=true;
+
 		cam = Camera.main.transform.gameObject; // two distinct references
 		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
 		for (int i=1;i<=rooms.Length;i++){
@@ -92,7 +147,7 @@ public class Game2 : MonoBehaviour {
 		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
 		cam.transform.position += new Vector3(d3.x,d3.y,0);
 
-		GameVars.IsNight=true;
+
 		GameMinutePerRealSecond = ((float)nightDurationGameMinutes/nightDurationRealSeconds);
 		GameVars.WallLeft=rooms[0].XLeft;
 		GameVars.WallRight=rooms[0].XRight;
@@ -105,49 +160,48 @@ public class Game2 : MonoBehaviour {
 		listAbilities[2] = transform.GetComponent<Ability_Claw>();
 		listAbilities[3] = transform.GetComponent<Ability_Monster>();
 		listAbilities[4] = transform.GetComponent<Ability_Possess>();
-
+		priestObject = Resources.Load<GameObject>("Prefabs/Person/Priest");
+		thugObject = Resources.Load<GameObject> ("Prefabs/Person/Thug");
+		roomsWithTraps = new List<Room>();
+		roomsWithQuality = new List<Room>();
 		int a = 1 << LayerMask.NameToLayer("PersonLayer");
 		int b = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (a | b);
 	}
-
+/*
 	private void BuyAbility(int index){
 		if (listAbilities[index].Locked){
 			listAbilities[index].Unlock();
-			//money -= listAbilities[index].BuyCost;
 		}
 	}
-
+*/
 	private void OnGUI(){
-		for (int i=0;i<listAbilities.Length;i++){
-			if(fearLevel < listAbilities[i].minFearCost){ 
-				//if (listAbilities[i].BuyCost <= money)
-				//	GUI.contentColor=Color.white;
-				//else
-					GUI.contentColor=Color.gray;
-			} else {
-				if (listAbilities[i].isCooldown)
-					GUI.contentColor=Color.yellow;
-				else if (currentAbility==listAbilities[i])
-					GUI.contentColor=Color.green;
-				else
-					GUI.contentColor=Color.white;
-			}
-			if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40, Screen.width/5, 40), listAbilities [i].ShowName())) {
-				//cursorAppearance.SetSprite (2);
-				if(fearLevel >= listAbilities[i].minFearCost){
-					currentAbility = listAbilities[i];
+		if (GameVars.IsNight){
+			for (int i=0;i<listAbilities.Length;i++){
+				if(fearLevel < listAbilities[i].minFearCost){ 
+						GUI.contentColor=Color.gray;
+				} else {
+					if (listAbilities[i].isCooldown)
+						GUI.contentColor=Color.yellow;
+					else if (currentAbility==listAbilities[i])
+						GUI.contentColor=Color.green;
+					else
+						GUI.contentColor=Color.white;
+				}
+				if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40, Screen.width/5, 40), listAbilities [i].ShowName())) {
+					//cursorAppearance.SetSprite (2);
+					if(fearLevel >= listAbilities[i].minFearCost){
+						currentAbility = listAbilities[i];
+					}
 				}
 			}
-			
+		} else {
+			// daytime GUI
 		}
 	}
 	
 	// Update is called once per frame
 	private void Update () {
-		// Change this later:
-//		//Debug.Log (DigiClock());
-
 		// camera slide effect between rooms
 		if (isChangingRooms){
 			dyCam = cam.transform.position.y - rooms[currentRoomNumber].transform.position.y;
@@ -160,16 +214,28 @@ public class Game2 : MonoBehaviour {
 			else
 				isChangingRooms=false;
 		}
+		if (GameVars.IsNight){
+			if (nightTimerRealSeconds<nightDurationRealSeconds){
+				nightTimerRealSeconds += Time.deltaTime; // here it makes sense to count up, not down
+			} else {
+				StartDay ();
+			}
+			if (enemyGenCooldown > 0f){
+				enemyGenCooldown-=Time.deltaTime;
+			} else {
+				if (UnityEngine.Random.value<0.5f){
+					if(roomWithPriest==null)
+						CheckInPriest ();
+				}
+				else if (roomWithThug==null)
+					CheckInThug();
+			}
+		} else {
+			// DAYTIME GAME LOGIC
+		}
 
-		/**
-		  * Handle clicking on stuff
-		  * Mouse over $ -> collect $
-		  * Click on up/down triangle -> change floor
-		  * Click on lamp -> switch lamp on/off
-		  * Click on ability's icon -> select ability
-		  * Click anywhere else at night -> use ability
-		  * Click on stuff during daytime?
-		  */
+
+		// CLICKING ON STUFF
 		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		hit = Physics2D.Raycast(ray.origin,ray.direction);
 		if (hit){
@@ -182,8 +248,7 @@ public class Game2 : MonoBehaviour {
 				fearLevel++;
 			} else if (hit.collider.gameObject.CompareTag ("Person")){
 				Person2 p = hit.collider.gameObject.GetComponent<Person2>();
-				p.DisplayHP ();
-				//Debug.Log("Person");
+				//p.DisplayHP ();
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
 				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
 				
@@ -197,38 +262,25 @@ public class Game2 : MonoBehaviour {
 					//Debug.Log("Going down");
 					currentRoomNumber--;
 					isChangingRooms=true;
-				} else if (hit.collider.gameObject.CompareTag ("Lamp")){
+				} else if (hit.collider.gameObject.CompareTag ("Furniture")){
 					//Debug.Log ("Switched lamp");
-					Lamp l = hit.collider.gameObject.GetComponent<Lamp>();
-					l.Flip ();
-				} else if (false) { // select ability from its icon
+					if (hit.collider.gameObject.GetComponent<Furniture>() is Lamp){
+						Lamp l = hit.collider.gameObject.GetComponent<Lamp>();
+						l.Flip ();
+					}
+				} /*else if (false) { // select ability from its icon
 					// select that as active ability
 					// show info
-				} else if (GameVars.IsNight && currentAbility!=null) {
+				}*/ else if (GameVars.IsNight && currentAbility!=null) {
 					if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Furniture")){
 						if (currentAbility.CanUse ()){
 							currentAbility.Activate (hit.point);
-
-						} else {
-							//Debug.Log ("can't use ability!");
 						}
 					}
-				} else { 
-					// it's day time
+				} else if (!GameVars.IsNight && hit.collider.gameObject.CompareTag ("Furniture")){
+					// DAYTIME GUI - confirm to move/delete furniture?
 				}
 			}
-		}
-
-		if (GameVars.IsNight){
-			if (nightTimerRealSeconds<nightDurationRealSeconds){
-				nightTimerRealSeconds += Time.deltaTime; // here it makes sense to count up, not down
-			} else {
-				StartDay ();
-			}
-			// nighttime logic
-
-		} else {
-			// Daytime logic
 		}
 	}
 }
