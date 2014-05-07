@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Person2 : MonoBehaviour {
 
+	protected Animator anim;
+
 	public bool IS_FACING_RIGHT=false;
 	public bool IS_FACING_LEFT { get { return !IS_FACING_RIGHT; } }
 
@@ -98,6 +100,10 @@ public class Person2 : MonoBehaviour {
 		text=transform.GetChild (0).GetComponent<GUIText>();
 //		text = transform.GetComponent<GUIText>();
 		text.text="";
+
+		anim = transform.GetComponent<Animator> ();
+		if (!anim.enabled)
+			anim=null;
 	}
 
 	public void SetRoom(Room r){
@@ -130,6 +136,11 @@ public class Person2 : MonoBehaviour {
 				isMessage=false;
 			}
 
+		}
+
+		if (anim!=null){
+			anim.SetBool ("walkRight", IS_FACING_RIGHT);
+			anim.SetBool ("walkLeft", IS_FACING_LEFT);
 		}
 	}
 
