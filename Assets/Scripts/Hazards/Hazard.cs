@@ -4,7 +4,7 @@ using System.Collections;
 public class Hazard : MonoBehaviour {
 
 	protected int damage;
-	protected float timer=0, duration; // in seconds
+	public float timer=0, duration; // in seconds
 	//protected CircleCollider2D ccollider;
 	//protected RoomObject currentRoom;
 	protected Room room;

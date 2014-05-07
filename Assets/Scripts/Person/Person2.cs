@@ -23,7 +23,7 @@ public class Person2 : MonoBehaviour {
 	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f;
 	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f;
 	public bool isLeaving=false;
-//	private bool isPossessed=false;
+	public bool isPossessed=false;
 
 	protected int fearDropMin, fearDropMax, moneyDropMin, moneyDropMax;
 
@@ -57,10 +57,10 @@ public class Person2 : MonoBehaviour {
 				text.text = "-"+damage;
 			}
 			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage);
-			if (room!=null && room.game.pickupFear!=null && j>0){
+			if (GameVars.pickupFear!=null && j>0){
 				for (int k=0;k<j;k++){
 					// Use a circular/polygonal pattern
-					Instantiate(room.game.pickupFear,transform.position +
+					Instantiate(GameVars.pickupFear,transform.position +
 					            0.7f*(new Vector3(Mathf.Cos(k*Mathf.PI/j),Mathf.Sin(k*Mathf.PI/j),-2f)),Quaternion.identity);
 				}
 			}
@@ -71,12 +71,12 @@ public class Person2 : MonoBehaviour {
 	}
 	
 	private void DropMoney(){
-		if (room!=null && room.game.pickupCoin!=null){
+		if (GameVars.pickupCoin!=null){
 			int i = UnityEngine.Random.Range (moneyDropMin,moneyDropMax);
 			if (i>0){
 				for (int j=0;j<i;j++){
 					// use a circular/polygonal pattern
-					Instantiate(room.game.pickupCoin,transform.position +
+					Instantiate(GameVars.pickupCoin,transform.position +
 					            0.7f*(new Vector3(Mathf.Cos(j*Mathf.PI/i),Mathf.Sin(j*Mathf.PI/i),-2f)),Quaternion.identity);
 				}
 			}
@@ -154,6 +154,9 @@ public class Person2 : MonoBehaviour {
 		}
 		if (CanMove){
 			if (isMoving){
+				if (isPossessed){
+					speed = speedFast;
+				}
 				dx = speed*dt;
 				if (IS_FACING_RIGHT){
 					if (transform.position.x+dx < GameVars.WallRight){

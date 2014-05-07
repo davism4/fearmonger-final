@@ -9,13 +9,14 @@ public class Game2 : MonoBehaviour {
 	public float enemyGenCooldown=0f, roomCheckCountdown=0f;
 	public const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
 	public int currentRoomNumber=0, money=0, fearEnergy=0;
+	public const int fearEnergyMax=100;
 	private int  days=0;
 	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	[HideInInspector] public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
 	private GameObject priestObject, thugObject;
-	public GameObject pickupFear, pickupCoin;
+
 	private List<Room> tempRoomList;
 	private bool roomsHaveTraps=false, roomsHaveFurns=false, isChangingRooms=true;
 	private float dyCam=99f;
@@ -37,8 +38,17 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	// ================== INTERFACE ================== //
 	// =============================================== //
+	Texture2D fearBarTexture, fearBarTextureBlack, nightProgressTexture;
+	Texture2D[] abilityIcons;
+	float fearBarHeight=10f;
+
+	[ExecuteInEditMode]
 	private void OnGUI(){
 		if (GameVars.IsNight){
+			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
+			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
+			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
+
 			for (int i=0;i<listAbilities.Length;i++){
 				if(fearEnergy < listAbilities[i].minFearCost){ 
 					GUI.contentColor=Color.gray;
@@ -50,7 +60,8 @@ public class Game2 : MonoBehaviour {
 					else
 						GUI.contentColor=Color.white;
 				}
-				if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40, Screen.width/5, 40), listAbilities [i].ShowName())) {
+
+				if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40-fearBarHeight, Screen.width/5, 40), listAbilities [i].ShowName())) {
 					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].minFearCost){
 						currentAbility = listAbilities[i];
@@ -218,6 +229,10 @@ public class Game2 : MonoBehaviour {
 		GameVars.WallRight=rooms[0].XRight;
 		GameVars.WallLeftSoft=GameVars.WallLeft+2f;
 		GameVars.WallRightSoft=GameVars.WallRight-2f;
+		fearBarTexture = Resources.Load<Texture2D>("Sprites/gui/fearprogress-purple");
+		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
+		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
+		abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
 		listAbilities = new Ability[5]; // these are attached to the Main Game transform
 		listAbilities[0] = transform.GetComponent<Ability_Spiders>();
 		listAbilities[1] = transform.GetComponent<Ability_Darkness>();
@@ -232,11 +247,11 @@ public class Game2 : MonoBehaviour {
 		}
 		priestObject = Resources.Load<GameObject>("Prefabs/Person/Priest");
 		thugObject = Resources.Load<GameObject> ("Prefabs/Person/Thug");
-		pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
-		pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
-		int a = 1 << LayerMask.NameToLayer("PersonLayer");
-		int b = 1 << LayerMask.NameToLayer("FurnitureLayer");
-		GameVars.interactLayer = (a | b);
+		GameVars.pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
+		GameVars.pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
+		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
+		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
+		GameVars.interactLayer = (alayer | blayer);
 	}
 
 	private void StartDay(){
@@ -262,7 +277,7 @@ public class Game2 : MonoBehaviour {
 	}
 	
 	private void RegisterHit(RaycastHit2D hit){
-		//Debug.Log (hit.collider.gameObject.name);
+		Debug.Log (hit.collider.gameObject.name);
 		if (hit.collider.gameObject.CompareTag ("Money")){
 			DestroyObject (hit.collider.gameObject);
 			money += 10;
@@ -288,7 +303,10 @@ public class Game2 : MonoBehaviour {
 		if (!GameVars.IsNight) {
 			RegisterHitDaytime (hit);
 		} else if (Input.GetMouseButtonDown (0)){
-			if (hit.collider.gameObject.CompareTag ("Furniture")){
+			if (currentAbility==listAbilities[4] && currentAbility.CanUse () && hit.collider.gameObject.CompareTag ("Person")){
+				currentAbility.UseAbility (hit.point);
+				currentAbility=null;
+			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
 				//Debug.Log ("Switched lamp");
 				if (hit.collider.gameObject.GetComponent<Furniture>() is Lamp){
 					Lamp l = hit.collider.gameObject.GetComponent<Lamp>();
@@ -298,7 +316,7 @@ public class Game2 : MonoBehaviour {
 					// select that as active ability
 					// show info
 				}*/
-			else if (currentAbility!=null) {
+			else if (currentAbility!=null && currentAbility!=listAbilities[4]) {
 				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Furniture")){
 					if (currentAbility.CanUse ()){
 						currentAbility.UseAbility (hit.point);

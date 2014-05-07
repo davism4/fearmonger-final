@@ -2,6 +2,47 @@
 using System.Collections;
 
 public class Hazard_Possess : Hazard {
+
+	bool isAttached=false;
+	Person2 victim;
+
+	private void Start(){
+		duration = GameVars.duration_possession_short;
+		damage = GameVars.damage_possession;
+	}
+
+	protected override void Update(){
+		if (isAttached){
+			transform.position = victim.transform.position;
+			if (victim.transform.position.x > GameVars.WallRightSoft)
+				victim.IS_FACING_RIGHT=false;
+			else if (victim.transform.position.x < GameVars.WallLeftSoft)
+				victim.IS_FACING_RIGHT=true;
+		}
+		base.Update();
+	}
+
+	private void OnTriggerEnter2D(Collider2D other){
+		if (other.CompareTag("Person")){
+			if (isAttached) {
+				other.GetComponent<Person2>().Scare (damage);
+			} else {
+				victim = other.GetComponent<Person2>();
+				isAttached=true;
+				victim.isPossessed=true;
+				timer=GameVars.duration_possession_long;
+			}
+		}
+	}
+
+	protected override void Finish(){
+		if (victim != null) {
+			victim.isPossessed=false;
+			victim.Scare (damage);
+		}
+		base.Finish ();
+	}
+
 	// Kind of acts like the monster, kind of overrides person's AI
 	/*
 	private Person victim;

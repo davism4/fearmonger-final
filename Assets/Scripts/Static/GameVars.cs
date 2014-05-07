@@ -10,7 +10,8 @@ public static class GameVars {
 	public static float WallLeftSoft = -99f; // these get set by MainGame
 	public static float WallRightSoft = 99f; // these get set by MainGame
 
-	public static int interactLayer; // set by MainGame
+	public static int interactLayer; // set by Game2
+	public static int userInteractLayer;
 
 	public const float Tick = 1f;
 
@@ -32,6 +33,9 @@ public static class GameVars {
 	public static int damage_claw=3;
 	public static float duration_monster=18f;
 	public static int damage_monster=4;
-	public static float duration_possession=12f;
+	public static float duration_possession_short=6f;
+	public static float duration_possession_long=12f;
 	public static int damage_possession=5;
+
+	public static GameObject pickupFear, pickupCoin;
 }
