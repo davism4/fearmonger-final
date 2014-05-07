@@ -35,13 +35,24 @@ public class Room : MonoBehaviour {
 		xleft = transform.position.x-transform.localScale.x*box.size.x/2;
 		xright = transform.position.x+transform.localScale.x*box.size.x/2;
 		spawnPosition = transform.FindChild("SpawnPosition").position;
-		//grid = new Grid2D();
+		grid = new Grid2D();
 		//gridOffset = new Vector3(xLeft,yFloor,0);
 		//grid.offset = gridOffset;
-		//grid.Width = 5;
-		//grid.Height = 2;
-		//grid.CellWidth = Mathf.Abs (xright-xleft)/grid.Width;
-		//grid.CellWidth = Mathf.Abs (yceiling-yfloor)/grid.Height;
+
+		Debug.Log ("Ceiling: " + yceiling);
+		Debug.Log ("floor: " + yfloor);
+		Debug.Log ("left: " + xleft);
+		Debug.Log ("right: " + xright);
+
+		/*
+		grid.Width = 5;
+		grid.Height = 1;
+		grid.CellWidth = Mathf.Abs (xright-xleft)/grid.Width;
+		Debug.Log ("CellWidth: " + grid.CellWidth);
+		grid.CellHeight = Mathf.Abs (yceiling-yfloor)/grid.Height;
+		Debug.Log ("CellHeight: " + grid.CellHeight);
+		*/
+
 		people = new GameObject[3,2];
 		people[0,0] = Resources.Load<GameObject>("Prefabs/Person/Boy");
 		people[0,1] = Resources.Load<GameObject>("Prefabs/Person/Girl");

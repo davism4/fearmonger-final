@@ -11,6 +11,9 @@ public abstract class Grid2DBase<T> : MonoBehaviour
 	private int height;
 	private float cellWidth;
 	private float cellHeight;
+	public int oldWidth;
+	public int oldHeight;
+
 
     // If you need to change the size of the grid at runtime, do it
     // through these properties instead of the public fields above.
@@ -21,6 +24,7 @@ public abstract class Grid2DBase<T> : MonoBehaviour
         get { return width; }
         set
         {
+			oldWidth = width;
             width = value;
             Resize();
         }
@@ -31,6 +35,7 @@ public abstract class Grid2DBase<T> : MonoBehaviour
         get { return height; }
         set
         {
+			oldHeight = height;
             height = value;
             Resize();
         }
@@ -274,6 +279,7 @@ public abstract class Grid2DBase<T> : MonoBehaviour
             }
         }
 
+
         foreach (Cell oldCell in oldCells)
         {
             // if the old cell's position is still valid, transfer the cell's objects
@@ -285,6 +291,20 @@ public abstract class Grid2DBase<T> : MonoBehaviour
                 }
             }
         }
+
+		/*
+		for(int i = 0; i < (oldHeight*oldWidth) ; i+= 1)
+		{
+			// if the old cell's position is still valid, transfer the cell's objects
+			if (IsValidPosition(oldCells[i].X, oldCells[i].Y))
+			{
+				foreach (T entry in oldCells[i].Entries)
+				{
+					Add(entry, oldCells[i].X, oldCells[i].Y);
+				}
+			}
+		}
+		*/
 
         if (OnResized != null)
         {
