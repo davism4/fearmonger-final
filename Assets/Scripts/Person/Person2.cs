@@ -63,7 +63,7 @@ public class Person2 : MonoBehaviour {
 				for (int k=0;k<j;k++){
 					// Use a circular/polygonal pattern
 					Instantiate(GameVars.pickupFear,transform.position +
-					            0.7f*(new Vector3(Mathf.Cos(k*Mathf.PI/j),Mathf.Sin(k*Mathf.PI/j),-2f)),Quaternion.identity);
+					            0.7f*(new Vector3(Mathf.Cos(k*Mathf.PI/j),Mathf.Sin(k*Mathf.PI/j),-5f)),Quaternion.identity);
 				}
 			}
 			//Debug.Log(text.text);
@@ -79,7 +79,7 @@ public class Person2 : MonoBehaviour {
 				for (int j=0;j<i;j++){
 					// use a circular/polygonal pattern
 					Instantiate(GameVars.pickupCoin,transform.position +
-					            0.7f*(new Vector3(Mathf.Cos(j*Mathf.PI/i),Mathf.Sin(j*Mathf.PI/i),-2f)),Quaternion.identity);
+					            0.7f*(new Vector3(Mathf.Cos(j*Mathf.PI/i),Mathf.Sin(j*Mathf.PI/i),-5f)),Quaternion.identity);
 				}
 			}
 			admireCooldown = UnityEngine.Random.Range (admireCooldownMin,admireCooldownMax);
@@ -117,10 +117,12 @@ public class Person2 : MonoBehaviour {
 
 		// Update is called once per frame
 	protected virtual void Update () {
-		if (isHurt){
-			spriteRenderer.color=Color.red;
+		if (isPossessed){
+			spriteRenderer.color = Color.blue;
+		} else if (isHurt){
+			spriteRenderer.color = Color.red;
 		} else {
-			spriteRenderer.color=Color.white;
+			spriteRenderer.color = Color.white;
 		}
 		if (isFleeing || isLeaving){
 			UpdateLeaving ();
@@ -180,9 +182,8 @@ public class Person2 : MonoBehaviour {
 				}
 				if (walkCooldown>0){ // moving -> keep moving
 					walkCooldown -= dt;
-				} else {
-					if (!isHurt)
-						StopMoving (); // moving -> pause
+				} else if (!isHurt) {
+					StopMoving (); // moving -> pause
 					if (UnityEngine.Random.value<=0.2f){ // moving -> pause -> turn around
 						IS_FACING_RIGHT=!IS_FACING_RIGHT;
 					}

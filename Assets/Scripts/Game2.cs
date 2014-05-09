@@ -234,7 +234,7 @@ public class Game2 : MonoBehaviour {
 		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
 		abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
 		listAbilities = new Ability[5]; // these are attached to the Main Game transform
-		listAbilities[0] = transform.GetComponent<Ability_Spiders>();
+		listAbilities[0] = transform.GetComponent<Ability_Ghost>();
 		listAbilities[1] = transform.GetComponent<Ability_Darkness>();
 		listAbilities[2] = transform.GetComponent<Ability_Claw>();
 		listAbilities[3] = transform.GetComponent<Ability_Monster>();

@@ -25,7 +25,7 @@ public static class GameVars {
 	public static bool IsPaused=false;
 	public static bool IsNight=false;
 
-	public static float duration_spiders=3f;
+	public static float duration_spiders=1f;
 	public static int damage_spiders=1;
 	public static float duration_darkness=2f;
 	public static int damage_darkness=2;

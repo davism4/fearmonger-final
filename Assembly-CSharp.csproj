@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
@@ -50,6 +49,7 @@
      <Compile Include="Assets\Scripts\Ability\Ability.cs" />
      <Compile Include="Assets\Scripts\Ability\Ability_Claw.cs" />
      <Compile Include="Assets\Scripts\Ability\Ability_Darkness.cs" />
+     <Compile Include="Assets\Scripts\Ability\Ability_Ghost.cs" />
      <Compile Include="Assets\Scripts\Ability\Ability_Monster.cs" />
      <Compile Include="Assets\Scripts\Ability\Ability_Possess.cs" />
      <Compile Include="Assets\Scripts\Ability\Ability_Spiders.cs" />
@@ -61,6 +61,7 @@
      <Compile Include="Assets\Scripts\Hazards\Hazard.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Claw.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Darkness.cs" />
+     <Compile Include="Assets\Scripts\Hazards\Hazard_Ghost.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Monster.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Possess.cs" />
      <Compile Include="Assets\Scripts\Hazards\Hazard_Spiders.cs" />
@@ -108,112 +109,3 @@
   -->
   
 </Project>
-=======
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-	<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-	<ProductVersion>10.0.20506</ProductVersion>
-	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{47EC3055-A989-25E5-222F-169EB2A8DE02}</ProjectGuid>
-	<OutputType>Library</OutputType>
-	<AppDesignerFolder>Properties</AppDesignerFolder>
-	<RootNamespace></RootNamespace>
-	<AssemblyName>Assembly-CSharp</AssemblyName>
-	<TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-	<FileAlignment>512</FileAlignment>
-	<BaseDirectory>Assets</BaseDirectory>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	<DebugSymbols>true</DebugSymbols>
-	<DebugType>full</DebugType>
-	<Optimize>false</Optimize>
-	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_STANDALONE_WIN;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_AUDIO_FMOD;UNITY_STANDALONE;ENABLE_MONO;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_GENERICS;ENABLE_SUBSTANCE;INCLUDE_WP8SUPPORT;ENABLE_MOVIES;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_DUCK_TYPING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;UNITY_4_3_2;UNITY_4_3;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_OSX</DefineConstants>
-	<ErrorReport>prompt</ErrorReport>
-	<WarningLevel>4</WarningLevel>
-	<NoWarn>0169</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-	<DebugType>pdbonly</DebugType>
-	<Optimize>true</Optimize>
-	<OutputPath>Temp\bin\Release\</OutputPath>
-	<DefineConstants>TRACE</DefineConstants>
-	<ErrorReport>prompt</ErrorReport>
-	<WarningLevel>4</WarningLevel>
-	<NoWarn>0169</NoWarn>
-  </PropertyGroup>
-  <ItemGroup>
-	<Reference Include="System" />
-    <Reference Include="System.XML" />
-	<Reference Include="System.Core" />
-	<Reference Include="System.Xml.Linq" />
-	<Reference Include="UnityEngine">
-	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEngine.dll</HintPath>
-	</Reference>
-	<Reference Include="UnityEditor">
-	  <HintPath>/Applications/Unity/Unity.app/Contents/Frameworks/Managed/UnityEditor.dll</HintPath>
-	</Reference>
-  </ItemGroup>
-  <ItemGroup>
-     <Compile Include="Assets\Scripts\Ability\Ability.cs" />
-     <Compile Include="Assets\Scripts\Ability\Ability_Claw.cs" />
-     <Compile Include="Assets\Scripts\Ability\Ability_Darkness.cs" />
-     <Compile Include="Assets\Scripts\Ability\Ability_Monster.cs" />
-     <Compile Include="Assets\Scripts\Ability\Ability_Possess.cs" />
-     <Compile Include="Assets\Scripts\Ability\Ability_Spiders.cs" />
-     <Compile Include="Assets\Scripts\CameraObject.cs" />
-     <Compile Include="Assets\Scripts\CursorAppearance.cs" />
-     <Compile Include="Assets\Scripts\Game.cs" />
-     <Compile Include="Assets\Scripts\Game2.cs" />
-     <Compile Include="Assets\Scripts\Grid2D.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard_Claw.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard_Darkness.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard_Monster.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard_Possess.cs" />
-     <Compile Include="Assets\Scripts\Hazards\Hazard_Spiders.cs" />
-     <Compile Include="Assets\Scripts\Person\FloatingHealthBar.cs" />
-     <Compile Include="Assets\Scripts\Person\Person.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Adult.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Child.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Priest.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Rich.cs" />
-     <Compile Include="Assets\Scripts\Person\Person2_Thug.cs" />
-     <Compile Include="Assets\Scripts\Person\Person_Adult.cs" />
-     <Compile Include="Assets\Scripts\Person\Person_Candle.cs" />
-     <Compile Include="Assets\Scripts\Person\Person_Child.cs" />
-     <Compile Include="Assets\Scripts\Person\Person_Priest.cs" />
-     <Compile Include="Assets\Scripts\PlayerLevel.cs" />
-     <Compile Include="Assets\Scripts\Room\DoorObject.cs" />
-     <Compile Include="Assets\Scripts\Room\Furniture.cs" />
-     <Compile Include="Assets\Scripts\Room\Lamp.cs" />
-     <Compile Include="Assets\Scripts\Room\LampObject.cs" />
-     <Compile Include="Assets\Scripts\Room\Lamp_Scary.cs" />
-     <Compile Include="Assets\Scripts\Room\MovableObject.cs" />
-     <Compile Include="Assets\Scripts\Room\Pickup.cs" />
-     <Compile Include="Assets\Scripts\Room\Room.cs" />
-     <Compile Include="Assets\Scripts\Room\RoomObject.cs" />
-     <Compile Include="Assets\Scripts\Room\Trap.cs" />
-     <Compile Include="Assets\Scripts\Static\GameInput.cs" />
-     <Compile Include="Assets\Scripts\Static\GameVars.cs" />
-     <Compile Include="Assets\Scripts\Static\PersonLists.cs" />
-     <Compile Include="Assets\Scripts\Static\ShockPhrases.cs" />
-     <Compile Include="Assets\Scripts\hudText.cs" />
-     <Compile Include="Assets\Scripts\startgame.cs" />
-     <None Include="Assets\Resources\Fonts\were_beast\werebeast.txt" />
-     <None Include="Assets\Resources\Fonts\my_type_of_font\readme.txt" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-	   Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  
-</Project>
->>>>>>> 9c09982f1b50c5f69008641e1450559db3103b0d

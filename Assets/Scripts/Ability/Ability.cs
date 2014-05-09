@@ -71,7 +71,7 @@ public class Ability : MonoBehaviour {
 			game.fearEnergy -= minFearCost;
 			Debug.Log("Used ability "+ this.Name);
 			if (hazard!=null) {
-				GameObject.Instantiate(hazard,new Vector3(point.x,point.y,-5),Quaternion.identity);
+				GameObject.Instantiate(hazard,new Vector3(point.x,point.y,0f),Quaternion.identity);
 				if(effectSound!=null)
 					AudioSource.PlayClipAtPoint (effectSound, hazard.transform.position);
 			}
