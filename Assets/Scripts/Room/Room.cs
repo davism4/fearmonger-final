@@ -16,6 +16,7 @@ public class Room : MonoBehaviour {
 	
 	Grid2D grid; // each room has its own grid?
 	Vector3 gridOffset; // ?
+	public GameObject PrefabToPlace;
 
 	public float YFloor { get {return yfloor;} }
 	public float YCeiling { get {return yceiling;} }
@@ -35,22 +36,40 @@ public class Room : MonoBehaviour {
 		xleft = transform.position.x-transform.localScale.x*box.size.x/2;
 		xright = transform.position.x+transform.localScale.x*box.size.x/2;
 		spawnPosition = transform.FindChild("SpawnPosition").position;
-		grid = new Grid2D();
-		//gridOffset = new Vector3(xLeft,yFloor,0);
-		//grid.offset = gridOffset;
 
 		Debug.Log ("Ceiling: " + yceiling);
 		Debug.Log ("floor: " + yfloor);
 		Debug.Log ("left: " + xleft);
 		Debug.Log ("right: " + xright);
 
-		/*
+		grid = this.GetComponent<Grid2D>();
+		//gridOffset = new Vector3(xLeft,yFloor,0);
+		//grid.offset = gridOffset;
+
+		grid = GetComponent<Grid2D>();
+		
 		grid.Width = 5;
 		grid.Height = 1;
-		grid.CellWidth = Mathf.Abs (xright-xleft)/grid.Width;
+		grid.CellWidth = (Mathf.Abs (xright-xleft)/grid.Width)/transform.localScale.x;
 		Debug.Log ("CellWidth: " + grid.CellWidth);
 		grid.CellHeight = Mathf.Abs (yceiling-yfloor)/grid.Height;
 		Debug.Log ("CellHeight: " + grid.CellHeight);
+
+		/*
+		for (int y = 0; y < grid.Height; ++y)
+		{
+			for (int x = 0; x < grid.Width; ++x)
+			{
+				// Instantiate new object
+				GameObject instance = Instantiate(PrefabToPlace) as GameObject;
+				
+				// Move to correct position
+				instance.transform.position = grid.GetBottomCenter(x, y);
+				
+				// Add the object to the grid
+				grid.Add(instance.transform, x, y);
+			}
+		}
 		*/
 
 		people = new GameObject[3,2];

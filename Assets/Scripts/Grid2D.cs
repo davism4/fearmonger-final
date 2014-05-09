@@ -7,10 +7,10 @@ public abstract class Grid2DBase<T> : MonoBehaviour
 {
     // Don't change these values at runtime.  Use the properties below
     // instead.
-    private int width;
-	private int height;
-	private float cellWidth;
-	private float cellHeight;
+    public int width;
+	public int height;
+	public float cellWidth;
+	public float cellHeight;
 	public int oldWidth;
 	public int oldHeight;
 
@@ -156,73 +156,74 @@ public abstract class Grid2DBase<T> : MonoBehaviour
   
     public Vector3 GetCellBottomLeft(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth, (float)y * CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth - 2, (float)y * CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetCellBottomRight(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth, (float)y * CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth - 2, (float)y * CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetCellTopRight(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth, (float)y * CellHeight + CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth - 2, (float)y * CellHeight + CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetCellTopLeft(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth, (float)y * CellHeight + CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth - 2, (float)y * CellHeight + CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetBottomCenter(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f, (float)y * CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f - 2, (float)y * CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetLeftCenter(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth, (float)y * CellHeight + CellHeight * 0.5f, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth - 2, (float)y * CellHeight + CellHeight * 0.5f - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetRightCenter(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth, (float)y * CellHeight + CellHeight * 0.5f, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth - 2, (float)y * CellHeight + CellHeight * 0.5f - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetTopCenter(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f, (float)y * CellHeight + CellHeight, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f - 2, (float)y * CellHeight + CellHeight - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
     public Vector3 GetCellCenter(int x, int y)
     {
-        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f, (float)y * CellHeight + CellHeight * 0.5f, 0.0f);
+        Vector3 pos = new Vector3((float)x * CellWidth + CellWidth * 0.5f - 2, (float)y * CellHeight + CellHeight * 0.5f - 2, 0.0f);
 
         return transform.TransformPoint(pos);
     }
 
+	//MARK: -2 may not be the proper method for adjusting for grid offset
     public bool GetCellFromWorldSpacePosition(Vector3 position, out int x, out int y)
     {
         Vector3 gridSpacePosition = transform.InverseTransformPoint(position);
 
-        x = Mathf.FloorToInt(gridSpacePosition.x / CellWidth);
-        y = Mathf.FloorToInt(gridSpacePosition.y / CellHeight);
+        x = Mathf.FloorToInt(gridSpacePosition.x / CellWidth) - 2;
+        y = Mathf.FloorToInt(gridSpacePosition.y / CellHeight) - 2;
     
         return IsValidPosition(x, y);
     }
@@ -252,12 +253,12 @@ public abstract class Grid2DBase<T> : MonoBehaviour
         {
             for (int x = 0; x <= Width; ++x)
             {
-                start = transform.TransformPoint(new Vector3(0.0f, y * CellHeight, 0.0f));
-                end = transform.TransformPoint(new Vector3(CellWidth * Width, y * CellHeight, 0.0f));
+                start = transform.TransformPoint(new Vector3(0.0f-2, y * CellHeight-2, 0.0f));
+                end = transform.TransformPoint(new Vector3(CellWidth * Width-2, y * CellHeight-2, 0.0f));
                 Debug.DrawLine(start, end, Color.white);
 
-                start = transform.TransformPoint(new Vector3(x * CellWidth, 0.0f, 0.0f));
-                end = transform.TransformPoint(new Vector3(x * CellWidth, CellHeight * Height, 0.0f));
+                start = transform.TransformPoint(new Vector3(x * CellWidth-2, 0.0f-2, 0.0f));
+                end = transform.TransformPoint(new Vector3(x * CellWidth-2, CellHeight * Height-2, 0.0f));
                 Debug.DrawLine(start, end, Color.white);
             }
         }
@@ -279,7 +280,7 @@ public abstract class Grid2DBase<T> : MonoBehaviour
             }
         }
 
-
+		/*
         foreach (Cell oldCell in oldCells)
         {
             // if the old cell's position is still valid, transfer the cell's objects
@@ -290,9 +291,8 @@ public abstract class Grid2DBase<T> : MonoBehaviour
                     Add(entry, oldCell.X, oldCell.Y);
                 }
             }
-        }
+        }*/
 
-		/*
 		for(int i = 0; i < (oldHeight*oldWidth) ; i+= 1)
 		{
 			// if the old cell's position is still valid, transfer the cell's objects
@@ -304,7 +304,6 @@ public abstract class Grid2DBase<T> : MonoBehaviour
 				}
 			}
 		}
-		*/
 
         if (OnResized != null)
         {
