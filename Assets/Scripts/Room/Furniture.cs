@@ -16,7 +16,7 @@ public class Furniture : MonoBehaviour {
 	public int buyCost=0;
 	private int durability, durabilityMax=99;
 	public int Durability {get {return durability; }}
-	
+	public string DisplayName="";	
 
 	public float healthPercent {
 		get { return ((float)durability)/durabilityMax; }

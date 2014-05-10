@@ -13,6 +13,7 @@ public static class GameVars {
 	public static int interactLayer; // set by Game2
 	public static int userInteractLayer;
 
+	public static bool IsPlacingFurniture = false;
 
 	public static bool IsPausedTutorial = false;
 

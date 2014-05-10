@@ -5,7 +5,9 @@ using System.Collections.Generic;
 public class Room : MonoBehaviour {
 	public bool HASLOADED=false;
 	public Game2 game;
-	public List<Person2> occupants=null;
+	public List<Person2> occupants=new List<Person2>();
+	private List<Furniture> furnitureList=new List<Furniture>();
+
 	private Vector3 spawnPosition;
 	public AudioClip doorSound;
 	public bool open=false;
@@ -21,7 +23,6 @@ public class Room : MonoBehaviour {
 	
 	Grid2D grid; // each room has its own grid?
 	Vector3 gridOffset; // ?
-	public GameObject PrefabToPlace;
 
 	public float YFloor { get {return yfloor;} }
 	public float YCeiling { get {return yceiling;} }
@@ -34,7 +35,6 @@ public class Room : MonoBehaviour {
 	// Use this for initialization
 	private void Start () {
 		game = GameObject.Find ("Main Game").GetComponent<Game2>();
-		occupants = new List<Person2>();
 		box = transform.GetComponent<BoxCollider2D>();
 		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
 		yceiling = transform.position.y+transform.localScale.y*box.size.y/2;
@@ -102,12 +102,31 @@ public class Room : MonoBehaviour {
 			AudioSource.PlayClipAtPoint (doorSound, transform.position);
 	}
 
+	public void AddFurniture(Furniture f){
+		furnitureList.Add (f);
+	}
+	public void RemoveFurniture(Furniture f){
+		furnitureList.Remove (f);
+	}
+
 	public int TrapCount(){
-		return 0;
+		int i=0;
+		if (furnitureList.Count>0)
+		foreach (Furniture f in furnitureList){
+			if (f is Trap)
+				i++;
+		}
+		return i;
 	}
 
 	public int NonTrapFurnitureCount(){
-		return 0;
+		int i=0;
+		if (furnitureList.Count>0)
+		foreach (Furniture f in furnitureList){
+			if (!(f is Trap))
+				i++;
+		}
+		return i;
 	}
 
 	// Generates a random person based on the quality of the room
@@ -151,16 +170,20 @@ public class Room : MonoBehaviour {
 
 	// Called at the beginning of the night
 	public void CheckIn() {
+		foreach (Person2 p in occupants){
+			if (p!=null)
+				p.Exit(true);
+		}
+		occupants.Clear ();
 		if (open) {
 			// calculate quality
 			int totalcost=0;
-			// Get a list of furniture from the Grid
-			/*foreach (Furniture f in the list){
+			foreach (Furniture f in furnitureList){
 				totalcost += f.buyCost;
 				if (f is Trap)
 					(f as Trap).Reset();
 
-			}*/
+			}
 			quality = (totalcost/100)+1;
 			GameObject personGen = RandomPerson (true);
 			Transform trans = Object.Instantiate(personGen.transform,spawnPosition,Quaternion.identity) as Transform;
@@ -179,11 +202,12 @@ public class Room : MonoBehaviour {
 
 	// Called at the end of the night
 	public void CheckOut() {
-		Debug.Log ("Checking out "+occupants.Count+ " people");
+//		Debug.Log ("Checking out "+occupants.Count+ " people");
 		foreach (Person2 p in occupants){
-			Debug.Log (p.name + " is checking out");
+//			Debug.Log (p.name + " is checking out");
 			p.Leave ();
 		}
-		occupants.Clear ();
+
+		//occupants.Clear ();
 	}
 }

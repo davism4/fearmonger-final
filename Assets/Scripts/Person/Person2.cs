@@ -272,7 +272,7 @@ public class Person2 : MonoBehaviour {
 				rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
 				//transform.position -= new Vector3(speed*dt,0,0);
 			} else {
-				Exit ();
+				Exit (false);
 			}
 		}
 	}
@@ -292,10 +292,11 @@ public class Person2 : MonoBehaviour {
 
 	// PRIVATE FUNCTIONS
 
-	protected virtual void Exit(){
-		if (room!=null)
+	public virtual void Exit(bool forced){
+		if (!forced && room!=null)
 			room.PlayDoorSound();
-		DestroyImmediate(gameObject);
+		if (gameObject !=null)
+			DestroyImmediate(gameObject);
 	}
 
 	private void OnGUI(){

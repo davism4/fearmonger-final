@@ -54,11 +54,11 @@ public class Person2_Thug : Person2 {
 		}
 	}
 	
-	protected override void Exit(){
-		if (GameVars.IsNight && sanity>0f){
+	public override void Exit(bool forced){
+		if (!forced && GameVars.IsNight && sanity>0f){
 			
 		} else {
-			base.Exit();
+			base.Exit(forced);
 		}
 	}
 	
