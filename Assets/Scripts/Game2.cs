@@ -93,7 +93,8 @@ public class Game2 : MonoBehaviour {
 
 				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
 				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities [i].ShowName(),
-				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description))) {
+				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
+				                          + " Costs " + listAbilities[i].minFear))) {
 					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].minFear){
 						currentAbility = listAbilities[i];
@@ -121,7 +122,8 @@ public class Game2 : MonoBehaviour {
 					                         Screen.height-row*30,
 					                         Screen.width/(furnitureTypes.Length/2),
 					                         30), new GUIContent(furnitureTypes[index].DisplayName, 
-					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description))){
+					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description
+					                    	   + " " + furnitureTypes[index].buyCost + " money"))){
 						if (money >= furnitureTypes[index].buyCost) {
 							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
 							currentFurnitureIndex = index;
@@ -129,9 +131,9 @@ public class Game2 : MonoBehaviour {
 						}
 					}
 					GUI.Label (new Rect(x*Screen.width/(furnitureTypes.Length/2),
-					                    650,
+					                    630,
 					                    Screen.width/(furnitureTypes.Length/2),
-					                    30), GUI.tooltip);
+					                    40), GUI.tooltip);
 					GUI.tooltip = null;
 					index++;
 				}
