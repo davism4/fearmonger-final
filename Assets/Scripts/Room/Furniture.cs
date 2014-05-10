@@ -9,12 +9,30 @@ public class Furniture : MonoBehaviour {
 	 * buyCost = how much $ the player needs for a new piece
 	 */
 	//public int admireValue=0;
-	private bool isShowingDurability=false;
-	private float showCountdown=0.75f;
-	private const float showCountdownMax=0.75f;
+	//private bool isShowingDurability=false;
+	private float showHPCooldown;
+	private const float showHPCooldownMax=0.2f;
 	public string description="";
 	public int buyCost=0;
-	public int durability=99;
+	private int durability, durabilityMax=99;
+	public int Durability {get {return durability; }}
+	
+
+	public float healthPercent {
+		get { return ((float)durability)/durabilityMax; }
+	}
+
+	public bool Damage(int delta){
+		durability -= delta;
+		return (bool)(durability <=0);
+	}
+
+	public void Repair(int delta){
+		durability += delta;
+		if (durability > durabilityMax)
+			durability=durabilityMax;
+	}
+
 
 	// Called during daytime furniture placement
 	public void Delete(){
@@ -22,9 +40,7 @@ public class Furniture : MonoBehaviour {
 	}
 
 	public void DisplayHP(){
-		isShowingDurability=true;
-		showCountdown=showCountdownMax;
-	//	text.text=sanityPercent.ToString ()+"%";
+		showHPCooldown=showHPCooldownMax;
 	}
 
 	protected virtual void OnTriggerEnter2D(Collider2D other){
@@ -35,16 +51,13 @@ public class Furniture : MonoBehaviour {
 	}
 
 	protected virtual void Start(){
+		durability = durabilityMax;
+		LoadHPBar ();
 	}
 
 	protected virtual void Update(){
-		if (isShowingDurability){
-			if(showCountdown>0f){
-				showCountdown -= Time.deltaTime;
-			} else {
-				showCountdown = showCountdownMax;
-				isShowingDurability=false;
-			}
+		if(showHPCooldown>0f){
+			showHPCooldown -= Time.deltaTime;
 		}
 	}
 
@@ -53,5 +66,20 @@ public class Furniture : MonoBehaviour {
 		DestroyImmediate (gameObject);
 	}
 
+	private void LoadHPBar(){
+		spriteWidth = GameVars.hpBarRed.width*0.1f;
+		spriteHeight = GameVars.hpBarRed.height*0.1f;
+		hpBarOffsetY = 0f;//GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+	}
+
+	private float hpBarOffsetY, spriteWidth, spriteHeight;
+	private void OnGUI(){
+		if (Time.timeScale<=0) return;
+		if (showHPCooldown>0f){
+			Vector3 v = Camera.main.WorldToScreenPoint(transform.position);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth,spriteHeight),GameVars.hpBarRed,ScaleMode.StretchToFill);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth*healthPercent,spriteHeight),GameVars.hpBarGreen,ScaleMode.StretchToFill);
+		}
+	}
 
 }

@@ -9,10 +9,11 @@ public class Hazard_Darkness : Hazard {
 	Vector2 origin;
 
 	// Use this for initialization
-	private void Start () {
+	protected override void Start () {
+		base.Start ();
 		origin = (Vector2)transform.position;
-		damage = GameVars.damage_darkness;
-		duration = GameVars.duration_darkness;
+		//damage = GameVars.damage_darkness;
+		//duration = GameVars.duration_darkness;
 		dtscale = transform.localScale/duration;
 		rotvector = Vector3.back*300f;
 	//	circle = transform.GetComponent<CircleCollider2D>();
@@ -21,8 +22,8 @@ public class Hazard_Darkness : Hazard {
 	// Update is called once per frame
 	protected override void Update () {
 		if (transform.localScale.x>0f){
-			transform.localScale -= dtscale*GameVars.Tick*Time.deltaTime;
-			transform.Rotate (rotvector*GameVars.Tick*Time.deltaTime);
+			transform.localScale -= dtscale*Time.deltaTime;
+			transform.Rotate (rotvector*Time.deltaTime);
 		}
 		Collider2D[] things = Physics2D.OverlapCircleAll(origin,transform.localScale.x,GameVars.interactLayer);
 		foreach (Collider2D other in things){

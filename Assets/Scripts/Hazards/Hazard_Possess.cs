@@ -3,41 +3,61 @@ using System.Collections;
 
 public class Hazard_Possess : Hazard {
 
-	bool isAttached=false;
 	Person2 victim;
+	Vector3 rotVector, scaleVector;
+	SpriteRenderer sr;
+	public float fadeTime, airTime;
 
-	private void Start(){
-		duration = GameVars.duration_possession_short;
-		damage = GameVars.damage_possession;
+	protected override void Start(){
+		base.Start ();
+		rotVector = Vector3.back*300f;
+		sr = GetComponent<SpriteRenderer>();
+		fadeTime = duration*0.1f;
+		airTime = duration*0.9f;
+		scaleVector = transform.localScale/fadeTime;
 	}
 
+	public void SetVictim(GameObject g){
+		victim = g.GetComponent<Person2>();
+		victim.Scare (damage);
+		victim.SetPossessed (true);
+	}
+	
 	protected override void Update(){
-		if (isAttached){
+		if (victim!=null){
+			if (lifetime > airTime){
+				victim.transform.position += new Vector3(0f,0.9f*Time.deltaTime,0f);
+			}
+			if (lifetime <= 0f){
+				sr.color = new Color (1f, 1f, 1f, 0f);
+			} else if (lifetime < fadeTime){
+				sr.color = new Color (1f, 1f, 1f, (fadeTime - lifetime)/fadeTime);
+				transform.localScale -= scaleVector*Time.deltaTime;
+			}
+
+			transform.Rotate (rotVector*Time.deltaTime);
+
 			transform.position = victim.transform.position;
 			if (victim.transform.position.x > GameVars.WallRightSoft)
 				victim.IS_FACING_RIGHT=false;
 			else if (victim.transform.position.x < GameVars.WallLeftSoft)
 				victim.IS_FACING_RIGHT=true;
+			victim.Scare (1);
+			base.Update();
+		} else {
+			Finish ();
 		}
-		base.Update();
 	}
 
 	private void OnTriggerEnter2D(Collider2D other){
-		if (other.CompareTag("Person")){
-			if (isAttached) {
-				other.GetComponent<Person2>().Scare (damage);
-			} else {
-				victim = other.GetComponent<Person2>();
-				isAttached=true;
-				victim.isPossessed=true;
-				timer=GameVars.duration_possession_long;
-			}
+		if (other.CompareTag ("Person")){
+			other.GetComponent<Person2>().Scare (damage);
 		}
 	}
 
 	protected override void Finish(){
 		if (victim != null) {
-			victim.isPossessed=false;
+			victim.SetPossessed (false);
 			victim.Scare (damage);
 		}
 		base.Finish ();

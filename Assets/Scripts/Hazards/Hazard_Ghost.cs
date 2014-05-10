@@ -4,16 +4,22 @@ using System.Collections;
 public class Hazard_Ghost : Hazard {
 
 	SpriteRenderer spriteRenderer;
+	float fadeTime;
 
 	// Use this for initialization
-	private void Start () {
-		damage=GameVars.damage_spiders;
-		duration = GameVars.duration_spiders;
+	protected override void Start () {
+		//damage=GameVars.damage_spiders;
+		//duration = GameVars.duration_spiders;
+		base.Start ();
+		fadeTime = 0.75f*duration;
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	protected override void Update(){
-		spriteRenderer.color=new Color(0.97f,1f,1f,(duration-timer)/duration);
+		if (lifetime<fadeTime)
+			spriteRenderer.color = new Color(1f, 1f, 1f, 0f);
+		else if (lifetime <= 0)
+			spriteRenderer.color = new Color(0.97f,1f,1f, (fadeTime - lifetime)/fadeTime );
 		base.Update ();
 	}
 

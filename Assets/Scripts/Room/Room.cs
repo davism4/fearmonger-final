@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Room : MonoBehaviour {
-
+	public bool HASLOADED=false;
 	public Game2 game;
 	public List<Person2> occupants=null;
 	private Vector3 spawnPosition;
@@ -11,8 +11,13 @@ public class Room : MonoBehaviour {
 	public bool open=false;
 	private float yfloor, yceiling, xleft, xright;
 	private BoxCollider2D box;
-	public float numberOccupants;
+	public int numberOccupants {
+		get {return occupants.Count; }
+	}
 	public int quality; // how nice the room is -> influences how wealthy the people are
+	public float doorLeft {
+		get { return spawnPosition.x; }
+	}
 	
 	Grid2D grid; // each room has its own grid?
 	Vector3 gridOffset; // ?
@@ -37,10 +42,10 @@ public class Room : MonoBehaviour {
 		xright = transform.position.x+transform.localScale.x*box.size.x/2;
 		spawnPosition = transform.FindChild("SpawnPosition").position;
 
-		Debug.Log ("Ceiling: " + yceiling);
-		Debug.Log ("floor: " + yfloor);
-		Debug.Log ("left: " + xleft);
-		Debug.Log ("right: " + xright);
+	//	Debug.Log ("Ceiling: " + yceiling);
+	//	Debug.Log ("floor: " + yfloor);
+	//	Debug.Log ("left: " + xleft);
+	//	Debug.Log ("right: " + xright);
 
 		grid = this.GetComponent<Grid2D>();
 		//gridOffset = new Vector3(xLeft,yFloor,0);
@@ -51,9 +56,9 @@ public class Room : MonoBehaviour {
 		grid.Width = 5;
 		grid.Height = 1;
 		grid.CellWidth = (Mathf.Abs (xright-xleft)/grid.Width)/transform.localScale.x;
-		Debug.Log ("CellWidth: " + grid.CellWidth);
+//		Debug.Log ("CellWidth: " + grid.CellWidth);
 		grid.CellHeight = Mathf.Abs (yceiling-yfloor)/grid.Height;
-		Debug.Log ("CellHeight: " + grid.CellHeight);
+//		Debug.Log ("CellHeight: " + grid.CellHeight);
 
 		/*
 		for (int y = 0; y < grid.Height; ++y)
@@ -76,20 +81,23 @@ public class Room : MonoBehaviour {
 		people[0,0] = Resources.Load<GameObject>("Prefabs/Person/Boy");
 		people[0,1] = Resources.Load<GameObject>("Prefabs/Person/Girl");
 		people[1,0] = Resources.Load<GameObject>("Prefabs/Person/Man");
-		people[1,1] = Resources.Load<GameObject>("Prefabs/Person/Woman");
+		people[1,1] = Resources.Load<GameObject>("Prefabs/Person/Lady");
 		people[2,0] = Resources.Load<GameObject>("Prefabs/Person/RichMan");
 		people[2,1] = Resources.Load<GameObject>("Prefabs/Person/RichLady");
 		//personThug = Resources.Load<GameObject>("Prefabs/Person/Thug");
 		//personPriest = Resources.Load<GameObject>("Prefabs/Person/Priest");
+		HASLOADED=true;
 	}
 	
 	// Update is called once per frame
 	private void Update () {
-	
+		if (Input.GetKeyDown("m") && open)
+			CheckIn ();
+		if (Input.GetKeyDown("n"))
+			CheckOut ();
 	}
 
 	public void PlayDoorSound(){
-		
 		if (doorSound!=null)
 			AudioSource.PlayClipAtPoint (doorSound, transform.position);
 	}
@@ -105,7 +113,7 @@ public class Room : MonoBehaviour {
 	// Generates a random person based on the quality of the room
 	// Chance of a rich person appearing is proportional to the quality
 	private GameObject RandomPerson(bool adult){
-		int gender = UnityEngine.Random.Range (0,1);
+		int gender = UnityEngine.Random.Range (0,2);
 		if (adult){
 			if (quality>4 && UnityEngine.Random.value<0.1f*quality)
 				return people[2,gender];
@@ -155,14 +163,14 @@ public class Room : MonoBehaviour {
 			}*/
 			quality = (totalcost/100)+1;
 			GameObject personGen = RandomPerson (true);
-			Instantiate(personGen,spawnPosition,Quaternion.identity);
-			Person2 p = personGen.GetComponent<Person2>();
+			Transform trans = Object.Instantiate(personGen.transform,spawnPosition,Quaternion.identity) as Transform;
+			Person2 p = trans.GetComponent<Person2>();
 			p.SetRoom (this);
 			occupants.Add (p);
-			for (int i=0; i<UnityEngine.Random.Range(1,3); i++){
+			for (int i=0; i<UnityEngine.Random.Range(1,4); i++){
 				personGen = RandomPerson (false);
-				Instantiate(personGen,spawnPosition,Quaternion.identity);
-				p = personGen.GetComponent<Person2>();
+				trans = Object.Instantiate(personGen.transform,spawnPosition,Quaternion.identity) as Transform;
+				p = trans.GetComponent<Person2>();
 				p.SetRoom (this);
 				occupants.Add (p);
 			}
@@ -171,9 +179,10 @@ public class Room : MonoBehaviour {
 
 	// Called at the end of the night
 	public void CheckOut() {
+		Debug.Log ("Checking out "+occupants.Count+ " people");
 		foreach (Person2 p in occupants){
-			if (p!=null)
-				p.isLeaving=true;
+			Debug.Log (p.name + " is checking out");
+			p.Leave ();
 		}
 		occupants.Clear ();
 	}

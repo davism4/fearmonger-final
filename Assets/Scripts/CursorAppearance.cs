@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+#pragma warning disable 0168 // variable declared but not used.
+#pragma warning disable 0219 // variable assigned but not used.
+#pragma warning disable 0414 // private field assigned but not used.
 
 // This code manages what the cursor looks like. NOT INPUT.
 // Clicking ingame for abilities is in AbilityManager

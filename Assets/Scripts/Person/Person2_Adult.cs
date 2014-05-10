@@ -11,8 +11,8 @@ public class Person2_Adult : Person2 {
 		admireCooldownMax=25f;
 		admireCooldownMin=20f;
 		sanityMax=45;
-		speedNormal += UnityEngine.Random.Range (-0.01f,0.05f);
-		speedFast += UnityEngine.Random.Range (-0.02f,0.05f);
+		speedNormal += UnityEngine.Random.Range (-0.35f,0.1f);
+		speedFast += UnityEngine.Random.Range (-0.4f,0.2f);
 		base.Start();
 	}
 }

@@ -3,16 +3,25 @@ using System.Collections;
 
 public class Hazard : MonoBehaviour {
 
-	protected int damage;
-	public float timer=0, duration; // in seconds
+	[HideInInspector] public int damage;
+	protected float lifetime, duration; // in seconds
 	//protected CircleCollider2D ccollider;
 	//protected RoomObject currentRoom;
-	protected Room room;
+	[HideInInspector] protected Room room;
+
+	public void SetValues(float Duration, int Damage){
+		duration = Duration;
+		damage = Damage;
+	}
+
+	protected virtual void Start(){
+		lifetime = duration;
+	}
 
 	// Update is called once per frame
 	protected virtual void Update () {
-		if (timer<duration) {
-			timer += Time.deltaTime;
+		if (lifetime>0) {
+			lifetime -= Time.deltaTime;
 		}
 		else {
 			Finish();

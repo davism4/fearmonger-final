@@ -12,12 +12,18 @@ public class Hazard_Claw : Hazard {
 	private GameObject target=null;
 
 	// Find closest person and target them
-	private void Start () {
-		duration = GameVars.duration_claw;
-		damage = GameVars.damage_claw;
-		float minY=999f, minX=999f, disY, disX;
+	protected override void Start () {
+		//duration = GameVars.duration_claw;
+		//damage = GameVars.damage_claw;
+		base.Start ();
+
 		origin = new Vector2(transform.position.x, transform.position.y);
+		FindTarget ();
+	}
+
+	private void FindTarget(){
 		GameObject[] people = GameObject.FindGameObjectsWithTag ("Person");
+		float minY=999f, minX=999f, disY, disX;
 		// approximates the closest person, usually within the same or closest floor
 		foreach (GameObject o in people){
 			disY = Mathf.Abs (o.transform.position.y-origin.y);
@@ -30,13 +36,13 @@ public class Hazard_Claw : Hazard {
 					target = o;
 				}
 			}
-
-//			dist = ((Vector2)o.transform.position - origin).magnitude;
 		}
-		if (target.transform.position.x > origin.x){
-			IS_FACING_RIGHT=true;
-		}
+		if (target!=null) {
+			if (target.transform.position.x > origin.x){
+				IS_FACING_RIGHT=true;
+			}}
 	}
+
 	/*
 	private void OnTriggerEnter2D(Collider2D other){
 		if (other.transform.CompareTag ("Person")){
@@ -52,12 +58,11 @@ public class Hazard_Claw : Hazard {
 		base.Finish ();
 	}
 
-	private new void Update () {
-		if(gameObject==null || target==null){
-			Finish ();
+	protected override void Update () {
+		if(target==null){
+			FindTarget ();
 		} else {
 			if (isExtending) { // extending
-				timer += Time.deltaTime;
 				velocity = (Vector2)target.transform.position - (Vector2)transform.position;
 				if (velocity.magnitude<=0.1f) {
 					isExtending=false;

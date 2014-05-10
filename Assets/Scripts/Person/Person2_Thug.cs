@@ -16,8 +16,8 @@ public class Person2_Thug : Person2 {
 		admireCooldownMin=20f;
 		admireCooldownMax=25f;
 		sanityMax=60;
-		speedNormal += UnityEngine.Random.Range (-0.2f,0.02f);
-		speedFast += UnityEngine.Random.Range (-0.2f,0f);
+		speedNormal += UnityEngine.Random.Range (-0.5f,0.05f);
+		speedFast += UnityEngine.Random.Range (-0.4f,0.1f);
 		destroyCooldown=destroyCooldownMax;
 		base.Start ();
 	}
@@ -55,7 +55,7 @@ public class Person2_Thug : Person2 {
 	}
 	
 	protected override void Exit(){
-		if (GameVars.IsNight && sanityPercent>0f){
+		if (GameVars.IsNight && sanity>0f){
 			
 		} else {
 			base.Exit();
@@ -71,8 +71,7 @@ public class Person2_Thug : Person2 {
 	
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		t.durability--;
-		if (t.durability<=0){
+		if (t.Damage(1)){
 			t.Break ();
 			target=null;
 		}

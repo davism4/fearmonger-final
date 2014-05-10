@@ -4,12 +4,12 @@ using System.Collections;
 public class Ability_Monster : Ability {
 
 	public Ability_Monster () {
-		FearDamage=GameVars.damage_monster;
+		FearDamage=7;
 		Name="Summon Monster";
 		Description = "A monster that chases people around. Explodes into fear damage on impact.";
-		//MinLevel=5;
-		Duration = GameVars.duration_monster;
-		minFearCost=60;
+		Duration = 8f;
+		minFear=40;
+		useCost = 13;
 		cooldownStart = 15f;
 	}
 

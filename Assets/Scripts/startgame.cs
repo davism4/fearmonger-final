@@ -18,7 +18,7 @@ public class startgame : MonoBehaviour {
 				Application.LoadLevel (1);
 			}
 			else if (GUI.Button(new Rect(Screen.width/2-60f,Screen.height/2+65f,120f,40f),"Hard Mode")){
-				GameVars.Difficulty = 5f;
+				//GameVars.Difficulty = 5f;
 				Application.LoadLevel (1);
 			}
 		}

@@ -4,12 +4,13 @@ using System.Collections;
 public class Ability_Spiders : Ability {
 
 	public Ability_Spiders () {
-		FearDamage=GameVars.damage_spiders;
+		FearDamage=1;//GameVars.damage_spiders;
 		Name="Spiders";
 		Description = "Spiders come out of the ground and walk around the room.";
 		//MinLevel=1;
-		Duration = GameVars.duration_spiders;
-		minFearCost=0;
+		Duration = 1f;//GameVars.duration_spiders;
+		minFear=0;
+		useCost=0;
 		//HazardTransform=Resources.Load<GameObject>("Sprites/Abilities/SpiderParticles").transform;
 		cooldownStart = 3f;
 	}

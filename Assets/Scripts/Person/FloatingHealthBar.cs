@@ -34,7 +34,7 @@ public class FloatingHealthBar : MonoBehaviour {
 	
 	void Update()
 	{
-		//SetHealthBarPositionRespectCamera();
+		SetHealthBarPositionRespectCamera();
 	}
 
 	//set health bar to the position of character based on camera position

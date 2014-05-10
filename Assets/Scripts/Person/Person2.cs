@@ -8,13 +8,14 @@ public class Person2 : MonoBehaviour {
 	public bool IS_FACING_RIGHT=false;
 	public bool IS_FACING_LEFT { get { return !IS_FACING_RIGHT; } }
 
-	protected GUITexture healthBar;
+	private float hpBarOffsetY, spriteWidth, spriteHeight;
 	[HideInInspector] public bool CanMove=true; // manual movement
 
-	protected int sanity, sanityMax;
-	public float sanityPercent {
+	protected int sanityMax;
+	public int sanity;
+	public float healthPercent {
 		get {
-			return (100f*(float)sanity)/sanityMax;
+			return ((float)sanity)/sanityMax;
 		}
 	}
 	[HideInInspector] public Room room;
@@ -22,43 +23,46 @@ public class Person2 : MonoBehaviour {
 	SpriteRenderer spriteRenderer;
 	protected GUIText text;
 	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
-	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f;
-	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f;
-	public bool isLeaving=false;
-	public bool isPossessed=false;
+	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
+	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=2.2f;
+	protected bool isLeaving=false;
+	private bool isPossessed=false;
+	private float gravityScale;
 
 	protected int fearDropMin, fearDropMax, moneyDropMin, moneyDropMax;
 
 	// Determined by subclass
 	protected float speed;
 	protected float speedNormal=3f, speedFast=7f, admireCooldownMax=99f, admireCooldownMin=99f;
+	
 
 	
 	// PUBLIC FUNCTIONS
 
 	public void DisplayHP(){
-		isMessage=true;
-		messageCooldown=messageTimeMax;
-		text.text=sanityPercent.ToString ()+"%";
-		Debug.Log(text.text);
+		showHPCooldown=showHPCooldownMax;
 	}
 	
 	public virtual void Scare(int damage){
 		if (!isHurt){
 			sanity -= damage;
+			if (sanity<0) {
+				sanity=0;
+				isFleeing=true;
+			}
 			isHurt=true;
 			hurtCooldown=hurtTimeMax;
 			speed=speedFast;
+			if (!isPossessed)
+				spriteRenderer.color = Color.red;
 			// Maybe show some text:
-			if (UnityEngine.Random.value<0.35f){
+			if (!isPossessed && UnityEngine.Random.value<0.35f){
 				if (UnityEngine.Random.value<0.45f)
 					text.text=ShockPhrases.Phrase ();
 				else
 					text.text="!";
-			} else {
-				text.text = "-"+damage;
 			}
-			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage);
+			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage)+1;
 			if (GameVars.pickupFear!=null && j>0){
 				for (int k=0;k<j;k++){
 					// Use a circular/polygonal pattern
@@ -91,24 +95,27 @@ public class Person2 : MonoBehaviour {
 	protected virtual void Start () {
 		speed = speedNormal;
 		sanity=sanityMax; 
-		spriteRenderer=GetComponent<SpriteRenderer>();
+		spriteRenderer=transform.GetComponent<SpriteRenderer>();
 		IS_FACING_RIGHT=true;
 		if (UnityEngine.Random.value<0.6f){
 			StartMoving(); // sometimes they start moving, sometimes they don't
 		}
-		healthBar=transform.GetChild (0).GetComponent<GUITexture>();
-		text=transform.GetChild (0).GetComponent<GUIText>();
+		//healthBar=transform.GetChild (0).GetComponent<GUITexture>();
+		text=transform.GetComponent<GUIText>();
 //		text = transform.GetComponent<GUIText>();
 		text.text="";
 
 		anim = transform.GetComponent<Animator> ();
 		if (!anim.enabled)
 			anim=null;
+		gravityScale = rigidbody2D.gravityScale;
+		LoadHPBar ();
 	}
 
 	public void SetRoom(Room r){
 		admireCooldownMax -= r.quality;
 		admireCooldownMin -= r.quality;
+		room = r;
 		if (admireCooldownMax<12f)
 			admireCooldownMax=12f;
 		if (admireCooldownMin<8f)
@@ -117,14 +124,14 @@ public class Person2 : MonoBehaviour {
 
 		// Update is called once per frame
 	protected virtual void Update () {
-		if (isPossessed){
+		/*if (isPossessed){
 			spriteRenderer.color = Color.blue;
 		} else if (isHurt){
 			spriteRenderer.color = Color.red;
 		} else {
 			spriteRenderer.color = Color.white;
-		}
-		if (isFleeing || isLeaving){
+		}*/
+		if (isLeaving==true){
 			UpdateLeaving ();
 		} else {
 			UpdateNormal ();
@@ -134,7 +141,7 @@ public class Person2 : MonoBehaviour {
 				messageCooldown -= Time.deltaTime;
 			} else {
 				messageCooldown=messageTimeMax;
-				text.text="";
+//				text.text="";
 				isMessage=false;
 			}
 
@@ -146,30 +153,48 @@ public class Person2 : MonoBehaviour {
 		}
 	}
 
+	public void SetPossessed(bool onoff){
+		isPossessed = onoff;
+		rigidbody2D.gravityScale = onoff? 0f : gravityScale;
+		spriteRenderer.color = onoff? new Color(0.3f, 0.3f, 0.5f) : Color.white;
+	}
+
 	// Not leaving the room
 	float dt, dx;
 	protected virtual void UpdateNormal(){
 		dt = Time.deltaTime;
+		if (sanity < sanityMax){
+			if (showHPCooldown>0) {
+				showHPCooldown -= dt;
+			}
+			if (healCooldown>0 && !isHurt){
+				healCooldown -= dt;
+			} else {
+				healCooldown= healCooldownMax;
+				sanity++;
+			}
+		}
 		if (isHurt){
 			if (hurtCooldown>0){ // recovering from hit
 				hurtCooldown -= dt;
 			} else {
 				isHurt=false; // vulnerable again
-				speed = speedNormal;
+				//speed = speedNormal;
+				if (!isPossessed)
+					spriteRenderer.color = Color.white;
 				StartMoving ();
 			}
 		} else {
 			if (admireCooldown<=0f){ // people drop cash on intervals, which is offset by room quality
 				DropMoney ();
 			} else {
-				admireCooldown -= Time.deltaTime;
+				admireCooldown -= dt;
 			}
 		}
+
 		if (CanMove){
+			speed = (isPossessed || isHurt)? speedFast: speedNormal;
 			if (isMoving){
-				if (isPossessed){
-					speed = speedFast;
-				}
 				dx = speed*dt;
 				if (IS_FACING_RIGHT){
 					if (transform.position.x+dx < GameVars.WallRight){
@@ -243,7 +268,7 @@ public class Person2 : MonoBehaviour {
 				Exit ();
 			}*/
 		} else {
-			if (transform.position.x > GameVars.WallLeft){
+			if (transform.position.x > room.doorLeft){
 				rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
 				//transform.position -= new Vector3(speed*dt,0,0);
 			} else {
@@ -268,8 +293,24 @@ public class Person2 : MonoBehaviour {
 	// PRIVATE FUNCTIONS
 
 	protected virtual void Exit(){
-		room.PlayDoorSound();
+		if (room!=null)
+			room.PlayDoorSound();
 		DestroyImmediate(gameObject);
+	}
+
+	private void OnGUI(){
+		if (Time.timeScale<=0) return;
+		if (showHPCooldown>0f){
+			Vector3 v = Camera.main.WorldToScreenPoint(transform.position);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth,spriteHeight),GameVars.hpBarRed,ScaleMode.StretchToFill);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth*healthPercent,spriteHeight),GameVars.hpBarGreen,ScaleMode.StretchToFill);
+		}
+	}
+
+	private void LoadHPBar(){
+		spriteWidth = GameVars.hpBarRed.width*0.1f;
+		spriteHeight = GameVars.hpBarRed.height*0.1f;
+		hpBarOffsetY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
 	}
 
 	// Isn't moving yet -> start moving in a random direction
@@ -290,5 +331,9 @@ public class Person2 : MonoBehaviour {
 		walkCooldown=UnityEngine.Random.Range (waitTimeMax/2,waitTimeMax);
 	}
 
-
+	public void Leave(){
+		//Debug.Log(name+": I AM CHECKING OUT!");
+		this.IS_FACING_RIGHT=false;
+		this.isLeaving=true;
+	}
 }

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+#pragma warning disable 0168 // variable declared but not used.
+#pragma warning disable 0219 // variable assigned but not used.
+#pragma warning disable 0414 // private field assigned but not used.
 
 public class Game2 : MonoBehaviour {
 
@@ -25,6 +28,8 @@ public class Game2 : MonoBehaviour {
 	private Ray ray;
 	public Ability[] listAbilities;
 	public Ability currentAbility;
+
+	public bool START_AT_NIGHT=false;
 	
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -32,8 +37,8 @@ public class Game2 : MonoBehaviour {
 	float percentNight;
 	public Furniture[] furnitureTypes; // Viewable in daytime GUI menu - don't change
 	public GameObject[] furniturePhysicalTypes; // use to instantiate from buy menu - don't change
-
-
+	public int currentFurnitureIndex=0;
+	public bool isPlacingFurniture=false;
 
 	// =============================================== //
 	// ================== INTERFACE ================== //
@@ -44,13 +49,15 @@ public class Game2 : MonoBehaviour {
 
 	[ExecuteInEditMode]
 	private void OnGUI(){
+		if (Time.timeScale<=0) return;
 		if (GameVars.IsNight){
-			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
+
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
+			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
 
 			for (int i=0;i<listAbilities.Length;i++){
-				if(fearEnergy < listAbilities[i].minFearCost){ 
+				if(fearEnergy < listAbilities[i].minFear){ 
 					GUI.contentColor=Color.gray;
 				} else {
 					if (listAbilities[i].isCooldown)
@@ -61,15 +68,26 @@ public class Game2 : MonoBehaviour {
 						GUI.contentColor=Color.white;
 				}
 
-				if (GUI.Button (new Rect (i*Screen.width/5, Screen.height-40-fearBarHeight, Screen.width/5, 40), listAbilities [i].ShowName())) {
+				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
+				                          Screen.width/listAbilities.Length, 40), listAbilities [i].ShowName())) {
 					//cursorAppearance.SetSprite (2);
-					if(fearEnergy >= listAbilities[i].minFearCost){
+					if(fearEnergy >= listAbilities[i].minFear){
 						currentAbility = listAbilities[i];
 					}
 				}
 			}
 		} else {
 			// daytime GUI
+			for (int i=0;i<furnitureTypes.Length;i++){
+				if (money < furnitureTypes[i].buyCost){
+					GUI.contentColor=Color.gray;
+				}
+				if (GUI.Button (new Rect(i*Screen.width/furnitureTypes.Length,Screen.height-40,
+				                         Screen.width/furnitureTypes.Length, 40), furnitureTypes[i].name)){
+					currentFurnitureIndex = i;
+					isPlacingFurniture=true;
+				}
+			}
 		}
 	}
 
@@ -211,13 +229,16 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	
 	private void Start() {
-		GameVars.IsNight=true;
 		tempRoomList = new List<Room>(); // this is used for checking in priests and thugs
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
 		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
 		for (int i=1;i<=rooms.Length;i++){
 			rooms[i-1] = GameObject.Find ("Room "+i).GetComponent<Room>();
+			Debug.Log ("Loading room 1...");
+			if (!rooms[i-1].HASLOADED){
+				wait (0.1f);
+			}
 		}
 		rooms[0].open=true;
 		// Maybe the camera wasn't at the right place when game started - that's okay
@@ -233,9 +254,11 @@ public class Game2 : MonoBehaviour {
 		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
 		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
 		abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
+		//GameVars.hpBarRed = 
+		//GameVars.hpBarGreen = Resources.Load<Texture2D>("Sprites/gui/hpBarGreen");
 		listAbilities = new Ability[5]; // these are attached to the Main Game transform
 		listAbilities[0] = transform.GetComponent<Ability_Ghost>();
-		listAbilities[1] = transform.GetComponent<Ability_Darkness>();
+		listAbilities[1] = transform.GetComponent<Ability_Repair>();
 		listAbilities[2] = transform.GetComponent<Ability_Claw>();
 		listAbilities[3] = transform.GetComponent<Ability_Monster>();
 		listAbilities[4] = transform.GetComponent<Ability_Possess>();
@@ -247,11 +270,19 @@ public class Game2 : MonoBehaviour {
 		}
 		priestObject = Resources.Load<GameObject>("Prefabs/Person/Priest");
 		thugObject = Resources.Load<GameObject> ("Prefabs/Person/Thug");
-		GameVars.pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
-		GameVars.pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
+		//GameVars.pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
+		//GameVars.pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
+		StartCoroutine (wait (1f));
+		if (START_AT_NIGHT){
+			StartNight ();
+		}
+	}
+
+	private IEnumerator wait(float time){
+		yield return new WaitForSeconds(time);
 	}
 
 	private void StartDay(){
@@ -261,7 +292,9 @@ public class Game2 : MonoBehaviour {
 	
 	private void StartNight(){
 		GameVars.IsNight=true;
+		Debug.Log ("Starting night..");
 		foreach (Room r in rooms){
+			Debug.Log (name + " is open: "+r.open);
 			if (r.open){
 				r.CheckIn();
 			}
@@ -277,7 +310,7 @@ public class Game2 : MonoBehaviour {
 	}
 	
 	private void RegisterHit(RaycastHit2D hit){
-		Debug.Log (hit.collider.gameObject.name);
+//		Debug.Log (hit.collider.gameObject.name);
 		if (hit.collider.gameObject.CompareTag ("Money")){
 			DestroyObject (hit.collider.gameObject);
 			money += 10;
@@ -303,28 +336,31 @@ public class Game2 : MonoBehaviour {
 		if (!GameVars.IsNight) {
 			RegisterHitDaytime (hit);
 		} else if (Input.GetMouseButtonDown (0)){
-			if (currentAbility==listAbilities[4] && currentAbility.CanUse () && hit.collider.gameObject.CompareTag ("Person")){
-				currentAbility.UseAbility (hit.point);
-				currentAbility=null;
+			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
+				currentAbility.UseAbility (hit);
+				//currentAbility=null; 
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
-				//Debug.Log ("Switched lamp");
 				if (hit.collider.gameObject.GetComponent<Furniture>() is Lamp){
 					Lamp l = hit.collider.gameObject.GetComponent<Lamp>();
-					l.Flip ();
+					if (l.Durability>0)
+						l.Flip ();
 				}
-			} /*else if (false) { // select ability from its icon
-					// select that as active ability
-					// show info
-				}*/
-			else if (currentAbility!=null && currentAbility!=listAbilities[4]) {
+				if (currentAbility==listAbilities[1] && listAbilities[1].CanUse()){
+					if (hit.collider.gameObject.GetComponent<Furniture>().healthPercent<1.00f) {
+				 // Repair ability
+					Debug.Log (hit.collider.name);
+					currentAbility.UseAbility (hit);
+					}}
+			} else if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
 				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Furniture")){
 					if (currentAbility.CanUse ()){
-						currentAbility.UseAbility (hit.point);
-						currentAbility=null;
+						currentAbility.UseAbility (hit);
+						//currentAbility=null;
 					}
 				}
 			}
 		}
+
 	}
 
 

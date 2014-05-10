@@ -50,10 +50,11 @@ public class Hazard_Monster : Hazard {
 	}
 
 
-	private void Start(){
+	protected override void Start(){
+		base.Start ();
 		halfwidth = transform.GetComponent<BoxCollider2D>().size.x*transform.localScale.x*0.5f;
-		duration = GameVars.duration_monster;
-		damage = GameVars.damage_monster;
+		//duration = GameVars.duration_monster;
+		//damage = GameVars.damage_monster;
 		IS_FACING_RIGHT = (0.5f>=UnityEngine.Random.value);
 		anim = transform.GetComponent<Animator>();
 	}
