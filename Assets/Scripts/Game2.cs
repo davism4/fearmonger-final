@@ -30,6 +30,8 @@ public class Game2 : MonoBehaviour {
 	private Ray ray;
 	public Ability[] listAbilities;
 	public Ability currentAbility;
+	static string tooltip;
+	private int count;
 
 	public bool START_AT_NIGHT=false;
 	
@@ -76,7 +78,7 @@ public class Game2 : MonoBehaviour {
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
-
+			count = 0;
 			for (int i=0;i<listAbilities.Length;i++){
 				if(fearEnergy < listAbilities[i].minFear){ 
 					GUI.contentColor=Color.gray;
@@ -90,12 +92,17 @@ public class Game2 : MonoBehaviour {
 				}
 
 				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
-				                          Screen.width/listAbilities.Length, 40), listAbilities [i].ShowName())) {
+				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities [i].ShowName(),
+				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description))) {
 					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].minFear){
 						currentAbility = listAbilities[i];
 					}
 				}
+				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-60-fearBarHeight,
+				                	Screen.width/listAbilities.Length, 60), GUI.tooltip);
+				GUI.tooltip = null;
+
 			}
 		} else {
 			// daytime GUI
@@ -113,13 +120,19 @@ public class Game2 : MonoBehaviour {
 					if (GUI.Button (new Rect(x*Screen.width/(furnitureTypes.Length/2),
 					                         Screen.height-row*30,
 					                         Screen.width/(furnitureTypes.Length/2),
-					                         30), furnitureTypes[index].DisplayName)){
+					                         30), new GUIContent(furnitureTypes[index].DisplayName, 
+					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description))){
 						if (money >= furnitureTypes[index].buyCost) {
 							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
 							currentFurnitureIndex = index;
 							GameVars.IsPlacingFurniture=true;
 						}
 					}
+					GUI.Label (new Rect(x*Screen.width/(furnitureTypes.Length/2),
+					                    650,
+					                    Screen.width/(furnitureTypes.Length/2),
+					                    30), GUI.tooltip);
+					GUI.tooltip = null;
 					index++;
 				}
 			}
