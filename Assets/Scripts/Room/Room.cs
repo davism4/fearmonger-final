@@ -6,7 +6,7 @@ public class Room : MonoBehaviour {
 	public bool HASLOADED=false;
 	public Game2 game;
 	public List<Person2> occupants=new List<Person2>();
-	private List<Furniture> furnitureList=new List<Furniture>();
+	private List<GameObject> items=new List<GameObject>();
 
 	private Vector3 spawnPosition;
 	public AudioClip doorSound;
@@ -21,14 +21,15 @@ public class Room : MonoBehaviour {
 		get { return spawnPosition.x; }
 	}
 	
-	Grid2D grid; // each room has its own grid?
-	Vector3 gridOffset; // ?
+//	Grid2D grid; // each room has its own grid?
+	//Vector3 gridOffset; // ?
 
 	public float YFloor { get {return yfloor;} }
 	public float YCeiling { get {return yceiling;} }
 	public float XRight { get {return xright;} }
 	public float XLeft { get {return xleft;} }
 	private GameObject[,] people;
+	public Node[] nodes;
 
 	// GRID LOGIC HERE
 
@@ -47,19 +48,20 @@ public class Room : MonoBehaviour {
 	//	Debug.Log ("left: " + xleft);
 	//	Debug.Log ("right: " + xright);
 
-		grid = this.GetComponent<Grid2D>();
+		//grid = this.GetComponent<Grid2D>();
 		//gridOffset = new Vector3(xLeft,yFloor,0);
 		//grid.offset = gridOffset;
 
-		grid = GetComponent<Grid2D>();
+		//grid = GetComponent<Grid2D>();
 		
-		grid.Width = 5;
-		grid.Height = 1;
-		grid.CellWidth = (Mathf.Abs (xright-xleft)/grid.Width)/transform.localScale.x;
+		//grid.Width = 5;
+		//grid.Height = 1;
+		//grid.CellWidth = (Mathf.Abs (xright-xleft)/grid.Width)/transform.localScale.x;
 //		Debug.Log ("CellWidth: " + grid.CellWidth);
-		grid.CellHeight = Mathf.Abs (yceiling-yfloor)/grid.Height;
+		//grid.CellHeight = Mathf.Abs (yceiling-yfloor)/grid.Height;
 //		Debug.Log ("CellHeight: " + grid.CellHeight);
-
+		nodes = transform.GetComponentsInChildren<Node>();
+		//nodes = transform.
 		/*
 		for (int y = 0; y < grid.Height; ++y)
 		{
@@ -102,18 +104,21 @@ public class Room : MonoBehaviour {
 			AudioSource.PlayClipAtPoint (doorSound, transform.position);
 	}
 
-	public void AddFurniture(Furniture f){
-		furnitureList.Add (f);
+	public void AddItem(GameObject g){
+		items.Add (g);
+		Debug.Log("Added "+g.name+" to furniture list. List has "+items.Count);
 	}
-	public void RemoveFurniture(Furniture f){
-		furnitureList.Remove (f);
+
+	public void RemoveItem(GameObject g){
+		items.Remove (g);
+		g.GetComponent<Furniture>().Sell ();
 	}
 
 	public int TrapCount(){
 		int i=0;
-		if (furnitureList.Count>0)
-		foreach (Furniture f in furnitureList){
-			if (f is Trap)
+		if (items.Count>0)
+		foreach (GameObject g in items){
+			if (g.GetComponent<Furniture>() is Trap)
 				i++;
 		}
 		return i;
@@ -121,9 +126,9 @@ public class Room : MonoBehaviour {
 
 	public int NonTrapFurnitureCount(){
 		int i=0;
-		if (furnitureList.Count>0)
-		foreach (Furniture f in furnitureList){
-			if (!(f is Trap))
+		if (items.Count>0)
+		foreach (GameObject g in items){
+			if (!(g.GetComponent<Furniture>() is Trap))
 				i++;
 		}
 		return i;
@@ -178,10 +183,10 @@ public class Room : MonoBehaviour {
 		if (open) {
 			// calculate quality
 			int totalcost=0;
-			foreach (Furniture f in furnitureList){
-				totalcost += f.buyCost;
-				if (f is Trap)
-					(f as Trap).Reset();
+			foreach (GameObject g in items){
+				totalcost += g.GetComponent<Furniture>().buyCost;
+				if (g.GetComponent<Furniture>() is Trap)
+					(g.GetComponent<Furniture>() as Trap).Reset();
 
 			}
 			quality = (totalcost/100)+1;
@@ -209,6 +214,12 @@ public class Room : MonoBehaviour {
 		}
 
 		//occupants.Clear ();
+	}
+
+	public void DisplayGrid(bool on){
+		foreach (Node n in nodes){
+			n.DisplayGrid(on);
+		}
 	}
 
 	private void OnGUI(){

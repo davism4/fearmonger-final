@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{47EC3055-A989-25E5-222F-169EB2A8DE02}</ProjectGuid>
+	<ProjectGuid>{4426453A-0BE0-918E-3B53-720B85C78630}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -80,6 +80,7 @@
      <Compile Include="Assets\Scripts\Room\LampObject.cs" />
      <Compile Include="Assets\Scripts\Room\Lamp_Scary.cs" />
      <Compile Include="Assets\Scripts\Room\MovableObject.cs" />
+     <Compile Include="Assets\Scripts\Room\Node.cs" />
      <Compile Include="Assets\Scripts\Room\Pickup.cs" />
      <Compile Include="Assets\Scripts\Room\Room.cs" />
      <Compile Include="Assets\Scripts\Room\Trap.cs" />

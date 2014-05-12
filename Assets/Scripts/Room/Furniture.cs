@@ -17,6 +17,11 @@ public class Furniture : MonoBehaviour {
 	private int durability, durabilityMax=99;
 	public int Durability {get {return durability; }}
 	public string DisplayName="";	
+	[HideInInspector] public Node node = null;
+	public Room room {
+		get {return this.node.room;}
+	}
+
 
 	public float healthPercent {
 		get { return ((float)durability)/durabilityMax; }
@@ -55,15 +60,25 @@ public class Furniture : MonoBehaviour {
 		LoadHPBar ();
 	}
 
+	public void SetNode(Node n){
+		this.node = n;
+		Debug.Log(name+"'s node is "+node.name+" , room is "+room.name);
+	}
+
 	protected virtual void Update(){
 		if(showHPCooldown>0f){
 			showHPCooldown -= Time.deltaTime;
 		}
+		Debug.Log (node.name);
 	}
 
 	public void Break(){
 		// animation
-		DestroyImmediate (gameObject);
+		Destroy (this.gameObject);
+	}
+	public void Sell(){
+		Debug.Log ("Sold "+name);
+		Destroy (this.gameObject);
 	}
 
 	private void LoadHPBar(){

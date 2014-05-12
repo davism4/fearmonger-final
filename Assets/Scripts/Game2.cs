@@ -53,25 +53,17 @@ public class Game2 : MonoBehaviour {
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
-			if (GameVars.IsPlacingFurniture && currentFurnitureIndex >= 0){
-				if (hit.collider.CompareTag ("Room")){
-					Room r = collider.GetComponent<Room>();
-
-
+			Debug.Log (hit.collider.gameObject.name);
+			Node n = hit.collider.gameObject.GetComponent<Node>();
+			if (hit.collider.CompareTag ("Furniture")){
+				Sell (hit.collider.gameObject);
+			} else if (GameVars.IsPlacingFurniture && currentFurnitureIndex >= 0){
+				if (hit.collider.CompareTag ("Node")){
+					if (Buy (furnitureTypes[currentFurnitureIndex],hit)){
+						n.Add (furniturePhysicalTypes[currentFurnitureIndex]);
+					}
 				}
-
-				/**
-				 * SOMEBODY IMPLEMENT THIS
-				 * 
-				 * PLACE FURNITURE IN GRID CELL
-				 *
-				 **/
-				Buy (furnitureTypes[currentFurnitureIndex],hit);
-				Instantiate(furniturePhysicalTypes[currentFurnitureIndex],(Vector3)hit.point,Quaternion.identity);
 				currentFurnitureIndex=-1;
-			}
-			else if (hit.collider.CompareTag ("Furniture")){
-				// Optional: Tooltip with information about the selected piece
 			}
 		}
 	}
@@ -147,25 +139,35 @@ public class Game2 : MonoBehaviour {
 		}
 	}
 
-	private void Buy(Furniture f, RaycastHit2D hit){
+	private bool Buy(Furniture f, RaycastHit2D hit){
 		if (money >= f.buyCost){
 			money -= f.buyCost;
-			hit.collider.GetComponent<Room>().AddFurniture (f);
+			return true;
+			//hit.collider.GetComponent<Room>().AddFurniture (f);
 			// get new furniture thing
 			// place it somewhere
 		} else {
+			return false;
 			// Not enough money!
 		}
 	}
-	private void Sell(Furniture f, RaycastHit2D hit){
-		money += f.buyCost;
-		hit.collider.GetComponent<Room>().RemoveFurniture (f);
+	private void Sell(GameObject obFurn){
+		money += obFurn.GetComponent<Furniture>().buyCost;
+		obFurn.GetComponent<Furniture>().node.Clear ();
 	}
 	
 
 
 	// Update is called once per frame
 	private void Update () {
+		if (Day==1){
+			if (START_AT_NIGHT){
+				START_AT_NIGHT = false; // only run once
+				StartNight ();
+			} else {
+				StartDay ();
+			}
+		}
 		if (Input.GetKeyDown("b")){
 			if (GameVars.IsNight)
 				StartDay ();
@@ -340,10 +342,6 @@ public class Game2 : MonoBehaviour {
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
-		StartCoroutine (wait (1f));
-		if (START_AT_NIGHT){
-			StartNight ();
-		}
 	}
 
 	private IEnumerator wait(float time){
@@ -351,10 +349,12 @@ public class Game2 : MonoBehaviour {
 	}
 
 	private void StartDay(){
+		Debug.Log ("Starting day...");
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
 			r.CheckOut ();
+			r.DisplayGrid (true);
 		}
 	}
 	
@@ -362,6 +362,10 @@ public class Game2 : MonoBehaviour {
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
 		foreach (Room r in rooms){
+			r.DisplayGrid (false);
+		}
+		foreach (Room r in rooms){
+
 //			Debug.Log (name + " is open: "+r.open);
 			if (r.open){
 				r.CheckIn();
