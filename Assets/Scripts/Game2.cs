@@ -54,6 +54,12 @@ public class Game2 : MonoBehaviour {
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
 			if (GameVars.IsPlacingFurniture && currentFurnitureIndex >= 0){
+				if (hit.collider.CompareTag ("Room")){
+					Room r = collider.GetComponent<Room>();
+
+
+				}
+
 				/**
 				 * SOMEBODY IMPLEMENT THIS
 				 * 
@@ -108,7 +114,7 @@ public class Game2 : MonoBehaviour {
 		} else {
 			// daytime GUI
 			int index=0;
-			Debug.Log(currentFurnitureIndex);
+//			Debug.Log(currentFurnitureIndex);
 			for (int row=2; row>=1; row--) {
 				for (int x=0;x<furnitureTypes.Length/2;x++){
 					if (currentFurnitureIndex == index){
@@ -134,7 +140,7 @@ public class Game2 : MonoBehaviour {
 					                    630,
 					                    Screen.width/(furnitureTypes.Length/2),
 					                    40), GUI.tooltip);
-					GUI.tooltip = null;
+					//GUI.tooltip = null;
 					index++;
 				}
 			}

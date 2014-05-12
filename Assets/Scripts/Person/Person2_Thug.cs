@@ -6,6 +6,14 @@ public class Person2_Thug : Person2 {
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
 	Furniture target=null;
+
+	public bool IS_ATTACKING {
+		get { return destroyCooldown > 0f; }
+	}
+	
+	public void Animate(){
+		//
+	}
 	
 	// Use this for initialization
 	protected override void Start () {

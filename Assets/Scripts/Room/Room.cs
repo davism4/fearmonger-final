@@ -210,4 +210,7 @@ public class Room : MonoBehaviour {
 
 		//occupants.Clear ();
 	}
+
+	private void OnGUI(){
+	}
 }

@@ -6,7 +6,15 @@ public class Person2_Priest : Person2 {
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
 	Trap target=null;
-	
+
+	public bool IS_ATTACKING {
+		get { return destroyCooldown > 0f; }
+	}
+
+	public void Animate(){
+		//
+	}
+
 	protected override void Start () {
 		moneyDropMin=0;
 		moneyDropMax=0;
