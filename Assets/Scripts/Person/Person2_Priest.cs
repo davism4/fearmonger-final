@@ -57,6 +57,11 @@ public class Person2_Priest : Person2 {
 					Attack (target);
 				}
 			}
+
+			if (anim!=null){
+				anim.SetBool ("attacking", IS_ATTACKING);
+			}
+
 			base.UpdateNormal ();
 		}
 	}
