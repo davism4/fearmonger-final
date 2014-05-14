@@ -34,7 +34,11 @@ public class Game2 : MonoBehaviour {
 	private int count;
 
 	public bool START_AT_NIGHT=false;
-	
+
+	public AudioClip bgmDay;
+	public AudioClip bgmNight;
+	public AudioSource audioSource;
+
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
 	// Values used in UI
@@ -342,6 +346,7 @@ public class Game2 : MonoBehaviour {
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
+		audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
 	}
 
 	private IEnumerator wait(float time){
@@ -350,6 +355,12 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
+		bgmDay = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
+		audioSource.Stop ();
+		audioSource.loop = true;
+		audioSource.volume = 1;
+		audioSource.clip = bgmDay;
+		audioSource.Play ();
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -361,6 +372,12 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
+		bgmNight = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
+		audioSource.Stop ();
+		audioSource.loop = true;
+		audioSource.volume = 1;
+		audioSource.clip = bgmNight;
+		audioSource.Play ();
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 		}
