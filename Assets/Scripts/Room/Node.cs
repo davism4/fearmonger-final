@@ -26,12 +26,14 @@ public class Node : MonoBehaviour {
 	}
 
 	public void Add(GameObject o){
-		GameObject instance = Instantiate(o,this.transform.position,Quaternion.identity) as GameObject;
-		this.content = instance;
-		room.AddItem(this.content);
-		this.content.GetComponent<Furniture>().SetNode(this);
-		GetComponent<SpriteRenderer>().enabled=false;
-		//GetComponent<BoxCollider2D>().enabled=false;
+		if (empty){
+			GameObject instance = Instantiate(o,this.transform.position,Quaternion.identity) as GameObject;
+			this.content = instance;
+			room.AddItem(this.content);
+			this.content.GetComponent<Furniture>().SetNode(this);
+			GetComponent<SpriteRenderer>().enabled=false;
+			//GetComponent<BoxCollider2D>().enabled=false;
+		}
 	}
 
 	public void Clear(){
