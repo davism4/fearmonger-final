@@ -2,22 +2,10 @@
 using System.Collections;
 
 public class Sound : MonoBehaviour {
+	public AudioClip bgmDay = Resources.Load<AudioClip>("Sounds/bgm_final_day");
 
-	public AudioClip doorOpen;
-	public AudioClip bgmNight;
-
-	bool isBgmPlayed = false;
-
-	// Use this for initialization
-	void Start () {
-		AudioSource.PlayClipAtPoint (doorOpen, Camera.main.transform.position);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		if(!isBgmPlayed){
-			isBgmPlayed = true;
-			AudioSource.PlayClipAtPoint(bgmNight, Camera.main.transform.position);
-		}
+	public void playBgmDay(){
+		if(bgmDay != null)
+			AudioSource.PlayClipAtPoint (bgmDay, Camera.main.transform.position);
 	}
 }

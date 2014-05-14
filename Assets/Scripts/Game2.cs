@@ -34,7 +34,12 @@ public class Game2 : MonoBehaviour {
 	private int count;
 
 	public bool START_AT_NIGHT=false;
-	
+
+	public Sound sound;
+
+	public AudioClip bgmDay;
+	public AudioClip bgmNight;
+
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
 	// Values used in UI
@@ -350,6 +355,11 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
+		bgmDay = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
+		audio.Stop ();
+		audio.clip = bgmDay;
+		audio.Play ();
+		//AudioSource.PlayClipAtPoint (bgmDay, Camera.main.transform.position);	
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -361,6 +371,11 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
+		bgmNight = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
+		audio.Stop ();
+		audio.clip = bgmNight;
+		audio.Play ();
+		//AudioSource.PlayClipAtPoint (bgmNight, Camera.main.transform.position);
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 		}
