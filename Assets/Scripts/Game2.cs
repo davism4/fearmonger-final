@@ -358,15 +358,9 @@ public class Game2 : MonoBehaviour {
 		bgmDay = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
 		audioSource.Stop ();
 		audioSource.loop = true;
-		//audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
+		audioSource.volume = 1;
 		audioSource.clip = bgmDay;
 		audioSource.Play ();
-		/*
-		audio.Stop ();
-		audio.loop = true;
-		audio.clip = bgmDay;
-		audio.Play ();
-		*/
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -381,14 +375,9 @@ public class Game2 : MonoBehaviour {
 		bgmNight = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
 		audioSource.Stop ();
 		audioSource.loop = true;
+		audioSource.volume = 1;
 		audioSource.clip = bgmNight;
 		audioSource.Play ();
-		/*
-		audio.Stop ();
-		audio.loop = true;
-		audio.clip = bgmNight;
-		audio.Play ();
-		*/
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 		}
