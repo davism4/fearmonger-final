@@ -106,7 +106,7 @@ public class Room : MonoBehaviour {
 
 	public void AddItem(GameObject g){
 		items.Add (g);
-		Debug.Log("Added "+g.name+" to furniture list. List has "+items.Count);
+//		Debug.Log("Added "+g.name+" to furniture list. List has "+items.Count);
 	}
 
 	public void RemoveItem(GameObject g){
@@ -179,6 +179,9 @@ public class Room : MonoBehaviour {
 			if (p!=null)
 				p.Exit(true);
 		}
+		foreach (Node n in nodes){
+			n.BoxDisable ();
+		}
 		occupants.Clear ();
 		if (open) {
 			// calculate quality
@@ -191,14 +194,14 @@ public class Room : MonoBehaviour {
 			}
 			quality = (totalcost/100)+1;
 			GameObject personGen = RandomPerson (true);
-			Transform trans = Object.Instantiate(personGen.transform,spawnPosition,Quaternion.identity) as Transform;
-			Person2 p = trans.GetComponent<Person2>();
+			GameObject pero = Instantiate(personGen,spawnPosition,Quaternion.identity) as GameObject;
+			Person2 p = pero.GetComponent<Person2>();
 			p.SetRoom (this);
 			occupants.Add (p);
 			for (int i=0; i<UnityEngine.Random.Range(1,4); i++){
 				personGen = RandomPerson (false);
-				trans = Object.Instantiate(personGen.transform,spawnPosition,Quaternion.identity) as Transform;
-				p = trans.GetComponent<Person2>();
+				pero = Instantiate(personGen,spawnPosition,Quaternion.identity) as GameObject;
+				p = pero.GetComponent<Person2>();
 				p.SetRoom (this);
 				occupants.Add (p);
 			}
@@ -211,6 +214,9 @@ public class Room : MonoBehaviour {
 		foreach (Person2 p in occupants){
 //			Debug.Log (p.name + " is checking out");
 			p.Leave ();
+		}
+		foreach(Node n in nodes){
+			n.BoxEnable();
 		}
 
 		//occupants.Clear ();

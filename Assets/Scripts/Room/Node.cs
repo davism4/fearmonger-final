@@ -36,6 +36,14 @@ public class Node : MonoBehaviour {
 		}
 	}
 
+	public void BoxDisable(){
+		GetComponent<BoxCollider2D>().enabled=false;
+	}
+
+	public void BoxEnable(){
+		GetComponent<BoxCollider2D>().enabled=true;
+	}
+
 	public void Clear(){
 		room.RemoveItem (this.content);
 		this.content = null;

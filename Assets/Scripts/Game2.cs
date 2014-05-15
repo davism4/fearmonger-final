@@ -57,7 +57,7 @@ public class Game2 : MonoBehaviour {
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
-			Debug.Log (hit.collider.gameObject.name);
+			Debug.Log ("Hit: "+hit.collider.gameObject.name);
 			Node n = hit.collider.gameObject.GetComponent<Node>();
 			if (hit.collider.CompareTag ("Furniture")){
 				Sell (hit.collider.gameObject);
@@ -414,6 +414,7 @@ public class Game2 : MonoBehaviour {
 			f.DisplayHP();
 		}
 		if (Input.GetMouseButtonDown (0)){
+			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<rooms.Length-1 && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
 				isChangingRooms=true;
@@ -438,10 +439,12 @@ public class Game2 : MonoBehaviour {
 					if (l.Durability>0)
 						l.Flip ();
 				} else if (f is Trap && !(f as Trap).Used) {
+					Debug.Log("Activating");
 					(f as Trap).Activate ();
 				}
 			} else if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
-				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Furniture")){
+				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Node") ||
+				    hit.collider.gameObject.CompareTag ("Furniture")){
 					if (currentAbility.CanUse ()){
 						currentAbility.UseAbility (hit);
 						//currentAbility=null;

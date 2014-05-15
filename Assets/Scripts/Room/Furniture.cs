@@ -62,14 +62,14 @@ public class Furniture : MonoBehaviour {
 
 	public void SetNode(Node n){
 		this.node = n;
-		Debug.Log(name+"'s node is "+node.name+" , room is "+room.name);
+	//	Debug.Log(name+"'s node is "+node.name+" , room is "+room.name);
 	}
 
 	protected virtual void Update(){
 		if(showHPCooldown>0f){
 			showHPCooldown -= Time.deltaTime;
 		}
-		Debug.Log (node.name);
+//		Debug.Log (node.name);
 	}
 
 	public void Break(){
