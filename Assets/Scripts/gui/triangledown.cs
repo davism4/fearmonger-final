@@ -15,11 +15,13 @@ public class triangledown : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		canMoveDown = (bool)(game.currentRoomNumber>0);
+		canMoveDown = (bool)(game.CurrentRoomNumber>0);
 		if (canMoveDown) {
 			sr.color = Color.white;
+			GetComponent<PolygonCollider2D>().enabled=true;
 		} else {
 			sr.color = new Color(0f,0f,0f,0f);
+			GetComponent<PolygonCollider2D>().enabled=false;
 		}
 	}
 	

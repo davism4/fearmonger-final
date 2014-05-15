@@ -8,14 +8,19 @@ using System.Collections.Generic;
 
 public class Game2 : MonoBehaviour {
 
+	// Stuff we can leave open in the editor
+	public int  money=0, fearEnergy=0;
+	public bool START_AT_NIGHT=false;
+
 	// don't edit these values:
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCountdown=0f;
 	public const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
-	public int currentRoomNumber=0, money=0, fearEnergy=0;
 	public const int fearEnergyMax=100;
-	private int  days=0;
-	public int Day{get { return days+1; }}
+	private int days=0, currentRoomNumber=0, roomsOpen=0;
+	public int Day{get { return days; }}
+	public int CurrentRoomNumber { get { return currentRoomNumber; }}
+	public int RoomsOpen {get {return roomsOpen; }}
 	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	[HideInInspector] public Room[] rooms;
@@ -28,12 +33,12 @@ public class Game2 : MonoBehaviour {
 	GameObject cam;
 	private RaycastHit2D hit;
 	private Ray ray;
-	public Ability[] listAbilities;
-	public Ability currentAbility;
+	private Ability[] listAbilities;
+	private Ability currentAbility;
 	static string tooltip;
-	private int count;
+	//private int count; // what was this supposed to do?
 
-	public bool START_AT_NIGHT=false;
+
 
 	public AudioClip bgmDay;
 	public AudioClip bgmNight;
@@ -80,7 +85,7 @@ public class Game2 : MonoBehaviour {
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
-			count = 0;
+			//count = 0;
 			for (int i=0;i<listAbilities.Length;i++){
 				if(fearEnergy < listAbilities[i].minFear){ 
 					GUI.contentColor=Color.gray;
@@ -143,6 +148,14 @@ public class Game2 : MonoBehaviour {
 		}
 	}
 
+	private void BuyRoom(){
+		if (roomsOpen < rooms.Length){
+			rooms[roomsOpen].Buy ();
+			roomsOpen++;
+		}
+		Debug.Log ("Rooms unlocked = "+roomsOpen);
+	}
+
 	private bool Buy(Furniture f, RaycastHit2D hit){
 		if (money >= f.buyCost){
 			money -= f.buyCost;
@@ -164,6 +177,8 @@ public class Game2 : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update () {
+		if (Input.GetKeyDown("m"))
+			BuyRoom ();
 		if (Day==1){
 			if (START_AT_NIGHT){
 				START_AT_NIGHT = false; // only run once
@@ -303,11 +318,14 @@ public class Game2 : MonoBehaviour {
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
 		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
-		for (int i=1;i<=rooms.Length;i++){
-			rooms[i-1] = GameObject.Find ("Room "+i).GetComponent<Room>();
-//			Debug.Log ("Loading room 1...");
-			if (!rooms[i-1].HASLOADED){
+		for (int i=0;i<rooms.Length;i++){
+			rooms[i] = GameObject.Find ("Room "+(i+1)).GetComponent<Room>();
+			rooms[i].Cost = 1000 + 500*i;
+			if (!rooms[i].HASLOADED){
 				wait (0.1f);
+			}
+			if (rooms[i].open){
+				BuyRoom();
 			}
 		}
 		rooms[0].open=true;
@@ -394,6 +412,8 @@ public class Game2 : MonoBehaviour {
 		}
 		// No non-trap furniture = no thug tonight
 		// No traps = no priest tonight
+		Debug.Log ("Checking for traps..."+roomsHaveTraps);
+		Debug.Log ("Checking for furniture..."+roomsHaveFurns);
 		if (roomsHaveFurns || roomsHaveTraps)
 			enemyGenCooldown=enemyGenCooldownMax;
 	}
@@ -415,7 +435,7 @@ public class Game2 : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("Clicked on "+hit.collider.name);
-			if (currentRoomNumber<rooms.Length-1 && hit.collider.gameObject.CompareTag("Triangle Up")){
+			if (currentRoomNumber<roomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
 				isChangingRooms=true;
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){

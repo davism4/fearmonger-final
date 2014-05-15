@@ -11,8 +11,9 @@ public class Hazard_Ghost : Hazard {
 		//damage=GameVars.damage_spiders;
 		//duration = GameVars.duration_spiders;
 		base.Start ();
-		fadeTime = 0.75f*duration;
+		fadeTime = 0.5f*duration;
 		spriteRenderer = GetComponent<SpriteRenderer>();
+		Debug.Log ("Duration is "+duration+" fade time is "+fadeTime);
 	}
 
 	protected override void Update(){

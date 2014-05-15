@@ -30,6 +30,7 @@ public class Room : MonoBehaviour {
 	public float XLeft { get {return xleft;} }
 	private GameObject[,] people;
 	public Node[] nodes;
+	[HideInInspector] public int Cost=0;
 
 	// GRID LOGIC HERE
 
@@ -93,10 +94,7 @@ public class Room : MonoBehaviour {
 	
 	// Update is called once per frame
 	private void Update () {
-		if (Input.GetKeyDown("m") && open)
-			CheckIn ();
-		if (Input.GetKeyDown("n"))
-			CheckOut ();
+
 	}
 
 	public void PlayDoorSound(){
@@ -226,6 +224,10 @@ public class Room : MonoBehaviour {
 		foreach (Node n in nodes){
 			n.DisplayGrid(on);
 		}
+	}
+
+	public void Buy(){
+		transform.position = new Vector3(0,transform.position.y,transform.position.z);
 	}
 
 	private void OnGUI(){

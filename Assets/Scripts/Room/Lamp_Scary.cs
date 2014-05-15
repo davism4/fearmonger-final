@@ -44,7 +44,7 @@ public class Lamp_Scary : Lamp {
 			p.Scare (1);
 		}
 	}
-
+	/* // why is this here?
 	void OnTriggerStay2D(Collider2D other){
 		if (cooldown>0){
 			if (other.CompareTag("Person")){
@@ -54,6 +54,6 @@ public class Lamp_Scary : Lamp {
 				cooldown = -1;
 			}
 		}
-	}
+	}*/
 
 }
