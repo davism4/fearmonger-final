@@ -38,11 +38,7 @@ public class Game2 : MonoBehaviour {
 	static string tooltip;
 	//private int count; // what was this supposed to do?
 
-
-
-	public AudioClip bgmDay;
-	public AudioClip bgmNight;
-	public AudioSource audioSource;
+	public Sound sound;
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -364,7 +360,8 @@ public class Game2 : MonoBehaviour {
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
-		audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
+		//audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
+		sound = GameObject.Find ("Main Game").GetComponent<Sound>();
 	}
 
 	private IEnumerator wait(float time){
@@ -373,12 +370,7 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
-		bgmDay = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
-		audioSource.Stop ();
-		audioSource.loop = true;
-		audioSource.volume = 1;
-		audioSource.clip = bgmDay;
-		audioSource.Play ();
+		sound.playBgmDay ();
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -390,12 +382,7 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
-		bgmNight = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
-		audioSource.Stop ();
-		audioSource.loop = true;
-		audioSource.volume = 1;
-		audioSource.clip = bgmNight;
-		audioSource.Play ();
+		sound.playBgmNight ();
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 		}
