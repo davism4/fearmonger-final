@@ -3,14 +3,21 @@ using System.Collections;
 
 public class Trap : Furniture {
 
+	protected Animator anim;
+
 	public int damage=1;
 	Vector2 corner1=Vector2.zero, corner2=Vector2.zero;
-	BoxCollider2D hurtBox;
+	BoxCollider2D hurtBox; 
 	public bool Used=false;
 
 	protected override void Start(){
+		anim = transform.GetComponent<Animator> ();
+		if (!anim.enabled)
+			anim=null;
+
 		base.Start();
 	}
+
 
 	public void Activate(){
 		if (!Used){
@@ -34,5 +41,12 @@ public class Trap : Furniture {
 	public void Reset(){
 		Used=false;
 		// Change sprite to unused appearance
+	}
+
+	// Update is called once per frame
+	protected virtual void Update () {
+		if (anim!=null){
+			anim.SetBool ("activated", Used);
+		}
 	}
 }

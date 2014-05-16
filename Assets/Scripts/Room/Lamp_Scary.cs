@@ -6,11 +6,28 @@ using System.Collections;
 
 public class Lamp_Scary : Lamp {
 
+	protected Animator anim;
+	public bool inactive=false;
+	public bool Used=false;
+
 	float cooldown=0f;
+
+	protected override void Start(){
+		anim = transform.GetComponent<Animator> ();
+		if (!anim.enabled)
+			anim=null;
+		
+		base.Start();
+	}
 
 	private new void Update(){
 		if (cooldown>0f)
 			cooldown -= Time.deltaTime;
+
+		if (anim!=null){
+			anim.SetBool ("active", Used);
+			anim.SetBool ("inactive", inactive);
+		}
 	}
 
 	public override void Flip(Person2 p){
