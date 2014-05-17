@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Room : MonoBehaviour {
-	public bool HASLOADED=false;
+	[HideInInspector] public bool HASLOADED=false;
 	public Game2 game;
 	public List<Person2> occupants=new List<Person2>();
 	private List<GameObject> items=new List<GameObject>();
@@ -208,15 +208,16 @@ public class Room : MonoBehaviour {
 
 	// Called at the end of the night
 	public void CheckOut() {
-//		Debug.Log ("Checking out "+occupants.Count+ " people");
-		foreach (Person2 p in occupants){
-//			Debug.Log (p.name + " is checking out");
-			p.Leave ();
+		if (open){
+	//		Debug.Log ("Checking out "+occupants.Count+ " people");
+			foreach (Person2 p in occupants){
+	//			Debug.Log (p.name + " is checking out");
+				p.Leave ();
+			}
+			foreach(Node n in nodes){
+				n.BoxEnable();
+			}
 		}
-		foreach(Node n in nodes){
-			n.BoxEnable();
-		}
-
 		//occupants.Clear ();
 	}
 
@@ -228,6 +229,9 @@ public class Room : MonoBehaviour {
 
 	public void Buy(){
 		transform.position = new Vector3(0,transform.position.y,transform.position.z);
+		foreach(Node n in nodes){
+			n.BoxEnable();
+		}
 	}
 
 	private void OnGUI(){

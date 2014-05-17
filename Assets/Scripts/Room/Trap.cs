@@ -44,7 +44,7 @@ public class Trap : Furniture {
 	}
 
 	// Update is called once per frame
-	protected virtual void Update () {
+	protected override void Update () {
 		if (anim!=null){
 			anim.SetBool ("activated", Used);
 		}

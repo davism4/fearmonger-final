@@ -12,7 +12,7 @@ public class Hazard_Monster : Hazard {
 	public bool IS_FACING_RIGHT=false;
 	public bool IS_FACING_LEFT { get {return !IS_FACING_RIGHT;}}
 	private Animator anim;
-	private const float speed=3f;
+	private const float speed=9f;
 	private float halfwidth;
 	private bool grounded=false;
 	private float fallspeed=0f;
@@ -30,7 +30,7 @@ public class Hazard_Monster : Hazard {
 	// Basically the monster just runs back and forth
 	protected override void Update(){
 		if (!grounded){
-			fallspeed -= Physics2D.gravity.y*Time.deltaTime;
+			fallspeed -= 0.5f*Physics2D.gravity.y*Time.deltaTime;
 			transform.position += fallspeed*Vector3.down*Time.deltaTime;
 		}
 		if (IS_FACING_RIGHT){
@@ -55,7 +55,12 @@ public class Hazard_Monster : Hazard {
 		halfwidth = transform.GetComponent<BoxCollider2D>().size.x*transform.localScale.x*0.5f;
 		//duration = GameVars.duration_monster;
 		//damage = GameVars.damage_monster;
-		IS_FACING_RIGHT = (0.5f>=UnityEngine.Random.value);
+		if (transform.position.x < -6f)
+			IS_FACING_RIGHT = true;
+		else if (transform.position.x >6f)
+			IS_FACING_RIGHT = false;
+		else 
+			IS_FACING_RIGHT = (0.5f>=UnityEngine.Random.value);
 		anim = transform.GetComponent<Animator>();
 	}
 

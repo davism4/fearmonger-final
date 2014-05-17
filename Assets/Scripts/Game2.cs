@@ -11,22 +11,23 @@ public class Game2 : MonoBehaviour {
 	// Stuff we can leave open in the editor
 	public int  money=0, fearEnergy=0;
 	public bool START_AT_NIGHT=false;
+	public int INITIAL_ROOMS_OPEN=10;
 
 	// don't edit these values:
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCountdown=0f;
 	public const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
 	public const int fearEnergyMax=100;
-	private int days=0, currentRoomNumber=0, roomsOpen=0;
+	private int days=0, currentRoomNumber=0;
 	public int Day{get { return days; }}
 	public int CurrentRoomNumber { get { return currentRoomNumber; }}
-	public int RoomsOpen {get {return roomsOpen; }}
+	[HideInInspector] public int RoomsOpen=0;
 	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	[HideInInspector] public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
 	private GameObject priestObject, thugObject;
-
+	private Padlock padlock;
 	private List<Room> tempRoomList = new List<Room>(); // this is used for checking in priests and thugs
 	private bool roomsHaveTraps=false, roomsHaveFurns=false, isChangingRooms=true;
 	private float dyCam=99f;
@@ -149,11 +150,22 @@ public class Game2 : MonoBehaviour {
 	}
 
 	private void BuyRoom(){
-		if (roomsOpen < rooms.Length){
-			rooms[roomsOpen].Buy ();
-			roomsOpen++;
+		if (RoomsOpen < rooms.Length){
+
+			rooms[RoomsOpen].Buy ();
+			RoomsOpen++;
+			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
+			if (RoomsOpen < rooms.Length){
+				//Debug.Log("moving padlock up to room "+RoomsOpen=);
+				padlock.transform.position =
+					new Vector3(padlock.transform.position.x,
+					            rooms[RoomsOpen].transform.position.y,
+					            padlock.transform.position.z);
+			} else {
+				padlock.enabled=false;
+			}
 		}
-		Debug.Log ("Rooms unlocked = "+roomsOpen);
+		Debug.Log ("Rooms unlocked = "+RoomsOpen);
 	}
 
 	private bool Buy(Furniture f, RaycastHit2D hit){
@@ -314,7 +326,7 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	
 	private void Start() {
-
+		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
 		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
@@ -324,14 +336,18 @@ public class Game2 : MonoBehaviour {
 			if (!rooms[i].HASLOADED){
 				wait (0.1f);
 			}
-			if (rooms[i].open){
-				BuyRoom();
+		}
+
+		for (int i=0;i<rooms.Length;i++){
+			if (i<INITIAL_ROOMS_OPEN){
+				BuyRoom ();
 			}
 		}
-		rooms[0].open=true;
+		Debug.Log("There are now "+RoomsOpen+" open rooms.");
+		padlock.Initialize();
 		// Maybe the camera wasn't at the right place when game started - that's okay
 		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
-		cam.transform.position += new Vector3(d3.x,d3.y,0);
+//		cam.transform.position += new Vector3(d3.x,d3.y,0);
 
 		GameMinutePerRealSecond = ((float)nightDurationGameMinutes/nightDurationRealSecondsMax);
 		GameVars.WallLeft=rooms[0].XLeft;
@@ -357,6 +373,8 @@ public class Game2 : MonoBehaviour {
 		for (int i=0; i<furniturePhysicalTypes.Length; i++){
 			furnitureTypes[i]=furniturePhysicalTypes[i].GetComponent<Furniture>();
 		}
+		if (furniturePhysicalTypes==null || furnitureTypes==null)
+			Debug.LogError ("Missing furniture types");
 		priestObject = Resources.Load<GameObject>("Prefabs/Person/Priest");
 		thugObject = Resources.Load<GameObject> ("Prefabs/Person/Thug");
 		//GameVars.pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
@@ -435,12 +453,14 @@ public class Game2 : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("Clicked on "+hit.collider.name);
-			if (currentRoomNumber<roomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
+			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
 				isChangingRooms=true;
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
 				currentRoomNumber--;
 				isChangingRooms=true;
+			} else if (hit.collider.gameObject.CompareTag ("Padlock")){
+				BuyRoom();
 			}
 		}
 		if (!GameVars.IsNight) {

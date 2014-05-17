@@ -33,7 +33,7 @@ public class Person2 : MonoBehaviour {
 
 	// Determined by subclass
 	protected float speed;
-	protected float speedNormal=3f, speedFast=7f, admireCooldownMax=99f, admireCooldownMin=99f;
+	protected float speedNormal=8f, speedFast=14f, admireCooldownMax=99f, admireCooldownMin=99f;
 	
 
 	
@@ -93,6 +93,8 @@ public class Person2 : MonoBehaviour {
 	// PROTECTED/PRIVATE FUNCTIONS
 
 	protected virtual void Start () {
+		if (speedFast <= speedNormal)
+			speedFast += 2f;
 		speed = speedNormal;
 		sanity=sanityMax; 
 		spriteRenderer=transform.GetComponent<SpriteRenderer>();
