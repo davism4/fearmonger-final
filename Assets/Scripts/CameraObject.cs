@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CameraObject : MonoBehaviour {
-
+	/*
 	private float sizeSmall, sizeLarge;
 	private Vector3 mapPosition;
 	//private GameManager game;
@@ -53,5 +53,5 @@ public class CameraObject : MonoBehaviour {
 
 		moveUpTriangle.renderer.enabled = false;
 		moveDownTriangle.renderer.enabled = false;
-	}
+	}*/
 }

@@ -3,19 +3,26 @@ using System.Collections;
 
 public class Lamp: Furniture {
 
+	protected Light lite;
+
+	protected virtual void Start(){
+		lite = transform.GetChild (0).light;
+		base.Start ();
+	}
+
 	public bool isOn {
-		get {return light.enabled; }
+		get {return lite.enabled; }
 	}
 
 	public void Off(){
-		light.enabled = false;
+		lite.enabled = false;
 	}
 
 	public virtual void Flip(){
 		if (isOn){
-			light.enabled=false;
+			lite.enabled=false;
 		} else {
-			light.enabled=true;
+			lite.enabled=true;
 		}
 	}
 

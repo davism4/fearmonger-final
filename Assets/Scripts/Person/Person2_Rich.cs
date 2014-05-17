@@ -11,8 +11,7 @@ public class Person2_Rich : Person2 {
 		admireCooldownMin=12f;
 		admireCooldownMax=20f;
 		sanityMax=45;
-		speedNormal += UnityEngine.Random.Range (-2f,1f);
-		speedFast += UnityEngine.Random.Range (-2.5f,2.5f);
+		speedNormal *= UnityEngine.Random.Range (0.9f,1.1f);
 		base.Start();
 	}
 }

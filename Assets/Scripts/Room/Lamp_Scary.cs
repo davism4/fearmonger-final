@@ -16,7 +16,6 @@ public class Lamp_Scary : Lamp {
 		anim = transform.GetComponent<Animator> ();
 		if (!anim.enabled)
 			anim=null;
-		
 		base.Start();
 	}
 
@@ -31,24 +30,9 @@ public class Lamp_Scary : Lamp {
 	}
 
 	public override void Flip(Person2 p){
-		if (isOn){
-			light.enabled=false;
-		} else {
-			light.enabled=true;
-		}
-		p.Scare(3);
 		Flip ();
+		p.Scare(3);
 		
-	}
-
-
-	public override void Flip(){
-		if (isOn){
-			light.enabled=false;
-		} else {
-			light.enabled=true;
-			cooldown=0.15f;
-		}
 	}
 
 	protected override void OnTriggerEnter2D(Collider2D other){

@@ -11,6 +11,7 @@ public class Game2 : MonoBehaviour {
 	// Stuff we can leave open in the editor
 	public int  money=0, fearEnergy=0;
 	public bool START_AT_NIGHT=false;
+	public float BASE_CAM_SPEED = 25f;
 
 	// don't edit these values:
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
@@ -29,7 +30,7 @@ public class Game2 : MonoBehaviour {
 	private Padlock padlock;
 	private List<Room> tempRoomList = new List<Room>(); // this is used for checking in priests and thugs
 	private bool roomsHaveTraps=false, roomsHaveFurns=false, isChangingRooms=true;
-	private float dyCam=99f;
+	private Vector3 dvCam=Vector3.zero;//private float dyCam=99f;
 	private GameObject cam;
 	private RaycastHit2D hit;
 	private Ray ray;
@@ -200,13 +201,14 @@ public class Game2 : MonoBehaviour {
 		}
 		// camera slide effect between rooms
 		if (isChangingRooms){
-			dyCam = cam.transform.position.y - rooms[currentRoomNumber].transform.position.y;
-			if (dyCam>1f)
-				cam.transform.position += 20f*Vector3.down*Time.deltaTime; // Camera up/down speed
-			else if (dyCam<-1f)
-				cam.transform.position += 20f*Vector3.up*Time.deltaTime; // Camera up/down speed
-			else if (Mathf.Abs (dyCam)>0.001f)
-				cam.transform.position += 20*Vector3.down*dyCam*Time.deltaTime;
+			dvCam = rooms[currentRoomNumber].transform.position - cam.transform.position;
+			dvCam = new Vector3(dvCam.x,dvCam.y,0);
+			if (dvCam.magnitude>1f)
+				cam.transform.position += BASE_CAM_SPEED*dvCam.normalized*Time.deltaTime; // Camera up/down speed
+			else if (dvCam.magnitude<-1f)
+				cam.transform.position += BASE_CAM_SPEED*dvCam.normalized*Time.deltaTime; // Camera up/down speed
+			else if (dvCam.magnitude>0.001f)
+				cam.transform.position += BASE_CAM_SPEED*dvCam*Time.deltaTime;
 			else
 				isChangingRooms=false;
 		}

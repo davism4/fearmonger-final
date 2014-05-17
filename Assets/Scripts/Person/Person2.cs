@@ -93,8 +93,7 @@ public class Person2 : MonoBehaviour {
 	// PROTECTED/PRIVATE FUNCTIONS
 
 	protected virtual void Start () {
-		if (speedFast <= speedNormal)
-			speedFast += 2f;
+		speedFast = speedNormal*UnityEngine.Random.Range(1.2f,1.8f);
 		speed = speedNormal;
 		sanity=sanityMax; 
 		spriteRenderer=transform.GetComponent<SpriteRenderer>();
