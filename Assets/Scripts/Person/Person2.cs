@@ -33,7 +33,7 @@ public class Person2 : MonoBehaviour {
 
 	// Determined by subclass
 	protected float speed;
-	protected float speedNormal=8f, speedFast=14f, admireCooldownMax=99f, admireCooldownMin=99f;
+	protected float speedNormal=5f, speedFast=8f, admireCooldownMax=99f, admireCooldownMin=99f;
 	
 
 	
@@ -200,11 +200,11 @@ public class Person2 : MonoBehaviour {
 				dx = speed*dt;
 				if (IS_FACING_RIGHT){
 					if (transform.position.x+dx < GameVars.WallRight){
-						rigidbody2D.velocity = new Vector2(speed,rigidbody2D.velocity.y);
+						rigidbody2D.velocity = new Vector2(speed/5,rigidbody2D.velocity.y);
 					}
 				} else if (IS_FACING_LEFT) {
 					if (transform.position.x-dx > GameVars.WallLeft){
-						rigidbody2D.velocity = new Vector2(-speed,rigidbody2D.velocity.y);
+						rigidbody2D.velocity = new Vector2(-speed/5,rigidbody2D.velocity.y);
 					}
 				}
 				if (walkCooldown>0){ // moving -> keep moving

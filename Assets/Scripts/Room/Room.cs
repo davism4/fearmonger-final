@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Room : MonoBehaviour {
-	[HideInInspector] public bool HASLOADED=false;
-	public Game2 game;
+	public bool HASLOADED=false;
+	public Game2 game=null;
 	public List<Person2> occupants=new List<Person2>();
 	private List<GameObject> items=new List<GameObject>();
 
@@ -12,11 +12,11 @@ public class Room : MonoBehaviour {
 	public AudioClip doorSound;
 	public bool open=false;
 	private float yfloor, yceiling, xleft, xright;
-	private BoxCollider2D box;
+	private BoxCollider2D box=null;
 	public int numberOccupants {
 		get {return occupants.Count; }
 	}
-	public int quality; // how nice the room is -> influences how wealthy the people are
+	public int quality=0; // how nice the room is -> influences how wealthy the people are
 	public float doorLeft {
 		get { return spawnPosition.x; }
 	}
@@ -29,13 +29,14 @@ public class Room : MonoBehaviour {
 	public float XRight { get {return xright;} }
 	public float XLeft { get {return xleft;} }
 	private GameObject[,] people;
-	public Node[] nodes;
+	private Node[] nodes;
+	public Node[] Nodes {get {return nodes;}}
 	[HideInInspector] public int Cost=0;
 
 	// GRID LOGIC HERE
 
 	// Use this for initialization
-	private void Start () {
+	public void Start () {
 		game = GameObject.Find ("Main Game").GetComponent<Game2>();
 		box = transform.GetComponent<BoxCollider2D>();
 		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
@@ -223,12 +224,13 @@ public class Room : MonoBehaviour {
 
 	public void DisplayGrid(bool on){
 		foreach (Node n in nodes){
-			n.DisplayGrid(on);
+			n.DisplayBorder(on);
 		}
 	}
 
 	public void Buy(){
-		transform.position = new Vector3(0,transform.position.y,transform.position.z);
+		//transform.position = new Vector3(0,transform.position.y,transform.position.z);
+		open = true;
 		foreach(Node n in nodes){
 			n.BoxEnable();
 		}

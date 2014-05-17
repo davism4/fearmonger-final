@@ -13,7 +13,7 @@ public class Node : MonoBehaviour {
 		get {return content.GetComponent<Furniture>();}
 	}
 
-	public void DisplayGrid(bool on){
+	public void DisplayBorder(bool on){
 		if (empty){
 			GetComponent<SpriteRenderer>().enabled=on;
 		//	GetComponent<BoxCollider2D>().enabled=on;

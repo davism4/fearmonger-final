@@ -38,7 +38,7 @@ public class hudText : MonoBehaviour {
 		}
 
 	}
-	
+
 	// Update is called once per frame
 	private void Update () {
 		int i=0;

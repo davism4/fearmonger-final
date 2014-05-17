@@ -11,27 +11,26 @@ public class Game2 : MonoBehaviour {
 	// Stuff we can leave open in the editor
 	public int  money=0, fearEnergy=0;
 	public bool START_AT_NIGHT=false;
-	public int INITIAL_ROOMS_OPEN=10;
 
 	// don't edit these values:
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCountdown=0f;
-	public const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
-	public const int fearEnergyMax=100;
+	private const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
+	private const int fearEnergyMax=100;
 	private int days=0, currentRoomNumber=0;
 	public int Day{get { return days; }}
 	public int CurrentRoomNumber { get { return currentRoomNumber; }}
-	[HideInInspector] public int RoomsOpen=0;
+	public int RoomsOpen=0;
 	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
-	[HideInInspector] public Room[] rooms;
+	public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
 	private GameObject priestObject, thugObject;
 	private Padlock padlock;
 	private List<Room> tempRoomList = new List<Room>(); // this is used for checking in priests and thugs
 	private bool roomsHaveTraps=false, roomsHaveFurns=false, isChangingRooms=true;
 	private float dyCam=99f;
-	GameObject cam;
+	private GameObject cam;
 	private RaycastHit2D hit;
 	private Ray ray;
 	private Ability[] listAbilities;
@@ -39,11 +38,7 @@ public class Game2 : MonoBehaviour {
 	static string tooltip;
 	//private int count; // what was this supposed to do?
 
-
-
-	public AudioClip bgmDay;
-	public AudioClip bgmNight;
-	public AudioSource audioSource;
+	public Sound sound; // which sound is this referring to?
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -57,9 +52,9 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	// ================== INTERFACE ================== //
 	// =============================================== //
-	Texture2D fearBarTexture, fearBarTextureBlack, nightProgressTexture;
-	Texture2D[] abilityIcons;
-	float fearBarHeight=10f;
+	private Texture2D fearBarTexture, fearBarTextureBlack, nightProgressTexture;
+	private Texture2D[] abilityIcons;
+	private float fearBarHeight=10f;
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
@@ -151,21 +146,19 @@ public class Game2 : MonoBehaviour {
 
 	private void BuyRoom(){
 		if (RoomsOpen < rooms.Length){
-
 			rooms[RoomsOpen].Buy ();
 			RoomsOpen++;
-			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
-			if (RoomsOpen < rooms.Length){
-				//Debug.Log("moving padlock up to room "+RoomsOpen=);
-				padlock.transform.position =
-					new Vector3(padlock.transform.position.x,
-					            rooms[RoomsOpen].transform.position.y,
-					            padlock.transform.position.z);
-			} else {
-				padlock.enabled=false;
-			}
 		}
-		Debug.Log ("Rooms unlocked = "+RoomsOpen);
+//			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
+		if (RoomsOpen < rooms.Length) {
+//			Debug.Log ("Moving padlock to floor "+(RoomsOpen+1));
+			padlock.MoveToFloor(RoomsOpen);
+		}
+		else {
+//			Debug.Log ("Destroying padlock");
+			padlock.Delete ();
+			padlock=null;
+		}
 	}
 
 	private bool Buy(Furniture f, RaycastHit2D hit){
@@ -329,31 +322,34 @@ public class Game2 : MonoBehaviour {
 		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
-		rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
+		//rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
+		//Debug.Log (rooms.Length);
+	//	foreach (Room r in rooms){
+	//		Debug.Log (r.transform.name);
+	//	}
 		for (int i=0;i<rooms.Length;i++){
-			rooms[i] = GameObject.Find ("Room "+(i+1)).GetComponent<Room>();
+	//		string s = "Room "+(i+1).ToString ();
+	//		GameObject o = GameObject.Find (s);
+	//		Debug.Log ("Room "+s+" found: "+(bool)(o==null));
+	//		rooms[i] = GameObject.Find ("Room "+(i+1).ToString ()).GetComponent<Room>();
 			rooms[i].Cost = 1000 + 500*i;
-			if (!rooms[i].HASLOADED){
-				wait (0.1f);
+			rooms[i].Start();
+			if (i<RoomsOpen){
+				rooms[i].Buy ();
 			}
 		}
-
-		for (int i=0;i<rooms.Length;i++){
-			if (i<INITIAL_ROOMS_OPEN){
-				BuyRoom ();
-			}
-		}
-		Debug.Log("There are now "+RoomsOpen+" open rooms.");
-		padlock.Initialize();
+//		Debug.Log("There are now "+RoomsOpen+" open rooms.");
+		padlock.Initialize(rooms);
+		padlock.MoveToFloor(RoomsOpen);
 		// Maybe the camera wasn't at the right place when game started - that's okay
 		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
 //		cam.transform.position += new Vector3(d3.x,d3.y,0);
 
 		GameMinutePerRealSecond = ((float)nightDurationGameMinutes/nightDurationRealSecondsMax);
-		GameVars.WallLeft=rooms[0].XLeft;
-		GameVars.WallRight=rooms[0].XRight;
-		GameVars.WallLeftSoft=GameVars.WallLeft+2f;
-		GameVars.WallRightSoft=GameVars.WallRight-2f;
+		GameVars.WallLeft=transform.FindChild("Marker LeftWall").transform.position.x;//rooms[0].XLeft;
+		GameVars.WallRight=transform.FindChild("Marker RightWall").transform.position.x;//rooms[0].XRight;
+		GameVars.WallLeftSoft=transform.FindChild("Marker LeftSoftWall").transform.position.x;//=GameVars.WallLeft+2f;
+		GameVars.WallRightSoft=transform.FindChild("Marker RightSoftWall").transform.position.x;//=GameVars.WallRight-2f;
 		fearBarTexture = Resources.Load<Texture2D>("Sprites/gui/fearprogress-purple");
 		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
 		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
@@ -382,7 +378,8 @@ public class Game2 : MonoBehaviour {
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
-		audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
+		//audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
+		sound = GameObject.Find ("Main Game").GetComponent<Sound>();
 	}
 
 	private IEnumerator wait(float time){
@@ -391,12 +388,7 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
-		bgmDay = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
-		audioSource.Stop ();
-		audioSource.loop = true;
-		audioSource.volume = 1;
-		audioSource.clip = bgmDay;
-		audioSource.Play ();
+		sound.playBgmDay ();
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -408,17 +400,10 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
-		bgmNight = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
-		audioSource.Stop ();
-		audioSource.loop = true;
-		audioSource.volume = 1;
-		audioSource.clip = bgmNight;
-		audioSource.Play ();
+		if (sound!=null)
+			sound.playBgmNight ();
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
-		}
-		foreach (Room r in rooms){
-
 //			Debug.Log (name + " is open: "+r.open);
 			if (r.open){
 				r.CheckIn();
@@ -452,14 +437,14 @@ public class Game2 : MonoBehaviour {
 			f.DisplayHP();
 		}
 		if (Input.GetMouseButtonDown (0)){
-			Debug.Log ("Clicked on "+hit.collider.name);
+//			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
 				isChangingRooms=true;
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
 				currentRoomNumber--;
 				isChangingRooms=true;
-			} else if (hit.collider.gameObject.CompareTag ("Padlock")){
+			} else if (padlock!=null && hit.collider.gameObject.CompareTag ("Padlock")){
 				BuyRoom();
 			}
 		}

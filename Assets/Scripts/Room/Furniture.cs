@@ -21,6 +21,7 @@ public class Furniture : MonoBehaviour {
 	public Room room {
 		get {return this.node.room;}
 	}
+	public Vector3 offset = Vector3.zero;
 
 
 	public float healthPercent {
@@ -58,6 +59,7 @@ public class Furniture : MonoBehaviour {
 	protected virtual void Start(){
 		durability = durabilityMax;
 		LoadHPBar ();
+		transform.position += offset;
 	}
 
 	public void SetNode(Node n){

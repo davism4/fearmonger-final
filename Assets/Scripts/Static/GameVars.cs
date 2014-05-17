@@ -5,10 +5,10 @@ using System.Collections.Generic;
 // GLOBAL VARIABLES
 public static class GameVars {
 
-	public static float WallLeft = -100f; // these get set by MainGame
-	public static float WallRight = 100f; // these get set by MainGame
-	public static float WallLeftSoft = -99f; // these get set by MainGame
-	public static float WallRightSoft = 99f; // these get set by MainGame
+	public static float WallLeft = -100f; // these get set by Game2
+	public static float WallRight = 100f; // these get set by Game2
+	public static float WallLeftSoft = -99f; // these get set by Game2
+	public static float WallRightSoft = 99f; // these get set by Game2
 
 	public static int interactLayer; // set by Game2
 	public static int userInteractLayer;
