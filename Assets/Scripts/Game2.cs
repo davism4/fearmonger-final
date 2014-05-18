@@ -509,10 +509,7 @@ public class Game2 : MonoBehaviour {
 						//currentAbility=null;
 					}
 				}
-			} else if(hit.collider.gameObject.CompareTag ("Lamp")){
-				if(clickSound != null)
-					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
-			}
+			} 
 		}
 
 	}
