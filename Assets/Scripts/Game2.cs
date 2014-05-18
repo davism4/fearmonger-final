@@ -33,6 +33,7 @@ public class Game2 : MonoBehaviour {
 	private Ability[] listAbilities;
 	private Ability currentAbility;
 	static string tooltip;
+
 	//private int count; // what was this supposed to do?
 
 	public Sound sound; // which sound is this referring to?
@@ -93,7 +94,7 @@ public class Game2 : MonoBehaviour {
 				}
 
 				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
-				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities [i].ShowName(),
+				                          Screen.width/listAbilities.Length, 40), new GUIContent(abilityIcons[i],
 				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
 				                          + " Costs " + listAbilities[i].minFear))) {
 					//cursorAppearance.SetSprite (2);
@@ -327,6 +328,7 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	
 	private void Start() {
+
 		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
@@ -373,6 +375,7 @@ public class Game2 : MonoBehaviour {
 		listAbilities[2] = transform.GetComponent<Ability_Claw>();
 		listAbilities[3] = transform.GetComponent<Ability_Monster>();
 		listAbilities[4] = transform.GetComponent<Ability_Possess>();
+
 		// Load all of the resources once - everything else you can just Instantiate()
 		furniturePhysicalTypes = Resources.LoadAll<GameObject>("Prefabs/Furniture");
 		furnitureTypes = new Furniture[furniturePhysicalTypes.Length];
