@@ -7,7 +7,7 @@ public class Sound : MonoBehaviour{
 
 	public void playBgmDay(){
 		sound = Resources.Load<AudioClip> ("Sounds/rooster");
-		AudioSource.PlayClipAtPoint (sound, Camera.main.transform.position);
+		AudioSource.PlayClipAtPoint (sound, transform.position);
 		audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
 		sound = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
 		audioSource.Stop ();

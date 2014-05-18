@@ -37,6 +37,7 @@ public class Game2 : MonoBehaviour {
 	//private int count; // what was this supposed to do?
 
 	private Sound sound; // which sound is this referring to? It is referenced in Start() 
+	private AudioClip collectSound;
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -393,6 +394,7 @@ public class Game2 : MonoBehaviour {
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
 		sound = this.GetComponent<Sound> ();
+		collectSound = Resources.Load<AudioClip> ("Sounds/collect");
 	}
 
 	private IEnumerator wait(float time){
@@ -438,6 +440,8 @@ public class Game2 : MonoBehaviour {
 //		Debug.Log (hit.collider.gameObject.name);
 		if (hit.collider.gameObject.CompareTag ("Money")){
 			DestroyObject (hit.collider.gameObject);
+			if(collectSound != null)
+				AudioSource.PlayClipAtPoint(collectSound, Camera.main.transform.position);
 			money += 10;
 		} else if (hit.collider.gameObject.CompareTag("FearPickup")){
 			DestroyObject (hit.collider.gameObject);
