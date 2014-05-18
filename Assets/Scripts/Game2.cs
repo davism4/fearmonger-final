@@ -38,6 +38,7 @@ public class Game2 : MonoBehaviour {
 
 	private Sound sound; // which sound is this referring to? It is referenced in Start() 
 	private AudioClip collectSound;
+	private AudioClip clickSound;
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -395,6 +396,7 @@ public class Game2 : MonoBehaviour {
 		GameVars.interactLayer = (alayer | blayer);
 		sound = this.GetComponent<Sound> ();
 		collectSound = Resources.Load<AudioClip> ("Sounds/collect");
+		clickSound = Resources.Load<AudioClip> ("Sounds/click");
 	}
 
 	private IEnumerator wait(float time){
@@ -455,6 +457,8 @@ public class Game2 : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("Hit: "+hit.collider.gameObject.name);
+			if(clickSound != null)
+				AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 //			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
@@ -472,6 +476,8 @@ public class Game2 : MonoBehaviour {
 			}
 		} else if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("registering click...");
+			if(clickSound != null)
+				AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);
 				//currentAbility=null; 
