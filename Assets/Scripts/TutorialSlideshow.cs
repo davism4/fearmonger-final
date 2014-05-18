@@ -14,6 +14,9 @@ public class TutorialSlideshow : MonoBehaviour {
 	int slideright, slidebottom;
 	int bottomMargin = 20;
 
+	// Use this to format the text boxes. Make sure to select Word Wrap.
+	public GUIStyle style;
+
 	Rect closeButtonRect, mainRect;
 
 	void Start () {
@@ -70,31 +73,31 @@ public class TutorialSlideshow : MonoBehaviour {
 			} 
 			if (GameVars.IsNight){
 				if (slideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back")){
+					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back",style)){
 						slideIndex--;
 					}
 				}
 				if (slideIndex<NightSlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next")){
+					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next",style)){
 						slideIndex++;
 					}
 				}
 				GUI.Box (mainRect,NightSlides[slideIndex]);
 			} else {
 				if (slideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back")){
+					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back",style)){
 						slideIndex--;
 					}
 				}
 				if (slideIndex<DaySlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next")){
+					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next",style)){
 						slideIndex++;
 					}
 				}
-				GUI.Box (mainRect,DaySlides[slideIndex]);
+				GUI.Box (mainRect,DaySlides[slideIndex],style);
 			}
 		} else {
-			if (GUI.Button (new Rect (Screen.width - width, 0, width, height), "Help")){
+			if (GUI.Button (new Rect (Screen.width - width, 0, width, height), "Help",style)){
 				GameVars.IsPausedTutorial=true;
 				Time.timeScale=0.0f;
 			}
