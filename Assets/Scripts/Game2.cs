@@ -39,6 +39,7 @@ public class Game2 : MonoBehaviour {
 	private Sound sound; // which sound is this referring to? It is referenced in Start() 
 	private AudioClip collectSound;
 	private AudioClip clickSound;
+	private AudioClip lampSwitch;
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -397,6 +398,7 @@ public class Game2 : MonoBehaviour {
 		sound = this.GetComponent<Sound> ();
 		collectSound = Resources.Load<AudioClip> ("Sounds/collect");
 		clickSound = Resources.Load<AudioClip> ("Sounds/click");
+		lampSwitch = Resources.Load<AudioClip> ("Sounds/lamp_switch");
 	}
 
 	private IEnumerator wait(float time){
@@ -457,13 +459,15 @@ public class Game2 : MonoBehaviour {
 		}
 		if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("Hit: "+hit.collider.gameObject.name);
-			if(clickSound != null)
-				AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 //			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
+				if(clickSound != null)
+					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 				currentRoomNumber++;
 				isChangingRooms=true;
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
+				if(clickSound != null)
+					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 				currentRoomNumber--;
 				isChangingRooms=true;
 			}
@@ -476,8 +480,7 @@ public class Game2 : MonoBehaviour {
 			}
 		} else if (Input.GetMouseButtonDown (0)){
 			Debug.Log ("registering click...");
-			if(clickSound != null)
-				AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
+
 			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);
 				//currentAbility=null; 
@@ -488,6 +491,8 @@ public class Game2 : MonoBehaviour {
 					//Debug.Log (hit.collider.name);
 					currentAbility.UseAbility (hit);
 				} else if (f is Lamp){
+					if(lampSwitch != null)
+						AudioSource.PlayClipAtPoint(lampSwitch, Camera.main.transform.position);
 					Lamp l = hit.collider.gameObject.GetComponent<Lamp>();
 					if (l.Durability>0)
 						l.Flip ();
@@ -504,6 +509,9 @@ public class Game2 : MonoBehaviour {
 						//currentAbility=null;
 					}
 				}
+			} else if(hit.collider.gameObject.CompareTag ("Lamp")){
+				if(clickSound != null)
+					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
 			}
 		}
 
