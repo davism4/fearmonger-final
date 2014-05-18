@@ -10,8 +10,8 @@ public class Furniture : MonoBehaviour {
 	 */
 	//public int admireValue=0;
 	//private bool isShowingDurability=false;
-	private float showHPCooldown;
-	private const float showHPCooldownMax=0.2f;
+	private float showHPCooldown, damageCooldown;
+	private const float showHPCooldownMax=0.2f, damageCooldownMax=0.6f;
 	public string description="";
 	public int buyCost=0;
 	private int durability, durabilityMax=99;
@@ -29,8 +29,13 @@ public class Furniture : MonoBehaviour {
 	}
 
 	public bool Damage(int delta){
-		durability -= delta;
-		return (bool)(durability <=0);
+		if (damageCooldown<=0){
+			durability -= delta;
+			damageCooldown = damageCooldownMax;
+			return (bool)(durability <=0);
+		} else {
+			return false;
+		}
 	}
 
 	public void Repair(int delta){
@@ -52,6 +57,7 @@ public class Furniture : MonoBehaviour {
 	protected virtual void OnTriggerEnter2D(Collider2D other){
 		if (other.CompareTag ("Person")){
 			Person2 p = other.transform.GetComponent<Person2>();
+			Damage(1);
 			p.Interact (this);
 		}
 	}
@@ -70,6 +76,9 @@ public class Furniture : MonoBehaviour {
 	protected virtual void Update(){
 		if(showHPCooldown>0f){
 			showHPCooldown -= Time.deltaTime;
+		}
+		if (damageCooldown>0f){
+			damageCooldown -= Time.deltaTime;
 		}
 //		Debug.Log (node.name);
 	}

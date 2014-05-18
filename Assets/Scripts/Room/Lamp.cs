@@ -5,7 +5,7 @@ public class Lamp: Furniture {
 
 	protected Light lite;
 
-	protected virtual void Start(){
+	protected override void Start(){
 		lite = transform.GetChild (0).light;
 		base.Start ();
 	}

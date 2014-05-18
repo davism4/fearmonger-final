@@ -23,7 +23,7 @@ public class Person2_Priest : Person2 {
 		admireCooldownMin=15f;
 		admireCooldownMax=25f;
 		sanityMax=60;
-		speedNormal *= UnityEngine.Random.Range (0.6f,0.9f);
+		speedNormal = UnityEngine.Random.Range (8f,12f);
 		destroyCooldown=destroyCooldownMax;
 		base.Start ();
 	}

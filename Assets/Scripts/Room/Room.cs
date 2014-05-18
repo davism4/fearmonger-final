@@ -219,6 +219,7 @@ public class Room : MonoBehaviour {
 				n.BoxEnable();
 			}
 		}
+		game.CheckEmptyHotel ();
 		//occupants.Clear ();
 	}
 

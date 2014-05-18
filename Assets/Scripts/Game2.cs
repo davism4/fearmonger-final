@@ -2,10 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-#pragma warning disable 0168 // variable declared but not used.
-#pragma warning disable 0219 // variable assigned but not used.
-#pragma warning disable 0414 // private field assigned but not used.
-
 public class Game2 : MonoBehaviour {
 
 	// Stuff we can leave open in the editor
@@ -44,22 +40,22 @@ public class Game2 : MonoBehaviour {
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
 	// Values used in UI
-	private float percentNight;
+	
 	private Furniture[] furnitureTypes; // Viewable in daytime GUI menu - don't change
 	private GameObject[] furniturePhysicalTypes; // use to instantiate from buy menu - don't change
 	private int currentFurnitureIndex=-1;
-
+	public float percentNight {
+		get { return (((float)nightTimerRealSeconds)/nightDurationRealSecondsMax); }}
 
 	// =============================================== //
 	// ================== INTERFACE ================== //
 	// =============================================== //
-	private Texture2D fearBarTexture, fearBarTextureBlack, nightProgressTexture;
+	private Texture2D fearBarTexture, fearBarTextureBlack;
 	private Texture2D[] abilityIcons;
 	private float fearBarHeight=10f;
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
-			Debug.Log ("Hit: "+hit.collider.gameObject.name);
 			Node n = hit.collider.gameObject.GetComponent<Node>();
 			if (hit.collider.CompareTag ("Furniture")){
 				Sell (hit.collider.gameObject);
@@ -82,6 +78,7 @@ public class Game2 : MonoBehaviour {
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.DrawTexture (new Rect(0,Screen.height-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,fearBarHeight),fearBarTexture,ScaleMode.StretchToFill);
+
 			//count = 0;
 			for (int i=0;i<listAbilities.Length;i++){
 				if(fearEnergy < listAbilities[i].minFear){ 
@@ -180,6 +177,14 @@ public class Game2 : MonoBehaviour {
 	}
 	
 
+	public void CheckEmptyHotel(){
+		foreach (Room r in rooms){
+			if (r.occupants.Count>0)
+				return;
+		}
+		Debug.Log ("Nobody is left in the hotel!");
+		StartDay ();
+	}
 
 	// Update is called once per frame
 	private void Update () {
@@ -191,6 +196,8 @@ public class Game2 : MonoBehaviour {
 				StartNight ();
 			} else {
 				StartDay ();
+				money += 10*fearEnergy;
+				fearEnergy=0;
 			}
 		}
 		if (Input.GetKeyDown("b")){
@@ -215,7 +222,6 @@ public class Game2 : MonoBehaviour {
 		if (GameVars.IsNight){
 			if (nightTimerRealSeconds<nightDurationRealSecondsMax){
 				nightTimerRealSeconds += Time.deltaTime; // here it makes sense to count up, not down
-				percentNight = (((float)nightTimerRealSeconds)/nightDurationRealSecondsMax);
 			} else {
 				StartDay ();
 			}
@@ -344,7 +350,7 @@ public class Game2 : MonoBehaviour {
 		padlock.Initialize(rooms);
 		padlock.MoveToFloor(RoomsOpen);
 		// Maybe the camera wasn't at the right place when game started - that's okay
-		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
+//		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
 //		cam.transform.position += new Vector3(d3.x,d3.y,0);
 
 		GameMinutePerRealSecond = ((float)nightDurationGameMinutes/nightDurationRealSecondsMax);
@@ -352,9 +358,12 @@ public class Game2 : MonoBehaviour {
 		GameVars.WallRight=transform.FindChild("Marker RightWall").transform.position.x;//rooms[0].XRight;
 		GameVars.WallLeftSoft=transform.FindChild("Marker LeftSoftWall").transform.position.x;//=GameVars.WallLeft+2f;
 		GameVars.WallRightSoft=transform.FindChild("Marker RightSoftWall").transform.position.x;//=GameVars.WallRight-2f;
+		Debug.Log ("Walls: "+GameVars.WallLeft);
+		Debug.Log ("Wall left (soft) = "+GameVars.WallLeftSoft);
+		Debug.Log ("Walls: "+GameVars.WallRight);
+		Debug.Log ("Wall right (soft) = "+GameVars.WallRightSoft);
 		fearBarTexture = Resources.Load<Texture2D>("Sprites/gui/fearprogress-purple");
 		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
-		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
 		abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
 		//GameVars.hpBarRed = 
 		//GameVars.hpBarGreen = Resources.Load<Texture2D>("Sprites/gui/hpBarGreen");
@@ -390,7 +399,8 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
-		sound.playBgmDay ();
+		if (sound!=null)
+			sound.playBgmDay ();
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -439,6 +449,7 @@ public class Game2 : MonoBehaviour {
 			f.DisplayHP();
 		}
 		if (Input.GetMouseButtonDown (0)){
+			Debug.Log ("Hit: "+hit.collider.gameObject.name);
 //			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				currentRoomNumber++;
@@ -446,17 +457,21 @@ public class Game2 : MonoBehaviour {
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
 				currentRoomNumber--;
 				isChangingRooms=true;
-			} else if (padlock!=null && hit.collider.gameObject.CompareTag ("Padlock")){
-				BuyRoom();
 			}
 		}
 		if (!GameVars.IsNight) {
-			RegisterHitDaytime (hit);
+			if (padlock!=null && hit.collider.gameObject.CompareTag ("Padlock")){
+				BuyRoom();
+			} else {
+				RegisterHitDaytime (hit);
+			}
 		} else if (Input.GetMouseButtonDown (0)){
+			Debug.Log ("registering click...");
 			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);
 				//currentAbility=null; 
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
+	//			Debug.Log ("registering click...on furniture");
 				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
 				if (currentAbility==listAbilities[1] && listAbilities[1].CanUse()){
 					//Debug.Log (hit.collider.name);
@@ -470,6 +485,7 @@ public class Game2 : MonoBehaviour {
 					(f as Trap).Activate ();
 				}
 			} else if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
+	//			Debug.Log ("registering click...with ability");
 				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Node") ||
 				    hit.collider.gameObject.CompareTag ("Furniture")){
 					if (currentAbility.CanUse ()){

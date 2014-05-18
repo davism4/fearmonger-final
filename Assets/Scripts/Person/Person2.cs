@@ -33,7 +33,7 @@ public class Person2 : MonoBehaviour {
 
 	// Determined by subclass
 	protected float speed;
-	protected float speedNormal=5f, speedFast=8f, admireCooldownMax=99f, admireCooldownMin=99f;
+	protected float speedNormal, speedFast, admireCooldownMax=99f, admireCooldownMin=99f;
 	
 
 	
@@ -93,8 +93,8 @@ public class Person2 : MonoBehaviour {
 	// PROTECTED/PRIVATE FUNCTIONS
 
 	protected virtual void Start () {
-		speedFast = speedNormal*UnityEngine.Random.Range(1.2f,1.8f);
 		speed = speedNormal;
+		speedFast = speedNormal * 2f;
 		sanity=sanityMax; 
 		spriteRenderer=transform.GetComponent<SpriteRenderer>();
 		IS_FACING_RIGHT=true;
@@ -125,6 +125,7 @@ public class Person2 : MonoBehaviour {
 
 		// Update is called once per frame
 	protected virtual void Update () {
+
 		/*if (isPossessed){
 			spriteRenderer.color = Color.blue;
 		} else if (isHurt){
@@ -200,10 +201,14 @@ public class Person2 : MonoBehaviour {
 				if (IS_FACING_RIGHT){
 					if (transform.position.x+dx < GameVars.WallRight){
 						rigidbody2D.velocity = new Vector2(speed/5,rigidbody2D.velocity.y);
+					} else {
+						StopMoving ();
 					}
-				} else if (IS_FACING_LEFT) {
+				} else {
 					if (transform.position.x-dx > GameVars.WallLeft){
 						rigidbody2D.velocity = new Vector2(-speed/5,rigidbody2D.velocity.y);
+					} else {
+						StopMoving();
 					}
 				}
 				if (walkCooldown>0){ // moving -> keep moving

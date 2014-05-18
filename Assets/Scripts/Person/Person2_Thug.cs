@@ -24,7 +24,7 @@ public class Person2_Thug : Person2 {
 		admireCooldownMin=20f;
 		admireCooldownMax=25f;
 		sanityMax=60;
-		speedNormal *= UnityEngine.Random.Range (0.7f,0.9f);
+		speedNormal = UnityEngine.Random.Range (10f,15f);
 		destroyCooldown=destroyCooldownMax;
 		base.Start ();
 	}
