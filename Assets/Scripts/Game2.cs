@@ -36,7 +36,7 @@ public class Game2 : MonoBehaviour {
 
 	//private int count; // what was this supposed to do?
 
-	public Sound sound; // which sound is this referring to?
+	private Sound sound; // which sound is this referring to? It is referenced in Start() 
 
 	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
@@ -392,8 +392,7 @@ public class Game2 : MonoBehaviour {
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
-		//audioSource = Camera.main.transform.Find ("Sound").GetComponent<AudioSource> ();
-		sound = GameObject.Find ("Main Game").GetComponent<Sound>();
+		sound = this.GetComponent<Sound> ();
 	}
 
 	private IEnumerator wait(float time){
@@ -402,8 +401,7 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
-		if (sound!=null)
-			sound.playBgmDay ();
+		sound.playBgmDay ();
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -415,8 +413,7 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
-		if (sound!=null)
-			sound.playBgmNight ();
+		sound.playBgmNight ();
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 //			Debug.Log (name + " is open: "+r.open);
