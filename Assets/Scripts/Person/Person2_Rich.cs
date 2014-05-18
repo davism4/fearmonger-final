@@ -3,15 +3,13 @@ using System.Collections;
 
 public class Person2_Rich : Person2 {
 
-	protected override void Start () {
-		fearDropMin=0;
-		fearDropMax=3;
-		moneyDropMin=1;
+	public Person2_Rich () {
+		fearDropMax=2;
 		moneyDropMax=3;
 		admireCooldownMin=12f;
 		admireCooldownMax=20f;
-		sanityMax=45;
-		speedNormal = UnityEngine.Random.Range (12f,17f);
-		base.Start();
+		sanityMax=20;
+		baseSpeedMin=15f;
+		baseSpeedMax=18f;
 	}
 }

@@ -11,8 +11,14 @@ public class Person2 : MonoBehaviour {
 	private float hpBarOffsetY, spriteWidth, spriteHeight;
 	[HideInInspector] public bool CanMove=true; // manual movement
 
-	protected int sanityMax;
-	public int sanity;
+	// Set in the editor:
+	public int sanityMax,// = 20,
+	fearDropMax,//=2,
+	moneyDropMax;//=2,
+	public float baseSpeedMin,//=10,
+	baseSpeedMax;//=15;
+	protected int fearDropMin=1, moneyDropMin=0;
+
 	public float healthPercent {
 		get {
 			return ((float)sanity)/sanityMax;
@@ -23,13 +29,13 @@ public class Person2 : MonoBehaviour {
 	SpriteRenderer spriteRenderer;
 	protected GUIText text;
 	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
-	public float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
+	protected float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
 	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=2.2f;
 	protected bool isLeaving=false;
+	[HideInInspector] public int sanity=0;
 	private bool isPossessed=false;
 	private float gravityScale;
 
-	protected int fearDropMin, fearDropMax, moneyDropMin, moneyDropMax;
 
 	// Determined by subclass
 	protected float speed;
@@ -93,6 +99,7 @@ public class Person2 : MonoBehaviour {
 	// PROTECTED/PRIVATE FUNCTIONS
 
 	protected virtual void Start () {
+		speedNormal = UnityEngine.Random.Range (baseSpeedMin,baseSpeedMax);
 		speed = speedNormal;
 		speedFast = speedNormal * 2f;
 		sanity=sanityMax; 
@@ -317,7 +324,10 @@ public class Person2 : MonoBehaviour {
 	private void LoadHPBar(){
 		spriteWidth = GameVars.hpBarRed.width*0.1f;
 		spriteHeight = GameVars.hpBarRed.height*0.1f;
-		hpBarOffsetY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+		if (GetComponent<SpriteRenderer>().sprite!=null)
+			hpBarOffsetY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+		else
+			hpBarOffsetY = 0;
 	}
 
 	// Isn't moving yet -> start moving in a random direction

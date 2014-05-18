@@ -18,7 +18,7 @@ public class Game2 : MonoBehaviour {
 	public int Day{get { return days; }}
 	public int CurrentRoomNumber { get { return currentRoomNumber; }}
 	public int RoomsOpen=0;
-	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
+	private const int nightDurationRealSecondsMax = 180; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
@@ -413,7 +413,8 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		Debug.Log ("Starting night..");
-		sound.playBgmNight ();
+		if (sound != null)
+			sound.playBgmNight ();
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 //			Debug.Log (name + " is open: "+r.open);

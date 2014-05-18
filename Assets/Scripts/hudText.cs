@@ -18,7 +18,7 @@ public class hudText : MonoBehaviour {
 		if (game==null){
 			game = GameObject.Find ("Main Game").GetComponent<Game2>();
 		}
-		//if (tutorial==null){
+			//if (tutorial==null){
 		//	tutorial = GameObject.Find ("Main Game").GetComponent<TutorialSlideshow>();
 		//}
 		dayStringRect = new Rect(0,yheight,70,25);

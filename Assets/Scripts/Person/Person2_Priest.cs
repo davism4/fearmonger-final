@@ -5,27 +5,25 @@ public class Person2_Priest : Person2 {
 
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
-	Trap target=null;
+	private Trap target=null;
 
 	public bool IS_ATTACKING {
 		get { return destroyCooldown > 0f; }
 	}
 
 	public void Animate(){
-		//
+		///?
 	}
 
-	protected override void Start () {
-		moneyDropMin=0;
+	public Person2_Priest () {
 		moneyDropMax=0;
-		fearDropMin=0;
 		fearDropMax=2;
 		admireCooldownMin=15f;
 		admireCooldownMax=25f;
-		sanityMax=60;
-		speedNormal = UnityEngine.Random.Range (8f,12f);
+		sanityMax=25;
+		baseSpeedMin=11f;
+		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;
-		base.Start ();
 	}
 	
 	public override void Interact(Furniture f){

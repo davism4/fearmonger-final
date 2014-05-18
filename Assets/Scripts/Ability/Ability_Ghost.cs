@@ -3,8 +3,10 @@ using System.Collections;
 
 public class Ability_Ghost : Ability {
 
+	// Ability #1
+
 	public Ability_Ghost () {
-		cooldownStart = 4f;
+		cooldownStart = 8f;
 		FearDamage=2;
 		Name="Ghost";
 		Description = "A spooky ghost appears and scares people.";

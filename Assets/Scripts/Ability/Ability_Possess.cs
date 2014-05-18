@@ -3,13 +3,15 @@ using System.Collections;
 
 public class Ability_Possess : Ability {
 
+	// Ability #5
+
 	public Ability_Possess () {
 		Name="Possession";
 		FearDamage = 5;
 		Description = "Selected person becomes possessed, scaring the other people in the room.";
-		Duration = 13f;
-		minFear=60;
-		useCost=20;
+		Duration = 20f;
+		minFear = 80;
+		useCost = 20;
 		cooldownStart=30f;
 	}
 

@@ -16,7 +16,9 @@ public class Furniture : MonoBehaviour {
 	public int buyCost=0;
 	private int durability, durabilityMax=99;
 	public int Durability {get {return durability; }}
-	public string DisplayName="";	
+	public string DisplayName { 
+		get { return name; }
+	}
 	[HideInInspector] public Node node = null;
 	public Room room {
 		get {return this.node.room;}

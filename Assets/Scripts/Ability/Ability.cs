@@ -5,11 +5,15 @@ using System.Collections.Generic;
 
 public class Ability : MonoBehaviour {
 	
-	[HideInInspector] public string Name, Description;
-	[HideInInspector] public bool Locked=true;
-	//public int MinLevel; // we might not use this
-	[HideInInspector] public int minFear, useCost, FearDamage;
-	protected float Duration; // in seconds
+	public string Name;
+	public string Description;
+	private bool locked=true;
+	public bool Locked { get { return locked; } set { locked = value; }}
+
+	// Show in inspector:
+	public int minFear, useCost, FearDamage;
+	public float Duration, cooldownStart; // in seconds
+
 	protected GameObject hazard=null, hazardInstance=null;
 	protected Game2 game;
 	public AudioClip effectSound;
@@ -18,7 +22,7 @@ public class Ability : MonoBehaviour {
 	// protected MainGame game
 
 	public float cooldownTimer=0f;
-	protected float cooldownStart; // counts down 
+
 	public bool isCooldown {
 		get { return  cooldownTimer>0f;} }
 	

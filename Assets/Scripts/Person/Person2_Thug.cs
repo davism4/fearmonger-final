@@ -5,7 +5,7 @@ public class Person2_Thug : Person2 {
 
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
-	Furniture target=null;
+	private Furniture target=null;
 
 	public bool IS_ATTACKING {
 		get { return destroyCooldown > 0f; }
@@ -16,17 +16,15 @@ public class Person2_Thug : Person2 {
 	}
 	
 	// Use this for initialization
-	protected override void Start () {
-		moneyDropMin=1;
-		moneyDropMax=2;
-		fearDropMin=1;
+	public Person2_Thug () {
+		moneyDropMax=1;
 		fearDropMax=2;
 		admireCooldownMin=20f;
 		admireCooldownMax=25f;
-		sanityMax=60;
-		speedNormal = UnityEngine.Random.Range (10f,15f);
+		sanityMax=25;
+		baseSpeedMin=11f;
+		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;
-		base.Start ();
 	}
 	
 	public override void Interact(Furniture f){

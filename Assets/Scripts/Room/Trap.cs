@@ -48,5 +48,6 @@ public class Trap : Furniture {
 		if (anim!=null){
 			anim.SetBool ("activated", Used);
 		}
+		base.Update();
 	}
 }
