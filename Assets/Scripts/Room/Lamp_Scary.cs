@@ -29,20 +29,14 @@ public class Lamp_Scary : Lamp {
 		}
 	}
 
-	public override void Flip(Person2 p){
-		Flip ();
-		p.Scare(3);
-		
-	}
-
 	protected override void OnTriggerEnter2D(Collider2D other){
 		if (other.CompareTag("Person")){
 			Person2 p = other.GetComponent<Person2>();
 			if (!isOn){
 				p.Interact(this);
-				Flip (p);
+			//	Flip (p);
+				p.Scare(3);
 			}
-			p.Scare (1);
 		}
 	}
 	/* // why is this here?
