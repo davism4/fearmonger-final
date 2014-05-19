@@ -40,7 +40,7 @@ public class Furniture : MonoBehaviour {
 		}
 	}
 
-	public void Repair(int delta){
+	public virtual void Repair(int delta){
 		durability += delta;
 		if (durability > durabilityMax)
 			durability=durabilityMax;

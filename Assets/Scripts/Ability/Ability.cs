@@ -11,7 +11,10 @@ public class Ability : MonoBehaviour {
 	public bool Locked { get { return locked; } set { locked = value; }}
 
 	// Show in inspector:
-	public int minFear, useCost, FearDamage;
+	protected int minFear, useCost, FearDamage;
+	public int MinFear {
+		get {return minFear;}
+	}
 	public float Duration, cooldownStart; // in seconds
 
 	protected GameObject hazard=null, hazardInstance=null;
@@ -61,7 +64,7 @@ public class Ability : MonoBehaviour {
 		if (CanUse()){
 			cooldownTimer = cooldownStart;
 			game.fearEnergy -= useCost;
-			Debug.Log("Used ability "+ this.Name);
+			Debug.Log("Used ability "+ this.Name +" set with "+FearDamage+" dmg.");
 			if (hazard!=null) {
 				hazardInstance = GameObject.Instantiate(hazard,new Vector3(hit.point.x,hit.point.y,0f),Quaternion.identity) as GameObject;
 				hazardInstance.GetComponent<Hazard>().SetValues(Duration, FearDamage);

@@ -18,6 +18,11 @@ public class Trap : Furniture {
 		base.Start();
 	}
 
+	public override void Repair(int delta){
+		if (UnityEngine.Random.Range(0,10)>5)
+			Reset ();
+		base.Repair (delta);
+	}
 
 	public void Activate(){
 		if (!Used){

@@ -20,7 +20,7 @@ public class Person2_Priest : Person2 {
 		fearDropMax=2;
 		admireCooldownMin=15f;
 		admireCooldownMax=25f;
-		sanityMax=25;
+		sanityMax=24;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;

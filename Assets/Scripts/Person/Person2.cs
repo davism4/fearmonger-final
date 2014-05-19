@@ -19,20 +19,16 @@ public class Person2 : MonoBehaviour {
 	baseSpeedMax;//=15;
 	protected int fearDropMin=1, moneyDropMin=0;
 
-	public float healthPercent {
-		get {
-			return ((float)sanity)/sanityMax;
-		}
-	}
+	public float healthPercent;
 	[HideInInspector] public Room room;
 //	Game2 game;
 	SpriteRenderer spriteRenderer;
 	protected GUIText text;
 	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
 	protected float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
-	private const float hurtTimeMax=1.8f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=5.0f;
+	private const float hurtTimeMax=2f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=5f;
 	protected bool isLeaving=false;
-	[HideInInspector] public int sanity=0;
+	public int sanity;
 	private bool isPossessed=false;
 	private float gravityScale;
 
@@ -53,7 +49,6 @@ public class Person2 : MonoBehaviour {
 		if (!isHurt){
 			if (screamSound!=null && UnityEngine.Random.Range (0,10)<5)
 				AudioSource.PlayClipAtPoint (screamSound, Camera.main.transform.position);
-
 			sanity -= damage;
 			if (sanity<0) {
 				sanity=0;
@@ -61,7 +56,9 @@ public class Person2 : MonoBehaviour {
 			}
 			isHurt=true;
 			hurtCooldown=hurtTimeMax;
+			healCooldown=healCooldownMax;
 			speed=speedFast;
+			Debug.Log ("Sanity has dropped to "+sanity);
 			if (!isPossessed)
 				spriteRenderer.color = Color.red;
 			// Maybe show some text:
@@ -143,12 +140,12 @@ public class Person2 : MonoBehaviour {
 		} else {
 			spriteRenderer.color = Color.white;
 		}*/
-		if (isLeaving==true){
+		if (sanity <=0 || isLeaving==true){
 			UpdateLeaving ();
 		} else {
 			UpdateNormal ();
 		}
-		if (isMessage){
+		/*if (isMessage){
 			if (messageCooldown>0) {
 				messageCooldown -= Time.deltaTime;
 			} else {
@@ -157,7 +154,7 @@ public class Person2 : MonoBehaviour {
 				isMessage=false;
 			}
 
-		}
+		}*/
 
 		if (anim!=null){
 			anim.SetBool ("walkRight", IS_FACING_RIGHT);
@@ -178,11 +175,12 @@ public class Person2 : MonoBehaviour {
 		if (showHPCooldown>0) {
 			showHPCooldown -= dt;
 		}
-		if (sanity < sanityMax){
-			if (healCooldown>0 && !isHurt){
+		if (sanity < sanityMax && !isHurt){
+			if (healCooldown>0){
 				healCooldown -= dt;
 			} else {
 				healCooldown= healCooldownMax;
+				Debug.Log ("healing "+name);
 				sanity++;
 			}
 		}
@@ -317,7 +315,8 @@ public class Person2 : MonoBehaviour {
 
 	private void OnGUI(){
 		if (Time.timeScale<=0) return;
-		if (showHPCooldown>0f){
+		else if (showHPCooldown>0f){
+			healthPercent = ((float)sanity)/sanityMax;
 			Vector3 v = Camera.main.WorldToScreenPoint(transform.position);
 			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth,spriteHeight),GameVars.hpBarRed,ScaleMode.StretchToFill);
 			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth*healthPercent,spriteHeight),GameVars.hpBarGreen,ScaleMode.StretchToFill);

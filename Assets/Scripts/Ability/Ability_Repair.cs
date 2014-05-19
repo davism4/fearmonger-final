@@ -7,12 +7,12 @@ public class Ability_Repair : Ability {
 
 	public Ability_Repair () {
 		Name="Repair";
-		FearDamage = 5;
+		FearDamage = 9;
 		Description = "Haunted repair tools that fix damaged furniture.";
 		Duration = 3;
 		minFear=20;
 		useCost=10;
-		cooldownStart = 10;
+		cooldownStart = 9;
 	}
 	
 	protected override void Start(){

@@ -10,7 +10,7 @@ public class Game2 : MonoBehaviour {
 	public float BASE_CAM_SPEED = 25f;
 
 	// don't edit these values:
-	private const float fearDecayCooldownMax=5f;
+	private const float fearDecayCooldownMax=6f;
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCooldown=0f, fearDecayCooldown=0f;
 	private const float enemyGenCooldownMax=20f, roomCheckCooldownMax=2f;
@@ -59,7 +59,7 @@ public class Game2 : MonoBehaviour {
 	// ================== INTERFACE ================== //
 	// =============================================== //
 	private Texture2D fearBarTexture, fearBarTextureBlack;
-	private Texture2D[] abilityIcons;
+//	private Texture2D[] abilityIcons;
 	private float fearBarHeight=33f;
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
@@ -94,7 +94,7 @@ public class Game2 : MonoBehaviour {
 			for (int i=0;i<listAbilities.Length;i++){
 				GUI.backgroundColor = Color.magenta;
 				GUI.contentColor = Color.white;
-				if(fearEnergy < listAbilities[i].minFear){ 
+				if(fearEnergy < listAbilities[i].MinFear){ 
 					GUI.contentColor=Color.gray;
 				} else {
 					if (listAbilities[i].isCooldown)
@@ -106,9 +106,9 @@ public class Game2 : MonoBehaviour {
 				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
 				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities[i].ShowName(),
 				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
-				                          + " Costs " + listAbilities[i].minFear + " Fear"))) {
+				                          + " Costs " + listAbilities[i].MinFear + " Fear"))) {
 					//cursorAppearance.SetSprite (2);
-					if(fearEnergy >= listAbilities[i].minFear){
+					if(fearEnergy >= listAbilities[i].MinFear){
 						currentAbility = listAbilities[i];
 					}
 				}
@@ -382,13 +382,13 @@ public class Game2 : MonoBehaviour {
 		GameVars.WallRight=transform.FindChild("Marker RightWall").transform.position.x;//rooms[0].XRight;
 		GameVars.WallLeftSoft=transform.FindChild("Marker LeftSoftWall").transform.position.x;//=GameVars.WallLeft+2f;
 		GameVars.WallRightSoft=transform.FindChild("Marker RightSoftWall").transform.position.x;//=GameVars.WallRight-2f;
-		Debug.Log ("Walls: "+GameVars.WallLeft);
-		Debug.Log ("Wall left (soft) = "+GameVars.WallLeftSoft);
-		Debug.Log ("Walls: "+GameVars.WallRight);
-		Debug.Log ("Wall right (soft) = "+GameVars.WallRightSoft);
+//		Debug.Log ("Walls: "+GameVars.WallLeft);
+//		Debug.Log ("Wall left (soft) = "+GameVars.WallLeftSoft);
+//		Debug.Log ("Walls: "+GameVars.WallRight);
+//		Debug.Log ("Wall right (soft) = "+GameVars.WallRightSoft);
 		fearBarTexture = Resources.Load<Texture2D>("Sprites/gui/fearprogress-purple");
 		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
-		abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
+		//abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
 		//GameVars.hpBarRed = 
 		//GameVars.hpBarGreen = Resources.Load<Texture2D>("Sprites/gui/hpBarGreen");
 		listAbilities = new Ability[5]; // these are attached to the Main Game transform
@@ -523,11 +523,20 @@ public class Game2 : MonoBehaviour {
 				RegisterHitDaytime (hit);
 			}
 		} else if (Input.GetMouseButtonDown (0)){
-			Debug.Log ("registering click...");
-
-			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
+//			Debug.Log ("registering click...");
+			if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
+				//			Debug.Log ("registering click...with ability");
+				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Node") ||
+				    hit.collider.gameObject.CompareTag ("Furniture") || hit.collider.gameObject.CompareTag ("Person")){
+					if (currentAbility.CanUse ()){
+						currentAbility.UseAbility (hit);
+						currentAbility=null;
+					}
+				}
+			}
+			else if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);
-				currentAbility=null; 
+				currentAbility=null;  // possession
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
 	//			Debug.Log ("registering click...on furniture");
 				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
@@ -545,16 +554,7 @@ public class Game2 : MonoBehaviour {
 					Debug.Log("Activating");
 					(f as Trap).Activate ();
 				}
-			} else if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
-	//			Debug.Log ("registering click...with ability");
-				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Node") ||
-				    hit.collider.gameObject.CompareTag ("Furniture")){
-					if (currentAbility.CanUse ()){
-						currentAbility.UseAbility (hit);
-						currentAbility=null;
-					}
-				}
-			} 
+			}
 		}
 
 	}

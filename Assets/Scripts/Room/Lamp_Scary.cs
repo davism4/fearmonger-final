@@ -9,7 +9,7 @@ public class Lamp_Scary : Lamp {
 	protected Animator anim;
 	public bool inactive=false;
 	public bool Used=false;
-
+	public int damage=4;
 	float cooldown=0f;
 
 	protected override void Start(){
@@ -35,7 +35,7 @@ public class Lamp_Scary : Lamp {
 			if (!isOn){
 				p.Interact(this);
 			//	Flip (p);
-				p.Scare(3);
+				p.Scare(damage);
 			}
 		}
 	}

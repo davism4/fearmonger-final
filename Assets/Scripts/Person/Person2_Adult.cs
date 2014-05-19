@@ -8,7 +8,7 @@ public class Person2_Adult : Person2 {
 		moneyDropMax=2;
 		admireCooldownMax=25f;
 		admireCooldownMin=20f;
-		sanityMax=25;
+		sanityMax=24;
 		baseSpeedMin=15f;
 		baseSpeedMax=18f;
 	}

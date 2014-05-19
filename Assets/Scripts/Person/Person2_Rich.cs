@@ -8,7 +8,7 @@ public class Person2_Rich : Person2 {
 		moneyDropMax=3;
 		admireCooldownMin=12f;
 		admireCooldownMax=20f;
-		sanityMax=20;
+		sanityMax=24;
 		baseSpeedMin=15f;
 		baseSpeedMax=18f;
 	}

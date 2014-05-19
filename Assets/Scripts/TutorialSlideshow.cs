@@ -12,7 +12,7 @@ public class TutorialSlideshow : MonoBehaviour {
 	int height=40, width=80;
 	int slideleft = 80;
 	//int slidetop = 20;
-	int slideright, slidebottom;
+	int slidebottom;
 	int bottomMargin = 20;
 
 	// Use this to format the text boxes. Make sure to select Word Wrap.
@@ -24,7 +24,7 @@ public class TutorialSlideshow : MonoBehaviour {
 		mytype = Resources.Load<Font>("Fonts/my_type_of_font/mytype");
 //		slideleft = GameObject.FindObjectOfType<hudText>().LEFT_EDGE;
 		slidebottom = Screen.height - bottomMargin;
-		slideright = Screen.width - width;
+		//slideright = Screen.width - width;
 		closeButtonRect = new Rect (Screen.width - width-1, 1, width-1, height+1);
 		mainRect = new Rect(slideleft, 10, Screen.width - width - slideleft - 10, slidebottom - 10);
 

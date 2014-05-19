@@ -25,6 +25,7 @@ public class Hazard_Ghost : Hazard {
 		if (other.CompareTag ("Person")){
 			Person2 p = other.transform.GetComponent<Person2>();
 			p.Scare (damage);
+		//	Debug.Log ("Scaring for "+damage+" damage.");
 		}
 	}
 }

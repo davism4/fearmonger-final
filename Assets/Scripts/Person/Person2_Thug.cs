@@ -21,7 +21,7 @@ public class Person2_Thug : Person2 {
 		fearDropMax=2;
 		admireCooldownMin=20f;
 		admireCooldownMax=25f;
-		sanityMax=25;
+		sanityMax=20;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;

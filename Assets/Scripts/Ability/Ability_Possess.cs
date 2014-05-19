@@ -7,12 +7,12 @@ public class Ability_Possess : Ability {
 
 	public Ability_Possess () {
 		Name="Possession";
-		FearDamage = 5;
+		FearDamage = 7;
 		Description = "Selected person becomes possessed, scaring the other people in the room.";
 		Duration = 20f;
 		minFear = 80;
 		useCost = 20;
-		cooldownStart=30f;
+		cooldownStart=25f;
 	}
 
 	protected override void Start(){

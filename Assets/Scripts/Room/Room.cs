@@ -137,14 +137,14 @@ public class Room : MonoBehaviour {
 	// Chance of a rich person appearing is proportional to the quality
 	private GameObject RandomPerson(bool adult){
 		int gender = UnityEngine.Random.Range (0,2);
-		if (adult){
-			if (quality>4 && UnityEngine.Random.value<0.1f*quality)
+		if (adult){ // forced
+			if (quality>9 && UnityEngine.Random.value<0.1f*quality)
 				return people[2,gender];
 			else // below a quality level, no rich people check in
 				return people[1,gender];
-		} else if (quality <=4) {// no rich people
+		} else if (quality <=9) {// no rich people
 			if (UnityEngine.Random.value<0.5f)
-				return people[2,gender];
+				return people[1,gender];
 			else
 				return people[0,gender];
 		} else {
@@ -159,9 +159,9 @@ public class Room : MonoBehaviour {
 
 	// the priest or thug enters/exits a room
 	public void AddEnemy(GameObject enemy){
-		//Instantiate(enemy,spawnPosition,Quaternion.identity);
-		enemy.transform.position = spawnPosition;
-		Person2 p = enemy.GetComponent<Person2>();
+		GameObject g = Instantiate(enemy,spawnPosition,Quaternion.identity) as GameObject;
+		g.transform.position = spawnPosition;
+		Person2 p = g.GetComponent<Person2>();
 		p.SetRoom (this);
 		occupants.Add (p);
 	}
@@ -192,6 +192,7 @@ public class Room : MonoBehaviour {
 
 			}
 			quality = (totalcost/100)+1;
+			Debug.Log(name+" quality: "+quality);
 			GameObject personGen = RandomPerson (true);
 			GameObject pero = Instantiate(personGen,spawnPosition,Quaternion.identity) as GameObject;
 			Person2 p = pero.GetComponent<Person2>();
