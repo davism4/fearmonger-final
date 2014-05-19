@@ -414,6 +414,12 @@ public class Game2 : MonoBehaviour {
 		collectFear = Resources.Load<AudioClip> ("Sounds/collect_fear");
 		clickSound = Resources.Load<AudioClip> ("Sounds/click");
 		lampSwitch = Resources.Load<AudioClip> ("Sounds/lamp_switch");
+
+		if (START_AT_NIGHT){
+			sound.playBgmNight();
+		} else {
+			sound.playBgmDay();
+		}
 	}
 
 	private IEnumerator wait(float time){

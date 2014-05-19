@@ -26,7 +26,7 @@ public class startgame : MonoBehaviour {
 	}
 
 	private void Start(){
-		Screen.showCursor = false; 
+		Screen.showCursor = true; 
 		texes = Resources.LoadAll<Texture2D>("Sprites/Cursors");
 		//spriteRenderer = transform.GetComponent<SpriteRenderer>();
 		texw=texes[0].width;

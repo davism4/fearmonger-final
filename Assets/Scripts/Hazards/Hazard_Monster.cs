@@ -46,6 +46,9 @@ public class Hazard_Monster : Hazard {
 				transform.position += speed*Vector3.left*Time.deltaTime;
 			}
 		}
+
+		Animate ();
+
 		base.Update ();
 	}
 
