@@ -41,7 +41,7 @@ public class Person2 : MonoBehaviour {
 	protected float speed;
 	protected float speedNormal, speedFast, admireCooldownMax=99f, admireCooldownMin=99f;
 	
-
+	public AudioClip screamSound;
 	
 	// PUBLIC FUNCTIONS
 
@@ -51,6 +51,9 @@ public class Person2 : MonoBehaviour {
 	
 	public virtual void Scare(int damage){
 		if (!isHurt){
+			if (screamSound!=null && UnityEngine.Random.Range (0,10)<5)
+				AudioSource.PlayClipAtPoint (screamSound, transform.position);
+
 			sanity -= damage;
 			if (sanity<0) {
 				sanity=0;
