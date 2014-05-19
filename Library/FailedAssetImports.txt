@@ -1,1 +1,0 @@
-Assets/Resources/Sprites/Person/Thug/Thug-Hit/Thug_hit.png

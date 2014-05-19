@@ -9,7 +9,7 @@ public class TutorialSlideshow : MonoBehaviour {
 	int NightslideIndex = 0;
 	string[] NightSlides = new string[4]; // use as many as necessary
 	string[] DaySlides = new string[6]; // use as many as necessary
-	int height=40, width=60;
+	int height=40, width=80;
 	int slideleft = 80;
 	//int slidetop = 20;
 	int slideright, slidebottom;
@@ -77,7 +77,7 @@ public class TutorialSlideshow : MonoBehaviour {
 			"GHOST: Summon a ghost where you click.\n\n" +
 				"REPAIR: Fix damaged furniture and restore their durability. Click on a piece of " +
 				"furniture to use this ability. It can also reset your traps. Requires 20 fear.\n\n" +
-				"CLAW: Finds the nearest person and drags them back to the claw's origin. Requires 40 fear.\n" +
+				"CLAW: Finds the nearest person and drags them back to the claw's origin. Requires 40 fear.\n\n" +
 				"MONSTER: Moves around the room and terrifies anyone in its way. Requires 60 fear.\n\n" +
 				"POSSESSION: Turn a person into your own puppet and scare their roommates. " +
 				"Click on a person to use this ability. Requires 80 fear.";
