@@ -40,6 +40,7 @@ public class Game2 : MonoBehaviour {
 
 	private Sound sound; // which sound is this referring to? It is referenced in Start() 
 	private AudioClip collectSound;
+	private AudioClip collectFear;
 	private AudioClip clickSound;
 	private AudioClip lampSwitch;
 
@@ -409,6 +410,7 @@ public class Game2 : MonoBehaviour {
 		GameVars.interactLayer = (alayer | blayer);
 		sound = this.GetComponent<Sound> ();
 		collectSound = Resources.Load<AudioClip> ("Sounds/collect");
+		collectFear = Resources.Load<AudioClip> ("Sounds/collect_fear");
 		clickSound = Resources.Load<AudioClip> ("Sounds/click");
 		lampSwitch = Resources.Load<AudioClip> ("Sounds/lamp_switch");
 	}
@@ -467,6 +469,8 @@ public class Game2 : MonoBehaviour {
 			money += 10;
 		} else if (hit.collider.gameObject.CompareTag("FearPickup")){
 			DestroyObject (hit.collider.gameObject);
+			if(collectFear != null)
+				AudioSource.PlayClipAtPoint (collectFear, Camera.main.transform.position);
 			fearEnergy++;
 		} else if (hit.collider.gameObject.CompareTag ("Person")){
 			Person2 p = hit.collider.gameObject.GetComponent<Person2>();
