@@ -133,9 +133,8 @@ public class Game2 : MonoBehaviour {
 					if (GUI.Button (new Rect(x*Screen.width/(furnitureTypes.Length/2),
 					                         Screen.height-row*30,
 					                         Screen.width/(furnitureTypes.Length/2),
-					                         30), new GUIContent(furnitureTypes[index].DisplayName, 
-					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description
-					                    	   + " Costs $" + furnitureTypes[index].buyCost))){
+					                         30), new GUIContent(furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost, 
+					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description))){
 						if (money >= furnitureTypes[index].buyCost) {
 							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
 							currentFurnitureIndex = index;
