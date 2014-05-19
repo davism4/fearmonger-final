@@ -5,7 +5,7 @@
 	<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
 	<ProductVersion>10.0.20506</ProductVersion>
 	<SchemaVersion>2.0</SchemaVersion>
-	<ProjectGuid>{4426453A-0BE0-918E-3B53-720B85C78630}</ProjectGuid>
+	<ProjectGuid>{47EC3055-A989-25E5-222F-169EB2A8DE02}</ProjectGuid>
 	<OutputType>Library</OutputType>
 	<AppDesignerFolder>Properties</AppDesignerFolder>
 	<RootNamespace></RootNamespace>
@@ -90,13 +90,9 @@
      <Compile Include="Assets\Scripts\gui\triangledown.cs" />
      <Compile Include="Assets\Scripts\gui\triangleup.cs" />
      <Compile Include="Assets\Scripts\hudText.cs" />
-     <Compile Include="Assets\Scripts\message.cs" />
      <Compile Include="Assets\Scripts\old\Ability_Darkness.cs" />
      <Compile Include="Assets\Scripts\old\Ability_Spiders.cs" />
-     <Compile Include="Assets\Scripts\old\DoorObject.cs" />
      <Compile Include="Assets\Scripts\old\Game.cs" />
-     <Compile Include="Assets\Scripts\old\LampObject.cs" />
-     <Compile Include="Assets\Scripts\old\MovableObject.cs" />
      <Compile Include="Assets\Scripts\old\Person.cs" />
      <Compile Include="Assets\Scripts\old\Person_Adult.cs" />
      <Compile Include="Assets\Scripts\old\Person_Candle.cs" />
