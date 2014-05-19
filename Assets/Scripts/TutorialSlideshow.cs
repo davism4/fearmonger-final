@@ -5,9 +5,10 @@ public class TutorialSlideshow : MonoBehaviour {
 
 	//Texture2D[] NightSlides;
 	//Texture2D[] DaySlides;
-	int slideIndex=0;
-	string[] NightSlides = new string[10]; // use as many as necessary
-	string[] DaySlides = new string[10]; // use as many as necessary
+	int DayslideIndex=0;
+	int NightslideIndex = 0;
+	string[] NightSlides = new string[4]; // use as many as necessary
+	string[] DaySlides = new string[6]; // use as many as necessary
 	int height=20, width=50;
 	int slideleft = 70;
 	int slidetop = 20;
@@ -23,7 +24,7 @@ public class TutorialSlideshow : MonoBehaviour {
 		slidebottom = Screen.height - bottomMargin;
 		slideright = Screen.width - width;
 		closeButtonRect = new Rect (Screen.width - width, 0, width, height);
-		mainRect = new Rect(slideleft, 20, slideright - slideleft, Mathf.Abs (slidebottom-slidetop));
+		mainRect = new Rect(500, 20, 600, 150);
 		DaySlides[0] = "How to Play: Daytime\n\nYou are the manager of a hotel...";
 		DaySlides[1] = "Each floor has 5 spaces where you can place furniture. To place furniture, select\n" +
 			"a type of furniture from the buttons at the bottom of the screen. Some furniture is for\n" +
@@ -72,32 +73,32 @@ public class TutorialSlideshow : MonoBehaviour {
 				Time.timeScale=1.0f;
 			} 
 			if (GameVars.IsNight){
-				if (slideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back",style)){
-						slideIndex--;
+				if (NightslideIndex>0){
+					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back")){
+						NightslideIndex--;
 					}
 				}
-				if (slideIndex<NightSlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next",style)){
-						slideIndex++;
+				if (NightslideIndex<NightSlides.Length-1){
+					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next")){
+						NightslideIndex++;
 					}
 				}
-				GUI.Box (mainRect,NightSlides[slideIndex]);
+				GUI.Box (mainRect,NightSlides[NightslideIndex]);
 			} else {
-				if (slideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back",style)){
-						slideIndex--;
+				if (DayslideIndex>0){
+					if (GUI.Button (new Rect (Screen.width - width, height, width, height), "Back")){
+						DayslideIndex--;
 					}
 				}
-				if (slideIndex<DaySlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next",style)){
-						slideIndex++;
+				if (DayslideIndex<DaySlides.Length-1){
+					if (GUI.Button (new Rect (Screen.width - width, 2*height, width, height), "Next")){
+						DayslideIndex++;
 					}
 				}
-				GUI.Box (mainRect,DaySlides[slideIndex],style);
+				GUI.Box (mainRect,DaySlides[DayslideIndex]);
 			}
 		} else {
-			if (GUI.Button (new Rect (Screen.width - width, 0, width, height), "Help",style)){
+			if (GUI.Button (new Rect (Screen.width - width, 0, width, height), "Help")){
 				GameVars.IsPausedTutorial=true;
 				Time.timeScale=0.0f;
 			}
