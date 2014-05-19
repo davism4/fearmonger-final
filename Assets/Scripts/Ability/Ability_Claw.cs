@@ -8,10 +8,10 @@ public class Ability_Claw : Ability {
 	public Ability_Claw () {
 		FearDamage=5;
 		Name="Phantom Claw";
-		Description = "A hand appears and reaches out and pulls in the closest victim.";
+		Description = "A hand appears and reaches out and pulls in the nearest victim.";
 		Duration = 8f;
 		minFear=40;
-		useCost=30;
+		useCost=10;
 		cooldownStart = 15f;
 	}
 

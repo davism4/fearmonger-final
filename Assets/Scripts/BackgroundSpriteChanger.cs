@@ -18,9 +18,9 @@ public class BackgroundSpriteChanger : MonoBehaviour {
 		} else {
 			this.GetComponent<SpriteRenderer> ().sprite = dayBackground;
 		}
-		
-		if (Input.GetKeyDown ("space")) {
-			GameVars.IsNight = !GameVars.IsNight;
-		}
+		transform.position = new Vector3(0, 10+Camera.main.transform.position.y*0.9f,30);
+		//if (Input.GetKeyDown ("space")) {
+		//	GameVars.IsNight = !GameVars.IsNight;
+		//}
 	}
 }

@@ -144,19 +144,24 @@ public class Game2 : MonoBehaviour {
 	}
 
 	private void BuyRoom(){
-		if (RoomsOpen < rooms.Length){
-			rooms[RoomsOpen].Buy ();
-			RoomsOpen++;
-		}
-//			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
-		if (RoomsOpen < rooms.Length) {
-//			Debug.Log ("Moving padlock to floor "+(RoomsOpen+1));
-			padlock.MoveToFloor(RoomsOpen);
-		}
-		else {
-//			Debug.Log ("Destroying padlock");
-			padlock.Delete ();
-			padlock=null;
+		Debug.Log ("buy room");
+		if (money>= rooms[RoomsOpen].Cost){
+			if (RoomsOpen < rooms.Length){
+				rooms[RoomsOpen].Buy ();
+				RoomsOpen++;
+			}
+	//			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
+			if (RoomsOpen < rooms.Length) {
+	//			Debug.Log ("Moving padlock to floor "+(RoomsOpen+1));
+				padlock.MoveToFloor(RoomsOpen);
+			}
+			else {
+	//			Debug.Log ("Destroying padlock");
+				padlock.Delete ();
+				padlock=null;
+			}
+		} else {
+			Debug.Log ("You need "+rooms[RoomsOpen].Cost+" to open a new floor.");
 		}
 	}
 
@@ -342,7 +347,7 @@ public class Game2 : MonoBehaviour {
 	//		GameObject o = GameObject.Find (s);
 	//		Debug.Log ("Room "+s+" found: "+(bool)(o==null));
 	//		rooms[i] = GameObject.Find ("Room "+(i+1).ToString ()).GetComponent<Room>();
-			rooms[i].Cost = 1000 + 500*i;
+			rooms[i].Cost = 500*(1+i);
 			rooms[i].Start();
 			if (i<RoomsOpen){
 				rooms[i].Buy ();
@@ -401,7 +406,11 @@ public class Game2 : MonoBehaviour {
 
 	private void StartDay(){
 		Debug.Log ("Starting day...");
-		sound.playBgmDay ();
+		if (sound != null)
+			sound.playBgmDay ();
+		else {
+			Debug.LogWarning ("Day background music missing@");
+		}
 		GameVars.IsNight=false;
 		days++;
 		foreach (Room r in rooms){
@@ -415,6 +424,8 @@ public class Game2 : MonoBehaviour {
 		Debug.Log ("Starting night..");
 		if (sound != null)
 			sound.playBgmNight ();
+		else
+			Debug.LogWarning ("Night background music missing");
 		foreach (Room r in rooms){
 			r.DisplayGrid (false);
 //			Debug.Log (name + " is open: "+r.open);
@@ -461,7 +472,7 @@ public class Game2 : MonoBehaviour {
 			}
 		}
 		if (!GameVars.IsNight) {
-			if (padlock!=null && hit.collider.gameObject.CompareTag ("Padlock")){
+			if (padlock!=null && Input.GetMouseButtonDown (0) && hit.collider.gameObject.CompareTag ("Padlock")){
 				BuyRoom();
 			} else {
 				RegisterHitDaytime (hit);
