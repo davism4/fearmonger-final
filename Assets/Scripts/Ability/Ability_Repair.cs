@@ -17,7 +17,7 @@ public class Ability_Repair : Ability {
 	
 	protected override void Start(){
 		hazard=Resources.Load<GameObject>("Prefabs/Hazards/Repair");
-		effectSound=Resources.Load<AudioClip>("Sounds/PLACEHOLDER-darksound");
+		effectSound=Resources.Load<AudioClip>("Sounds/fixing");
 		base.Start();
 	}
 	

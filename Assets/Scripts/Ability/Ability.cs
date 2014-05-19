@@ -66,7 +66,7 @@ public class Ability : MonoBehaviour {
 				hazardInstance = GameObject.Instantiate(hazard,new Vector3(hit.point.x,hit.point.y,0f),Quaternion.identity) as GameObject;
 				hazardInstance.GetComponent<Hazard>().SetValues(Duration, FearDamage);
 				if(effectSound!=null)
-					AudioSource.PlayClipAtPoint (effectSound, hazard.transform.position);
+					AudioSource.PlayClipAtPoint (effectSound, Camera.main.transform.position);
 			}
 		}
 
