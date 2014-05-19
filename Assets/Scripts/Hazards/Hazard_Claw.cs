@@ -10,19 +10,21 @@ public class Hazard_Claw : Hazard {
 	private const float speed=10f, speedslow=5f;
 	private bool isExtending=true;
 	private GameObject target=null;
+	float t = 0f;
 
 	// Find closest person and target them
 	protected override void Start () {
 		//duration = GameVars.duration_claw;
 		//damage = GameVars.damage_claw;
 		base.Start ();
-
+		fadeTime = 0.15f*duration;
 		origin = new Vector2(transform.position.x, transform.position.y);
 		FindTarget ();
 	}
 
 	private void FindTarget(){
 		GameObject[] people = GameObject.FindGameObjectsWithTag ("Person");
+		Debug.Log("Found "+people.Length+" people.");
 		float minY=999f, minX=999f, disY, disX;
 		// approximates the closest person, usually within the same or closest floor
 		foreach (GameObject o in people){
@@ -59,6 +61,7 @@ public class Hazard_Claw : Hazard {
 	}
 
 	protected override void Update () {
+		t += Time.deltaTime;
 		if(target==null){
 			FindTarget ();
 		} else {

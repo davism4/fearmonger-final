@@ -62,6 +62,7 @@ public class Hazard_Monster : Hazard {
 		else 
 			IS_FACING_RIGHT = (0.5f>=UnityEngine.Random.value);
 		anim = transform.GetComponent<Animator>();
+		fadeTime = 0.2f;
 	}
 
 	private void OnTriggerEnter2D(Collider2D other){

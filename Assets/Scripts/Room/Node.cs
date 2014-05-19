@@ -12,17 +12,24 @@ public class Node : MonoBehaviour {
 	public Furniture furniture {
 		get {return content.GetComponent<Furniture>();}
 	}
+	private SpriteRenderer srenderer;
 
 	public void DisplayBorder(bool on){
 		if (empty){
-			GetComponent<SpriteRenderer>().enabled=on;
+			srenderer.enabled=on;
 		//	GetComponent<BoxCollider2D>().enabled=on;
 		}
+	}
+
+	private void Update(){
+		srenderer.enabled = (bool)(!GameVars.IsNight && GameVars.IsPlacingFurniture &&
+		                          content==null);
 	}
 
 	void Start () {
 	//	box = GetComponent<BoxCollider2D>();
 		room = transform.parent.GetComponent<Room>();
+		srenderer = GetComponent<SpriteRenderer>();
 	}
 
 	public void Add(GameObject o){
@@ -31,7 +38,8 @@ public class Node : MonoBehaviour {
 			this.content = instance;
 			room.AddItem(this.content);
 			this.content.GetComponent<Furniture>().SetNode(this);
-			GetComponent<SpriteRenderer>().enabled=false;
+			srenderer.enabled=false;
+			GameVars.IsPlacingFurniture=false;
 			//GetComponent<BoxCollider2D>().enabled=false;
 		}
 	}
@@ -47,6 +55,6 @@ public class Node : MonoBehaviour {
 	public void Clear(){
 		room.RemoveItem (this.content);
 		this.content = null;
-		GetComponent<SpriteRenderer>().enabled=true;
+		srenderer.enabled=true;
 	}
 }

@@ -81,6 +81,8 @@ public class Game2 : MonoBehaviour {
 	private void OnGUI(){
 		GUI.skin.font = mytype;
 		if (Time.timeScale<=0) return;
+		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		hit = Physics2D.Raycast(ray.origin,ray.direction);
 		if (GameVars.IsNight){
 
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
@@ -420,6 +422,7 @@ public class Game2 : MonoBehaviour {
 	}
 
 	private void StartDay(){
+		GetComponent<Light>().enabled=true;
 		Debug.Log ("Starting day...");
 		if (sound != null)
 			sound.playBgmDay ();
@@ -436,6 +439,7 @@ public class Game2 : MonoBehaviour {
 	
 	public void StartNight(){
 		GameVars.IsNight=true;
+		GetComponent<Light>().enabled=false;
 		Debug.Log ("Starting night..");
 		if (sound != null)
 			sound.playBgmNight ();

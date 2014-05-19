@@ -12,4 +12,9 @@ public class Person2_Child : Person2 {
 		baseSpeedMin=19f;
 		baseSpeedMax=22f;
 	}
+
+	protected override void Start(){
+		screamSound=Resources.Load<AudioClip>("Sounds/scream_child_female_1");
+		base.Start ();
+	}
 }

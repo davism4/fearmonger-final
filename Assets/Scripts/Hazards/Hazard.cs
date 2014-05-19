@@ -8,6 +8,8 @@ public class Hazard : MonoBehaviour {
 	//protected CircleCollider2D ccollider;
 	//protected RoomObject currentRoom;
 	[HideInInspector] protected Room room;
+	protected SpriteRenderer spriteRenderer;
+	protected float fadeTime;
 
 	public void SetValues(float Duration, int Damage){
 		duration = Duration;
@@ -16,12 +18,15 @@ public class Hazard : MonoBehaviour {
 
 	protected virtual void Start(){
 		lifetime = duration;
+		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
 	// Update is called once per frame
 	protected virtual void Update () {
 		if (lifetime>0) {
 			lifetime -= Time.deltaTime;
+			if (lifetime <= fadeTime)
+				spriteRenderer.color = new Color(1f,1f,1f, lifetime/fadeTime );
 		}
 		else {
 			Finish();

@@ -6,7 +6,7 @@ public class Hazard_Possess : Hazard {
 	Person2 victim;
 	Vector3 rotVector, scaleVector;
 	SpriteRenderer sr;
-	public float fadeTime, airTime;
+	public float airTime;
 
 	protected override void Start(){
 		base.Start ();
@@ -28,9 +28,7 @@ public class Hazard_Possess : Hazard {
 			if (lifetime > airTime){
 				victim.transform.position += new Vector3(0f,0.9f*Time.deltaTime,0f);
 			}
-			if (lifetime <= 0f){
-				sr.color = new Color (1f, 1f, 1f, 0f);
-			} else if (lifetime < fadeTime){
+			if (lifetime < fadeTime){
 				sr.color = new Color (1f, 1f, 1f, (fadeTime - lifetime)/fadeTime);
 				transform.localScale -= scaleVector*Time.deltaTime;
 			}

@@ -6,9 +6,11 @@ public class Hazard_Repair : Hazard {
 	Furniture target;
 	private float fixCooldown=0f, fixCooldownMax;
 	int remainingRepairs=3;
+	float t = 0f;
 	
 	protected override void Start(){
 		base.Start ();
+		fadeTime = 0.15f*duration;
 		fixCooldownMax = duration/3f;
 	}
 	
@@ -17,8 +19,9 @@ public class Hazard_Repair : Hazard {
 	}
 	
 	protected override void Update(){
+		t += Time.deltaTime;
 		if (target!=null){
-			transform.position = target.transform.position;
+			transform.position = target.transform.position + new Vector3(0,Mathf.Sin (3f*t),0);
 			if (fixCooldown >0) {
 				fixCooldown -= Time.deltaTime;
 			} else if (remainingRepairs>0) {

@@ -9,11 +9,14 @@ public class hudText : MonoBehaviour {
 	//private Texture2D nightProgressTexture;
 
 	public Game2 game;
+	public GUIStyle style;
+//	public int LEFT_EDGE;
 	//public TutorialSlideshow tutorial;
 
 	// Use this for initialization
 	private void Start () {
 		int yheight=0;
+		int width = 70;
 //		nightProgressTexture = Resources.Load<Texture2D>("Sprites/gui/nightskyTexture");
 		if (game==null){
 			game = GameObject.Find ("Main Game").GetComponent<Game2>();
@@ -21,16 +24,17 @@ public class hudText : MonoBehaviour {
 			//if (tutorial==null){
 		//	tutorial = GameObject.Find ("Main Game").GetComponent<TutorialSlideshow>();
 		//}
-		dayStringRect = new Rect(0,yheight,70,25);
+		dayStringRect = new Rect(0,yheight,width,25);
 		yheight+=25;
-		timeStringRect = new Rect(0,yheight,70,40);
+		timeStringRect = new Rect(0,yheight,width,40);
 		//nightBarRect = new Rect(70,0,Screen.width - 70 - tutorial.Width,yheight);
 		yheight+=40;
-		moneyStringRect = new Rect(0,yheight,70,40);
+		moneyStringRect = new Rect(0,yheight,width,40);
 		yheight+=40;
-		fearStringRect = new Rect(0,yheight,70,40);
+		fearStringRect = new Rect(0,yheight,width,40);
 		yheight+=40;
-		roomStringRect = new Rect(0,yheight,60,25);
+		roomStringRect = new Rect(0,yheight,width,25);
+//		LEFT_EDGE = 2*width;
 		
 	}
 

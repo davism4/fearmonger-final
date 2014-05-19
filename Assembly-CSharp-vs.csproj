@@ -90,6 +90,7 @@
      <Compile Include="Assets\Scripts\gui\triangledown.cs" />
      <Compile Include="Assets\Scripts\gui\triangleup.cs" />
      <Compile Include="Assets\Scripts\hudText.cs" />
+     <Compile Include="Assets\Scripts\message.cs" />
      <Compile Include="Assets\Scripts\old\Ability_Darkness.cs" />
      <Compile Include="Assets\Scripts\old\Ability_Spiders.cs" />
      <Compile Include="Assets\Scripts\old\DoorObject.cs" />

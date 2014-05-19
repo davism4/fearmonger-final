@@ -30,7 +30,7 @@ public class Person2 : MonoBehaviour {
 	protected GUIText text;
 	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
 	protected float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
-	private const float hurtTimeMax=1.5f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=2.2f;
+	private const float hurtTimeMax=1.8f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=5.0f;
 	protected bool isLeaving=false;
 	[HideInInspector] public int sanity=0;
 	private bool isPossessed=false;
@@ -41,7 +41,7 @@ public class Person2 : MonoBehaviour {
 	protected float speed;
 	protected float speedNormal, speedFast, admireCooldownMax=99f, admireCooldownMin=99f;
 	
-
+	public AudioClip screamSound;
 	
 	// PUBLIC FUNCTIONS
 
@@ -51,6 +51,9 @@ public class Person2 : MonoBehaviour {
 	
 	public virtual void Scare(int damage){
 		if (!isHurt){
+			if (screamSound!=null && UnityEngine.Random.Range (0,10)<5)
+				AudioSource.PlayClipAtPoint (screamSound, Camera.main.transform.position);
+
 			sanity -= damage;
 			if (sanity<0) {
 				sanity=0;
@@ -62,12 +65,12 @@ public class Person2 : MonoBehaviour {
 			if (!isPossessed)
 				spriteRenderer.color = Color.red;
 			// Maybe show some text:
-			if (!isPossessed && UnityEngine.Random.value<0.35f){
+	/*		if (!isPossessed && UnityEngine.Random.value<0.35f){
 				if (UnityEngine.Random.value<0.45f)
-					text.text=ShockPhrases.Phrase ();
+					//text.text=ShockPhrases.Phrase ();
 				else
-					text.text="!";
-			}
+					//text.text="!";
+			}*/
 			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage)+1;
 			if (GameVars.pickupFear!=null && j>0){
 				for (int k=0;k<j;k++){
@@ -76,7 +79,7 @@ public class Person2 : MonoBehaviour {
 					            0.7f*(new Vector3(Mathf.Cos(k*Mathf.PI/j),Mathf.Sin(k*Mathf.PI/j),-5f)),Quaternion.identity);
 				}
 			}
-			//Debug.Log(text.text);
+			//Debug.Log(//text.text);
 			isMessage=true;
 			messageCooldown=messageTimeMax;
 		}
@@ -111,7 +114,7 @@ public class Person2 : MonoBehaviour {
 		//healthBar=transform.GetChild (0).GetComponent<GUITexture>();
 		text=transform.GetComponent<GUIText>();
 //		text = transform.GetComponent<GUIText>();
-		text.text="";
+		//text.text="";
 
 		anim = transform.GetComponent<Animator> ();
 		if (!anim.enabled)
@@ -150,7 +153,7 @@ public class Person2 : MonoBehaviour {
 				messageCooldown -= Time.deltaTime;
 			} else {
 				messageCooldown=messageTimeMax;
-//				text.text="";
+//				//text.text="";
 				isMessage=false;
 			}
 
@@ -172,10 +175,10 @@ public class Person2 : MonoBehaviour {
 	float dt, dx;
 	protected virtual void UpdateNormal(){
 		dt = Time.deltaTime;
+		if (showHPCooldown>0) {
+			showHPCooldown -= dt;
+		}
 		if (sanity < sanityMax){
-			if (showHPCooldown>0) {
-				showHPCooldown -= dt;
-			}
 			if (healCooldown>0 && !isHurt){
 				healCooldown -= dt;
 			} else {
@@ -323,7 +326,7 @@ public class Person2 : MonoBehaviour {
 
 	private void LoadHPBar(){
 		spriteWidth = GameVars.hpBarRed.width*0.1f;
-		spriteHeight = GameVars.hpBarRed.height*0.1f;
+		spriteHeight = GameVars.hpBarRed.height*0.2f;
 		if (GetComponent<SpriteRenderer>().sprite!=null)
 			hpBarOffsetY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
 		else
