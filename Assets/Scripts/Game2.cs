@@ -10,15 +10,16 @@ public class Game2 : MonoBehaviour {
 	public float BASE_CAM_SPEED = 25f;
 
 	// don't edit these values:
+	private const float fearDecayCooldownMax=5f;
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
-	public float enemyGenCooldown=0f, roomCheckCountdown=0f;
-	private const float enemyGenCooldownMax=20f, roomCheckCountdownMax=2f;
+	public float enemyGenCooldown=0f, roomCheckCooldown=0f, fearDecayCooldown=0f;
+	private const float enemyGenCooldownMax=20f, roomCheckCooldownMax=2f;
 	private const int fearEnergyMax=100;
-	private int days=0, currentRoomNumber=0;
+	private int days=1, currentRoomNumber=0;
 	public int Day{get { return days; }}
 	public int CurrentRoomNumber { get { return currentRoomNumber; }}
 	public int RoomsOpen=0;
-	private const int nightDurationRealSecondsMax = 180; // real seconds per night round
+	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
@@ -33,8 +34,8 @@ public class Game2 : MonoBehaviour {
 	private Ability[] listAbilities;
 	private Ability currentAbility;
 	static string tooltip;
-	public GUIStyle style;
-	public Font mytype;
+	public GUIStyle nostyle;
+	private Font mytype;
 
 	//private int count; // what was this supposed to do?
 
@@ -59,7 +60,7 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	private Texture2D fearBarTexture, fearBarTextureBlack;
 	private Texture2D[] abilityIcons;
-	private float fearBarHeight=10f;
+	private float fearBarHeight=33f;
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
@@ -88,11 +89,11 @@ public class Game2 : MonoBehaviour {
 			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
 			GUI.DrawTexture (new Rect(0,Screen.height-40-fearBarHeight,Screen.width,40+fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.DrawTexture (new Rect(0,Screen.height-40-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,40+fearBarHeight),fearBarTexture,ScaleMode.ScaleAndCrop);
-
+			GUI.Box(new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),"Fear: "+fearEnergy+"%", nostyle);
 			//count = 0;
 			for (int i=0;i<listAbilities.Length;i++){
 				GUI.backgroundColor = Color.magenta;
-				GUI.contentColor = Color.green;
+				GUI.contentColor = Color.white;
 				if(fearEnergy < listAbilities[i].minFear){ 
 					GUI.contentColor=Color.gray;
 				} else {
@@ -120,23 +121,24 @@ public class Game2 : MonoBehaviour {
 		} else {
 			// daytime GUI
 			int index=0;
+			GUI.DrawTexture (new Rect(0,Screen.height-70,Screen.width,70),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.backgroundColor = Color.magenta;
-			GUI.contentColor = Color.green;
+			GUI.contentColor = Color.white;
 //			Debug.Log(currentFurnitureIndex);
 			for (int row=2; row>=1; row--) {
 				for (int x=0;x<furnitureTypes.Length/2;x++){
-					GUI.contentColor = Color.green;
+					GUI.contentColor = Color.white;
 					if (currentFurnitureIndex == index){
-						GUI.backgroundColor=Color.green;
+						GUI.contentColor=Color.yellow;
 					} else if (money < furnitureTypes[index].buyCost){
 						GUI.contentColor=Color.gray;
 					}
 					else
 						GUI.backgroundColor = Color.magenta;
-					if (GUI.Button (new Rect(x*Screen.width/(furnitureTypes.Length/2),
-					                         Screen.height-row*30,
-					                         Screen.width/(furnitureTypes.Length/2),
-					                         30), new GUIContent(furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost, 
+					if (GUI.Button (new Rect(1+x*Screen.width/(furnitureTypes.Length/2),
+					                         Screen.height-row*36,
+					                         Screen.width/(furnitureTypes.Length/2) - furnitureTypes.Length/2,
+					                         35), new GUIContent(furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost, 
 					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description))){
 						if (money >= furnitureTypes[index].buyCost) {
 							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
@@ -215,16 +217,9 @@ public class Game2 : MonoBehaviour {
 				START_AT_NIGHT = false; // only run once
 				StartNight ();
 			} else {
-				StartDay ();
-				money += 10*fearEnergy;
-				fearEnergy=0;
+
+				//StartDay ();
 			}
-		}
-		if (Input.GetKeyDown("b")){
-			if (GameVars.IsNight)
-				StartDay ();
-			else
-				StartNight ();
 		}
 		// camera slide effect between rooms
 		if (isChangingRooms){
@@ -240,6 +235,14 @@ public class Game2 : MonoBehaviour {
 				isChangingRooms=false;
 		}
 		if (GameVars.IsNight){
+			if (fearEnergy>0){
+				if (fearDecayCooldown <= 0){
+					fearEnergy--;
+					fearDecayCooldown = fearDecayCooldownMax;
+				}
+				else
+					fearDecayCooldown -= Time.deltaTime;
+			}
 			if (nightTimerRealSeconds<nightDurationRealSecondsMax){
 				nightTimerRealSeconds += Time.deltaTime; // here it makes sense to count up, not down
 			} else {
@@ -349,6 +352,7 @@ public class Game2 : MonoBehaviour {
 	private void Start() {
 		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
+		mytype = Resources.Load<Font>("Fonts/my_type_of_font/mytype");
 		// Set up rooms
 		//rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
 		//Debug.Log (rooms.Length);
@@ -421,13 +425,15 @@ public class Game2 : MonoBehaviour {
 		yield return new WaitForSeconds(time);
 	}
 
-	private void StartDay(){
+	public void StartDay(){
 		GetComponent<Light>().enabled=true;
+		money += 10*fearEnergy;
+		fearEnergy=0;
 		Debug.Log ("Starting day...");
 		if (sound != null)
 			sound.playBgmDay ();
 		else {
-			Debug.LogWarning ("Day background music missing@");
+			Debug.LogWarning ("Day background music missing");
 		}
 		GameVars.IsNight=false;
 		days++;
@@ -440,6 +446,9 @@ public class Game2 : MonoBehaviour {
 	public void StartNight(){
 		GameVars.IsNight=true;
 		GetComponent<Light>().enabled=false;
+		fearDecayCooldown = fearDecayCooldownMax;
+		roomCheckCooldown = roomCheckCooldownMax;
+
 		Debug.Log ("Starting night..");
 		if (sound != null)
 			sound.playBgmNight ();
@@ -475,7 +484,10 @@ public class Game2 : MonoBehaviour {
 			DestroyObject (hit.collider.gameObject);
 			if(collectFear != null)
 				AudioSource.PlayClipAtPoint (collectFear, Camera.main.transform.position);
-			fearEnergy++;
+			if (fearEnergy<fearEnergyMax)
+				fearEnergy++;
+			else
+				money+=10;
 		} else if (hit.collider.gameObject.CompareTag ("Person")){
 			Person2 p = hit.collider.gameObject.GetComponent<Person2>();
 			p.DisplayHP ();
@@ -509,13 +521,14 @@ public class Game2 : MonoBehaviour {
 
 			if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);
-				//currentAbility=null; 
+				currentAbility=null; 
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
 	//			Debug.Log ("registering click...on furniture");
 				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
 				if (currentAbility==listAbilities[1] && listAbilities[1].CanUse()){
 					//Debug.Log (hit.collider.name);
 					currentAbility.UseAbility (hit);
+					currentAbility=null;
 				} else if (f is Lamp){
 					if(lampSwitch != null)
 						AudioSource.PlayClipAtPoint(lampSwitch, Camera.main.transform.position);
@@ -532,7 +545,7 @@ public class Game2 : MonoBehaviour {
 				    hit.collider.gameObject.CompareTag ("Furniture")){
 					if (currentAbility.CanUse ()){
 						currentAbility.UseAbility (hit);
-						//currentAbility=null;
+						currentAbility=null;
 					}
 				}
 			} 

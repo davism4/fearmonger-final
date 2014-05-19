@@ -203,6 +203,7 @@ public class Room : MonoBehaviour {
 				p = pero.GetComponent<Person2>();
 				p.SetRoom (this);
 				occupants.Add (p);
+				game.money += p.moneyDropMax*5;
 			}
 		}
 	}

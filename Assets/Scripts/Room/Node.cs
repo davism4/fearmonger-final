@@ -22,8 +22,8 @@ public class Node : MonoBehaviour {
 	}
 
 	private void Update(){
-		srenderer.enabled = (bool)(!GameVars.IsNight && GameVars.IsPlacingFurniture &&
-		                          content==null);
+		srenderer.enabled = (bool)(content==null && !GameVars.IsNight && GameVars.IsPlacingFurniture &&
+		                          room.open);
 	}
 
 	void Start () {
@@ -33,7 +33,7 @@ public class Node : MonoBehaviour {
 	}
 
 	public void Add(GameObject o){
-		if (empty){
+		if (room.open && empty){
 			GameObject instance = Instantiate(o,this.transform.position,Quaternion.identity) as GameObject;
 			this.content = instance;
 			room.AddItem(this.content);
@@ -50,6 +50,10 @@ public class Node : MonoBehaviour {
 
 	public void BoxEnable(){
 		GetComponent<BoxCollider2D>().enabled=true;
+		if (content!=null){
+			if (content.GetComponent<Trap>()!=null)
+				content.GetComponent<Trap>().Reset ();
+		}
 	}
 
 	public void Clear(){

@@ -13,7 +13,7 @@ public class Sound : MonoBehaviour{
 		sound = Resources.Load<AudioClip> ("Sounds/bgm_final_day");
 		audioSource.Stop ();
 		audioSource.loop = true;
-		audioSource.volume = 1;
+		audioSource.volume = 0.5f;
 		audioSource.clip = sound;
 		audioSource.PlayDelayed (1.5f);
 	}
@@ -24,7 +24,7 @@ public class Sound : MonoBehaviour{
 		sound = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
 		audioSource.Stop ();
 		audioSource.loop = true;
-		audioSource.volume = 1;
+		audioSource.volume = 0.75f;
 		audioSource.clip = sound;
 		audioSource.Play ();
 	}

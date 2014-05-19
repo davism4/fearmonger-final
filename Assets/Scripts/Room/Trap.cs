@@ -22,6 +22,7 @@ public class Trap : Furniture {
 	public void Activate(){
 		if (!Used){
 			if (this.node!=null){
+				Debug.Log("Scaring people!");
 				hurtBox = this.node.GetComponent<BoxCollider2D>();
 				corner1 = (Vector2)transform.position + new Vector2(-hurtBox.size.x/2,hurtBox.size.y/2);
 				corner2 = (Vector2)transform.position + new Vector2(hurtBox.size.x/2,-hurtBox.size.y/2);
@@ -31,7 +32,8 @@ public class Trap : Furniture {
 						collider.transform.GetComponent<Person2>().Scare (damage);
 					}
 				}
-			}
+			} else 
+				Debug.LogWarning ("MiSSING NODE");
 			Used=true;
 			// Animate or change sprite to used appearance
 		}

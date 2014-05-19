@@ -28,6 +28,8 @@ public class Hazard_Repair : Hazard {
 				fixCooldown = fixCooldownMax;
 				remainingRepairs--;
 				target.Repair (5);
+			} else if (target is Trap){
+				(target as Trap).Reset ();
 			}
 			base.Update();
 		} else {
