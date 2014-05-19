@@ -5,6 +5,8 @@ public class BackgroundSpriteChanger : MonoBehaviour {
 
 	public Sprite nightBackground;
 	public Sprite dayBackground;
+	public bool stationary=false;
+	public float yOffset = 10f;
 
 	// Use this for initialization
 	void Start () {
@@ -18,7 +20,8 @@ public class BackgroundSpriteChanger : MonoBehaviour {
 		} else {
 			this.GetComponent<SpriteRenderer> ().sprite = dayBackground;
 		}
-		transform.position = new Vector3(0, 10+Camera.main.transform.position.y*0.9f,40);
+		if (!stationary)
+			transform.position = new Vector3(0, yOffset+Camera.main.transform.position.y*0.9f,40);
 		//if (Input.GetKeyDown ("space")) {
 		//	GameVars.IsNight = !GameVars.IsNight;
 		//}
