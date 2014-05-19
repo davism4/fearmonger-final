@@ -33,6 +33,8 @@ public class Game2 : MonoBehaviour {
 	private Ability[] listAbilities;
 	private Ability currentAbility;
 	static string tooltip;
+	public GUIStyle style;
+	public Font mytype;
 
 	//private int count; // what was this supposed to do?
 
@@ -76,6 +78,7 @@ public class Game2 : MonoBehaviour {
 	
 	[ExecuteInEditMode]
 	private void OnGUI(){
+		GUI.skin.font = mytype;
 		if (Time.timeScale<=0) return;
 		if (GameVars.IsNight){
 
@@ -85,65 +88,71 @@ public class Game2 : MonoBehaviour {
 
 			//count = 0;
 			for (int i=0;i<listAbilities.Length;i++){
+				GUI.backgroundColor = Color.magenta;
+				GUI.contentColor = Color.green;
 				if(fearEnergy < listAbilities[i].minFear){ 
 					GUI.contentColor=Color.gray;
 				} else {
 					if (listAbilities[i].isCooldown)
 						GUI.contentColor=Color.yellow;
 					else if (currentAbility==listAbilities[i])
-						GUI.contentColor=Color.green;
-					else
-						GUI.contentColor=Color.white;
+						GUI.backgroundColor=Color.green;
 				}
 
 				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
-				                          Screen.width/listAbilities.Length, 40), new GUIContent(abilityIcons[i],
+				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities[i].ShowName(),
 				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
-				                          + " Costs " + listAbilities[i].minFear))) {
+				                          + " Costs " + listAbilities[i].minFear + " Fear"))) {
 					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].minFear){
 						currentAbility = listAbilities[i];
 					}
 				}
-				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-60-fearBarHeight,
-				                	Screen.width/listAbilities.Length, 60), GUI.tooltip);
+				GUI.contentColor = Color.white;
+				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-140-fearBarHeight,
+				                	Screen.width/listAbilities.Length, 100), GUI.tooltip);
 				GUI.tooltip = null;
 
 			}
 		} else {
 			// daytime GUI
 			int index=0;
+			GUI.backgroundColor = Color.magenta;
+			GUI.contentColor = Color.green;
 //			Debug.Log(currentFurnitureIndex);
 			for (int row=2; row>=1; row--) {
 				for (int x=0;x<furnitureTypes.Length/2;x++){
+					GUI.contentColor = Color.green;
 					if (currentFurnitureIndex == index){
-						GUI.contentColor=Color.green;
+						GUI.backgroundColor=Color.green;
 					} else if (money < furnitureTypes[index].buyCost){
 						GUI.contentColor=Color.gray;
-					} else {
-						GUI.contentColor=Color.white;
 					}
+					else
+						GUI.backgroundColor = Color.magenta;
 					if (GUI.Button (new Rect(x*Screen.width/(furnitureTypes.Length/2),
 					                         Screen.height-row*30,
 					                         Screen.width/(furnitureTypes.Length/2),
 					                         30), new GUIContent(furnitureTypes[index].DisplayName, 
 					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description
-					                    	   + " " + furnitureTypes[index].buyCost + " money"))){
+					                    	   + " Costs $" + furnitureTypes[index].buyCost))){
 						if (money >= furnitureTypes[index].buyCost) {
 							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
 							currentFurnitureIndex = index;
 							GameVars.IsPlacingFurniture=true;
 						}
 					}
+					GUI.contentColor = Color.white;
 					GUI.Label (new Rect(x*Screen.width/(furnitureTypes.Length/2),
 					                    630,
 					                    Screen.width/(furnitureTypes.Length/2),
-					                    40), GUI.tooltip);
-					//GUI.tooltip = null;
+					                    60), GUI.tooltip);
+					GUI.tooltip = null;
 					index++;
 				}
 			}
 		}
+		GUI.skin.font = null;
 	}
 
 	private void BuyRoom(){
@@ -331,7 +340,6 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	
 	private void Start() {
-
 		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		// Set up rooms
