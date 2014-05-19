@@ -64,11 +64,14 @@ public class Person2_Priest : Person2 {
 	}
 
 	public override void Exit(bool forced){
-		if (!forced && GameVars.IsNight && sanity>0f){
-
+		/*if (!forced && GameVars.IsNight && sanity>0f){
+			room.RemoveEnemy (gameObject,true);
 		} else {
+			room.RemoveEnemy (gameObject,false);
 			base.Exit(forced);
-		}
+		}*/
+		room.game.CheckOutPriest();
+		base.Exit (forced);
 	}
 
 	public override void Scare(int s){

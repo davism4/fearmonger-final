@@ -291,6 +291,17 @@ public class Game2 : MonoBehaviour {
 	// ==================== ENEMIES ================== //
 	// =============================================== //
 
+	public void CheckOutThug(){
+		roomWithThug=null;
+		Debug.Log ("Checked out the thug");
+		enemyGenCooldown=enemyGenCooldownMax;
+	}
+	public void CheckOutPriest(){
+		roomWithPriest=null;
+		Debug.Log ("Checked out the priest");
+		enemyGenCooldown=enemyGenCooldownMax;
+	}
+	/*
 	// called from Room when the Thug or Priest exits it
 	public void CheckOutEnemy(Person2 p, bool stay){
 		bool isThug=false;
@@ -300,7 +311,7 @@ public class Game2 : MonoBehaviour {
 		} else {
 			isThug=true;
 			roomWithThug=null;
-		}
+		}/*
 		if (!stay){
 			if (isThug)
 				(p as Person2_Thug).Reset ();
@@ -308,8 +319,8 @@ public class Game2 : MonoBehaviour {
 				(p as Person2_Priest).Reset ();
 			enemyGenCooldown=2.5f*enemyGenCooldownMax;
 		} else
-			enemyGenCooldown=enemyGenCooldownMax;
-	}
+			enemyGenCooldown=enemyGenCooldownMax;*/
+	//}
 
 	// Find a room with at least 1 trap, and put the priest in it
 	void CheckInPriest(){

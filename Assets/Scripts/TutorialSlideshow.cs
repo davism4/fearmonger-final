@@ -42,7 +42,8 @@ public class TutorialSlideshow : MonoBehaviour {
 				"that room. Other furniture pieces are traps, that you can click on at night to activate.";
 		DaySlides[2] =
 			"Some pieces of furniture are special and activate when clicked on:\n\n" +
-			"Lamp: Click on it to toggle the light on or off.\n\n" +
+			"Lamp: Click on it to toggle the light on or off. When a person clicks this automatically, "+
+			"they regenerate some sanity.\n\n"+
 			"Ornate lamp: A more valuable version of the normal lamp.\n\n" +
 			"Scary lamp: It scares people when it turns on. If left off, person will attempt to " +
 			"turn it on, and then scare themselves.\n\n" +

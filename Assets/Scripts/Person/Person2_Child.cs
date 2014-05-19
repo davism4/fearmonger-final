@@ -8,7 +8,7 @@ public class Person2_Child : Person2 {
 		moneyDropMax=1;
 		admireCooldownMin=20f;
 		admireCooldownMax=30f;
-		sanityMax=16;
+		sanityMax=26;
 		baseSpeedMin=19f;
 		baseSpeedMax=22f;
 	}

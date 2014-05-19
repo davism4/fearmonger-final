@@ -165,12 +165,12 @@ public class Room : MonoBehaviour {
 		p.SetRoom (this);
 		occupants.Add (p);
 	}
-	public void RemoveEnemy(GameObject enemy, bool stay){
+/*	public void RemoveEnemy(GameObject enemy, bool stay){
 		Person2 p = enemy.GetComponent<Person2>();
 		enemy.transform.position -= new Vector3(-100,0,0);// hide off-screen for a bit
 		occupants.Remove (p);
 		game.CheckOutEnemy (p, stay);
-	}
+	}*/
 
 	// Called at the beginning of the night
 	public void CheckIn() {

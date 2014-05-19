@@ -63,15 +63,18 @@ public class Person2_Thug : Person2 {
 			base.UpdateNormal ();
 		}
 	}
-	
+
 	public override void Exit(bool forced){
-		if (!forced && GameVars.IsNight && sanity>0f){
-			
+		room.game.CheckOutThug();
+		/*if (!forced && GameVars.IsNight && sanity>0f){
+			room.RemoveEnemy (gameObject,true);
 		} else {
+			room.RemoveEnemy (gameObject,false);
 			base.Exit(forced);
-		}
+		}*/
+		base.Exit (forced);
 	}
-	
+
 	public override void Scare(int s){
 		// reset target trap
 		target=null;

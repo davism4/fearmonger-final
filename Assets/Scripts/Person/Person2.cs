@@ -282,7 +282,7 @@ public class Person2 : MonoBehaviour {
 				Exit ();
 			}*/
 		} else {
-			if (transform.position.x > room.doorLeft){
+			if (Mathf.Abs (transform.position.x - room.XLeft)>4f){
 				rigidbody2D.velocity = new Vector2(-speed, rigidbody2D.velocity.y);
 				//transform.position -= new Vector3(speed*dt,0,0);
 			} else {
@@ -298,7 +298,9 @@ public class Person2 : MonoBehaviour {
 				StopMoving();
 				((Lamp)f).Flip (this);
 				if (sanity<sanityMax && !(f is Lamp_Scary)){
-					sanity++;
+					sanity += 2;
+					if (sanity>sanityMax)
+						sanity=sanityMax;
 				}
 			}
 		}
