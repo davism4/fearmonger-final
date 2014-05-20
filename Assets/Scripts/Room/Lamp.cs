@@ -28,15 +28,6 @@ public class Lamp: Furniture {
 
 	public virtual void Flip(Person2 p){
 		Flip ();
-		// some animation, maybe
 	}
 
-	protected override void OnTriggerEnter2D(Collider2D other){
-		if (!isOn){
-			if (other.CompareTag("Person")){
-				Person2 p = other.transform.GetComponent<Person2>();
-				p.Interact (this);
-			}
-		}
-	}
 }

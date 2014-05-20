@@ -33,6 +33,11 @@ public class Hazard : MonoBehaviour {
 		}
 	}
 
+	public void Fade(){
+		if (lifetime>fadeTime)
+			lifetime=fadeTime;
+	}
+
 	// Run when duration is up
 	protected virtual void Finish() {
 		// play some particle effect/animation, maybe?

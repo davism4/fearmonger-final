@@ -1,7 +1,7 @@
 ﻿// DEPRECATED
 
 using UnityEngine;
-using UnityEditor; // Contains the PrefabUtility class.
+//using UnityEditor; // Contains the PrefabUtility class.
 using System.Collections;
 using System;
 using System.Collections.Generic;

@@ -7,7 +7,9 @@ public class Room : MonoBehaviour {
 	public Game2 game=null;
 	public List<Person2> occupants=new List<Person2>();
 	private List<GameObject> items=new List<GameObject>();
-
+	public bool Empty {
+		get {return (items.Count<1);}
+	}
 	private Vector3 spawnPosition;
 	public AudioClip doorSound;
 	public bool open=false;
@@ -39,11 +41,11 @@ public class Room : MonoBehaviour {
 	public void Start () {
 		game = GameObject.Find ("Main Game").GetComponent<Game2>();
 		box = transform.GetComponent<BoxCollider2D>();
-		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
+/*		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
 		yceiling = transform.position.y+transform.localScale.y*box.size.y/2;
 		xleft = transform.position.x-transform.localScale.x*box.size.x/2;
 		xright = transform.position.x+transform.localScale.x*box.size.x/2;
-		spawnPosition = transform.FindChild("SpawnPosition").position;
+		spawnPosition = transform.FindChild("SpawnPosition").position;*/
 
 	//	Debug.Log ("Ceiling: " + yceiling);
 	//	Debug.Log ("floor: " + yfloor);
@@ -117,8 +119,9 @@ public class Room : MonoBehaviour {
 		int i=0;
 		if (items.Count>0)
 		foreach (GameObject g in items){
-			if (g.GetComponent<Furniture>() is Trap)
-				i++;
+			if (g!=null)
+				if (g.GetComponent<Furniture>().IsTrap)
+					i++;
 		}
 		return i;
 	}
@@ -127,8 +130,9 @@ public class Room : MonoBehaviour {
 		int i=0;
 		if (items.Count>0)
 		foreach (GameObject g in items){
-			if (!(g.GetComponent<Furniture>() is Trap))
-				i++;
+			if (g!=null)
+				if (!(g.GetComponent<Furniture>().IsTrap))
+					i++;
 		}
 		return i;
 	}
@@ -173,7 +177,7 @@ public class Room : MonoBehaviour {
 	}*/
 
 	// Called at the beginning of the night
-	public void CheckIn() {
+	public bool CheckIn() {
 		foreach (Person2 p in occupants){
 			if (p!=null)
 				p.Exit(true);
@@ -182,7 +186,7 @@ public class Room : MonoBehaviour {
 			n.BoxDisable ();
 		}
 		occupants.Clear ();
-		if (open) {
+		if (open && items.Count>0) {
 			// calculate quality
 			int totalcost=0;
 			foreach (GameObject g in items){
@@ -192,7 +196,7 @@ public class Room : MonoBehaviour {
 
 			}
 			quality = (totalcost/100)+1;
-			Debug.Log(name+" quality: "+quality);
+//			Debug.Log(name+" quality: "+quality);
 			GameObject personGen = RandomPerson (true);
 			GameObject pero = Instantiate(personGen,spawnPosition,Quaternion.identity) as GameObject;
 			Person2 p = pero.GetComponent<Person2>();
@@ -206,6 +210,9 @@ public class Room : MonoBehaviour {
 				occupants.Add (p);
 				game.money += p.moneyDropMax*5;
 			}
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -214,7 +221,6 @@ public class Room : MonoBehaviour {
 		if (open){
 	//		Debug.Log ("Checking out "+occupants.Count+ " people");
 			foreach (Person2 p in occupants){
-	//			Debug.Log (p.name + " is checking out");
 				p.Leave ();
 			}
 			foreach(Node n in nodes){
@@ -232,7 +238,12 @@ public class Room : MonoBehaviour {
 	}
 
 	public void Buy(){
-		//transform.position = new Vector3(0,transform.position.y,transform.position.z);
+		transform.position = new Vector3(0,transform.position.y,transform.position.z);
+		yfloor = transform.position.y-transform.localScale.y*box.size.y/2;
+		yceiling = transform.position.y+transform.localScale.y*box.size.y/2;
+		xleft = transform.position.x-transform.localScale.x*box.size.x/2;
+		xright = transform.position.x+transform.localScale.x*box.size.x/2;
+		spawnPosition = transform.FindChild("SpawnPosition").position;
 		open = true;
 		foreach(Node n in nodes){
 			n.BoxEnable();

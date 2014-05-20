@@ -10,6 +10,10 @@ public class Trap : Furniture {
 	BoxCollider2D hurtBox; 
 	public bool Used=false;
 
+	public Trap(){
+		IsTrap=true;
+	}
+
 	protected override void Start(){
 		anim = transform.GetComponent<Animator> ();
 		if (!anim.enabled)

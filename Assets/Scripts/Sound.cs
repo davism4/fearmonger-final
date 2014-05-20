@@ -6,7 +6,7 @@ public class Sound : MonoBehaviour{
 	private AudioClip sound;
 
 	public void playBgmDay(){
-		Debug.Log ("Playing day background music");
+//		Debug.Log ("Playing day background music");
 		sound = Resources.Load<AudioClip> ("Sounds/rooster");
 		AudioSource.PlayClipAtPoint (sound, Camera.main.transform.position);
 		audioSource = Camera.main.transform.GetComponent<AudioSource> ();
@@ -19,7 +19,7 @@ public class Sound : MonoBehaviour{
 	}
 
 	public void playBgmNight(){
-		Debug.Log ("Playing night background music");
+//		Debug.Log ("Playing night background music");
 		audioSource = Camera.main.transform.GetComponent<AudioSource> ();
 		sound = Resources.Load<AudioClip> ("Sounds/bgm_final_night");
 		audioSource.Stop ();

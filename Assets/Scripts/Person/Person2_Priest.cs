@@ -5,14 +5,10 @@ public class Person2_Priest : Person2 {
 
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
-	private Trap target=null;
+	private Furniture target=null;
 
 	public bool IS_ATTACKING {
-		get { return destroyCooldown > 0f; }
-	}
-
-	public void Animate(){
-		///?
+		get { return (target!=null); }
 	}
 
 	public Person2_Priest () {
@@ -27,9 +23,9 @@ public class Person2_Priest : Person2 {
 	}
 	
 	public override void Interact(Furniture f){
-		if (f is Trap){
-			if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
-				target=(f as Trap);
+		if (f.IsTrap){
+			//if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
+				target=f;
 		} else {
 			base.Interact (f);
 		}
@@ -47,6 +43,7 @@ public class Person2_Priest : Person2 {
 			if (room.TrapCount ()<1){
 				isLeaving=true;
 			} else if (target!=null){
+				IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
 				if (destroyCooldown>0f){
 					destroyCooldown -= Time.deltaTime;
 				} else {
@@ -54,11 +51,10 @@ public class Person2_Priest : Person2 {
 					Attack (target);
 				}
 			}
-
 			if (anim!=null){
 				anim.SetBool ("attacking", IS_ATTACKING);
 			}
-
+			isBusy = IS_ATTACKING;
 			base.UpdateNormal ();
 		}
 	}
@@ -81,10 +77,9 @@ public class Person2_Priest : Person2 {
 		base.Scare (s);
 	}
 
-	private void Attack(Trap t){
+	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		if (t.Damage(1)){
-			t.Break ();
+		if (t.Damage(2)){
 			target=null;
 		}
 	}

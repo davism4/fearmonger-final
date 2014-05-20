@@ -6,11 +6,11 @@ public class Ability_Ghost : Ability {
 	// Ability #1
 
 	public Ability_Ghost () {
-		cooldownStart = 8f;
+		cooldownStart = 7f;
 		FearDamage=5;
 		Name="Ghost";
 		Description = "A spooky ghost appears and scares people.";
-		Duration = 2.5f;
+		Duration = 1.5f;
 		minFear=0;
 		useCost=0;
 	}

@@ -27,7 +27,7 @@ public class Hazard_Repair : Hazard {
 			} else if (remainingRepairs>0) {
 				fixCooldown = fixCooldownMax;
 				remainingRepairs--;
-				target.Repair (5);
+				target.Repair (10);
 			}
 			base.Update();
 		} else {

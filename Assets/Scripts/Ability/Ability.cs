@@ -48,8 +48,11 @@ public class Ability : MonoBehaviour {
 	public string ShowName(){
 		/*if (Locked)
 			return Name+"\n("+useCost.ToString()+" fear to use)";// round up
-		else */if (cooldownTimer>0f)
-			return Name+"\n(Ready in "+Mathf.CeilToInt (cooldownTimer).ToString ()+"s)";// round up
+		else */
+		if (cooldownTimer>=10f)
+			return "Ready in "+Mathf.CeilToInt (cooldownTimer).ToString ()+"s";// round up
+		else if (cooldownTimer>0f)
+			return "Ready in "+Mathf.CeilToInt (cooldownTimer).ToString ()+"s ";// round up
 		else
 			return Name;
 	}
@@ -64,7 +67,7 @@ public class Ability : MonoBehaviour {
 		if (CanUse()){
 			cooldownTimer = cooldownStart;
 			game.fearEnergy -= useCost;
-			Debug.Log("Used ability "+ this.Name +" set with "+FearDamage+" dmg.");
+//			Debug.Log("Used ability "+ this.Name +" set with "+FearDamage+" dmg.");
 			if (hazard!=null) {
 				hazardInstance = GameObject.Instantiate(hazard,new Vector3(hit.point.x,hit.point.y,0f),Quaternion.identity) as GameObject;
 				hazardInstance.GetComponent<Hazard>().SetValues(Duration, FearDamage);

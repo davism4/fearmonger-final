@@ -7,7 +7,8 @@ public class Person2 : MonoBehaviour {
 
 	public bool IS_FACING_RIGHT=false;
 	public bool IS_FACING_LEFT { get { return !IS_FACING_RIGHT; } }
-
+	
+	private Vector3 offset;
 	private float hpBarOffsetY, spriteWidth, spriteHeight;
 	[HideInInspector] public bool CanMove=true; // manual movement
 
@@ -26,10 +27,11 @@ public class Person2 : MonoBehaviour {
 	protected GUIText text;
 	protected bool isHurt=false, isMessage=false, isMoving=false, isFleeing=false;
 	protected float hurtCooldown=0f, messageCooldown=0f, walkCooldown=0f, admireCooldown=0f, showHPCooldown=0f, healCooldown=0f;
-	private const float hurtTimeMax=2f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=5f;
+	private const float hurtTimeMax=2f, messageTimeMax=1f, moveTimeMax=2.5f, waitTimeMax=0.5f, showHPCooldownMax=0.2f, healCooldownMax=3.5f;
 	protected bool isLeaving=false;
 	public int sanity;
 	private bool isPossessed=false;
+	protected bool isBusy=false;
 	private float gravityScale;
 
 
@@ -58,7 +60,7 @@ public class Person2 : MonoBehaviour {
 			hurtCooldown=hurtTimeMax;
 			healCooldown=healCooldownMax;
 			speed=speedFast;
-			Debug.Log ("Sanity has dropped to "+sanity);
+	//		Debug.Log ("Sanity has dropped to "+sanity);
 			if (!isPossessed)
 				spriteRenderer.color = Color.red;
 			// Maybe show some text:
@@ -68,7 +70,7 @@ public class Person2 : MonoBehaviour {
 				else
 					//text.text="!";
 			}*/
-			int j = Mathf.Min (UnityEngine.Random.Range (fearDropMin,fearDropMax),damage)+1;
+			int j = UnityEngine.Random.Range (fearDropMin,damage/2);
 			if (GameVars.pickupFear!=null && j>0){
 				for (int k=0;k<j;k++){
 					// Use a circular/polygonal pattern
@@ -101,7 +103,7 @@ public class Person2 : MonoBehaviour {
 	protected virtual void Start () {
 		speedNormal = UnityEngine.Random.Range (baseSpeedMin,baseSpeedMax);
 		speed = speedNormal;
-		speedFast = speedNormal * 2f;
+		speedFast = speedNormal * 3f;
 		sanity=sanityMax; 
 		spriteRenderer=transform.GetComponent<SpriteRenderer>();
 		IS_FACING_RIGHT=true;
@@ -180,7 +182,7 @@ public class Person2 : MonoBehaviour {
 				healCooldown -= dt;
 			} else {
 				healCooldown= healCooldownMax;
-				Debug.Log ("healing "+name);
+//				Debug.Log ("healing "+name);
 				sanity++;
 			}
 		}
@@ -202,7 +204,7 @@ public class Person2 : MonoBehaviour {
 			}
 		}
 
-		if (CanMove){
+		if (CanMove && !isBusy){
 			speed = (isPossessed || isHurt)? speedFast: speedNormal;
 			if (isMoving){
 				dx = speed*dt;
@@ -298,7 +300,7 @@ public class Person2 : MonoBehaviour {
 				StopMoving();
 				((Lamp)f).Flip (this);
 				if (sanity<sanityMax && !(f is Lamp_Scary)){
-					sanity += 2;
+					sanity += 3;
 					if (sanity>sanityMax)
 						sanity=sanityMax;
 				}
@@ -319,9 +321,9 @@ public class Person2 : MonoBehaviour {
 		if (Time.timeScale<=0) return;
 		else if (showHPCooldown>0f){
 			healthPercent = ((float)sanity)/sanityMax;
-			Vector3 v = Camera.main.WorldToScreenPoint(transform.position);
-			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth,spriteHeight),GameVars.hpBarRed,ScaleMode.StretchToFill);
-			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-hpBarOffsetY,spriteWidth*healthPercent,spriteHeight),GameVars.hpBarGreen,ScaleMode.StretchToFill);
+			Vector3 v = Camera.main.WorldToScreenPoint(transform.position+offset);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-spriteHeight,spriteWidth,spriteHeight),GameVars.hpBarRed,ScaleMode.StretchToFill);
+			GUI.DrawTexture (new Rect(v.x-spriteWidth/2,Screen.height-v.y-spriteHeight,spriteWidth*healthPercent,spriteHeight),GameVars.hpBarGreen,ScaleMode.StretchToFill);
 		}
 	}
 
@@ -329,9 +331,9 @@ public class Person2 : MonoBehaviour {
 		spriteWidth = GameVars.hpBarRed.width*0.1f;
 		spriteHeight = GameVars.hpBarRed.height*0.2f;
 		if (GetComponent<SpriteRenderer>().sprite!=null)
-			hpBarOffsetY = GetComponent<SpriteRenderer>().sprite.bounds.size.y;
+			offset = new Vector3(0,GetComponent<SpriteRenderer>().sprite.bounds.size.y/2,0);
 		else
-			hpBarOffsetY = 0;
+			offset = Vector3.zero;
 	}
 
 	// Isn't moving yet -> start moving in a random direction

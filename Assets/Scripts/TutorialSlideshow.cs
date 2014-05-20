@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class TutorialSlideshow : MonoBehaviour {
@@ -9,32 +9,25 @@ public class TutorialSlideshow : MonoBehaviour {
 	int NightslideIndex = 0;
 	string[] NightSlides = new string[4]; // use as many as necessary
 	string[] DaySlides = new string[6]; // use as many as necessary
-	int height=40, width=80;
-	int slideleft = 80;
-	//int slidetop = 20;
-	int slidebottom;
-	int bottomMargin = 20;
+
+
+	int height, width;
 
 	// Use this to format the text boxes. Make sure to select Word Wrap.
 	public GUIStyle style, mainstyle;
-	private Font mytype;
-	Rect closeButtonRect, mainRect;
+//	private Font mytype;
 
 	void Start () {
-		mytype = Resources.Load<Font>("Fonts/my_type_of_font/mytype");
-//		slideleft = GameObject.FindObjectOfType<hudText>().LEFT_EDGE;
-		slidebottom = Screen.height - bottomMargin;
-		//slideright = Screen.width - width;
-		closeButtonRect = new Rect (Screen.width - width-1, 1, width-1, height+1);
-		mainRect = new Rect(slideleft, 10, Screen.width - width - slideleft - 10, slidebottom - 10);
+//		mytype = Resources.Load<Font>("Fonts/my_type_of_font/mytype");
 
 		DaySlides[0] =
 			"HOW TO PLAY (DAYTIME)\n" +
-			"The year is 1930, during the Great Depression. You are the owner of a haunted " +
+			"You are the owner of a haunted " +
 			"hotel. Your goal is to generate money and fear, by luring in the wealthiest " +
 				"visitors, and then giving them a scare!\n" +
 				"During the daytime when nobody is around, you will set up furniture and traps " +
-				"in the hotel rooms. You can also purchase new floors to use for your hotel.";
+				"in the hotel rooms. You can also purchase new floors to use for your hotel. " +
+				"\n\nTry to unlock all of the floors!";
 		DaySlides[1] =
 			"Each floor has 5 spaces where you can place furniture. To place furniture, select " +
 			"a type of furniture from the buttons at the bottom of the screen. Some furniture is for " +
@@ -54,8 +47,18 @@ public class TutorialSlideshow : MonoBehaviour {
 			"and then click on the padlock. If you have enough money, the floor will unlock. " +
 			"More floors means that more people can check in.";
 		DaySlides[4] =
-			"Remember, the nicer the floors are, the more likely it is to bring in\n" +
-			"wealthy visitors, who will drop more money overnight.";
+			"Remember, the nicer the floors are, the more likely it is to bring in " +
+			"wealthy visitors, who will drop more money overnight. Here are the costs for " +
+			"all of the floors:\n" +
+			"Floors 1-2: Free\n" +
+			"Floor 3: $2,000\n" +
+			"Floor 4: $2,500\n" +
+			"Floor 5: $3,000\n" +
+			"Floor 6: $3,500\n" +
+			"Floor 7: $4,000\n" +
+			"Floor 8: $4,500\n" +
+			"Floor 9: $5,000\n" +
+			"Floor 10: $5,500!";
 		DaySlides[5] =
 			"When you are ready, press \"Check In\" to bring in visitors.";
 		NightSlides[0] =
@@ -90,39 +93,14 @@ public class TutorialSlideshow : MonoBehaviour {
 				"after some time.";
 	}
 
+	int y;
+	string str;
 	void OnGUI(){
-		GUI.skin.font = mytype;
-		if (GameVars.IsPausedTutorial){
-			if (GUI.Button (closeButtonRect, "Close",style)){
-				GameVars.IsPausedTutorial=false;
-				Time.timeScale=1.0f;
-			} 
-			if (GameVars.IsNight){
-				if (NightslideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width-1, height+3, width-1, height), "Back",style)){
-						NightslideIndex--;
-					}
-				}
-				if (NightslideIndex<NightSlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width-1, 2*height+4, width-1, height), "Next",style)){
-						NightslideIndex++;
-					}
-				}
-				GUI.Box (mainRect,NightSlides[NightslideIndex],mainstyle);
-			} else {
-				if (DayslideIndex>0){
-					if (GUI.Button (new Rect (Screen.width - width-1, height+3, width-1, height), "Back",style)){
-						DayslideIndex--;
-					}
-				}
-				if (DayslideIndex<DaySlides.Length-1){
-					if (GUI.Button (new Rect (Screen.width - width-1, 2*height+4, width-1, height), "Next",style)){
-						DayslideIndex++;
-					}
-				}
-				GUI.Box (mainRect,DaySlides[DayslideIndex],mainstyle);
-			}
-		} else {
+		//GUI.skin.font = mytype;
+		style.fontSize = Mathf.Min(2*height/5, width/4);
+		height = Screen.height/8;
+		width = Screen.width/11;
+		if (!GameVars.IsPausedTutorial) {
 			if (GUI.Button (new Rect (Screen.width - width-1, 1, width-1, height), "HELP?",style)){
 				GameVars.IsPausedTutorial=true;
 				Time.timeScale=0.0f;
@@ -130,14 +108,53 @@ public class TutorialSlideshow : MonoBehaviour {
 				NightslideIndex=0;
 				DayslideIndex=0;
 			}
+		} else {
+			y=1;
+			if (GUI.Button (new Rect(Screen.width-width-1,1,width-1,height), "Close",style)){
+				GameVars.IsPausedTutorial=false;
+				Time.timeScale=1.0f;
+			}
+			y+=height+1;
+			if (GameVars.IsNight){
+				if (NightslideIndex>0){
+					if (GUI.Button (new Rect (Screen.width - width-1, y, width-1, height), "Back",style)){
+						NightslideIndex--;
+					} else {
+						GUI.Box (new Rect (Screen.width - width-1, y, width-1, height), "",style);
+					}
+				}
+				y+=height+1;
+				if (NightslideIndex<NightSlides.Length-1){
+					if (GUI.Button (new Rect (Screen.width - width-1, y, width-1, height), "Next",style)){
+						NightslideIndex++;
+					}
+				}
+				str = NightSlides[NightslideIndex];
+			} else {
+				if (DayslideIndex>0){
+					if (GUI.Button (new Rect (Screen.width - width-1, y, width-1, height), "Back",style)){
+						DayslideIndex--;
+					}
+				}
+				y+=height+1;
+				if (DayslideIndex<DaySlides.Length-1){
+					if (GUI.Button (new Rect (Screen.width - width-1, y, width-1, height), "Next",style)){
+						DayslideIndex++;
+					}
+				}
+				str = DaySlides[DayslideIndex];
+			}
+	//		Debug.Log(Screen.height - str.Length/2);
+			mainstyle.fontSize = Screen.height/20;
+			GUI.Box (new Rect(width, 1, Screen.width - 2*width-2, Screen.height - height),str,mainstyle);
 		}
 	}
 
-	void Update(){
+	/*void Update(){
 		if (GameVars.IsPausedTutorial){
 
 		} else {
 			
 		}
-	}
+	}*/
 }

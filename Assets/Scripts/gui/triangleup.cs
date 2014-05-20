@@ -15,7 +15,7 @@ public class triangleup : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		canMoveUp = (bool)(game.CurrentRoomNumber<Mathf.Min (game.RoomsOpen,game.rooms.Length-1));
+		canMoveUp = (bool)(game.CurrentRoomNumber<Mathf.Min (game.RoomsOpen-1,game.rooms.Length-1));
 		if (canMoveUp) {
 			GetComponent<PolygonCollider2D>().enabled=true;
 			sp.color = Color.white;

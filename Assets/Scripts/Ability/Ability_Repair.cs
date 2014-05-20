@@ -7,7 +7,7 @@ public class Ability_Repair : Ability {
 
 	public Ability_Repair () {
 		Name="Repair";
-		FearDamage = 9;
+		FearDamage = 5;
 		Description = "Haunted repair tools that fix damaged furniture.";
 		Duration = 3;
 		minFear=20;

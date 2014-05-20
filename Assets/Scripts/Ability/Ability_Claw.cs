@@ -7,7 +7,7 @@ public class Ability_Claw : Ability {
 
 	public Ability_Claw () {
 		FearDamage=7;
-		Name="Phantom Claw";
+		Name="Claw";
 		Description = "A hand appears and reaches out and pulls in the nearest victim.";
 		Duration = 8f;
 		minFear=40;

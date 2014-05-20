@@ -8,11 +8,7 @@ public class Person2_Thug : Person2 {
 	private Furniture target=null;
 
 	public bool IS_ATTACKING {
-		get { return destroyCooldown > 0f; }
-	}
-	
-	public void Animate(){
-		//
+		get { return (target!=null); }
 	}
 	
 	// Use this for initialization
@@ -28,8 +24,10 @@ public class Person2_Thug : Person2 {
 	}
 	
 	public override void Interact(Furniture f){
-		if (!(f is Trap)){
-			if (UnityEngine.Random.value<(1.0f)/room.NonTrapFurnitureCount ())
+	//	Debug.Log ("Interact with "+f.name);
+		if (!f.IsTrap){
+			//if (UnityEngine.Random.value<(1.0f)/room.NonTrapFurnitureCount ())
+//			Debug.Log ("Targeting the "+f.name);
 				target=f;
 		} else {
 			base.Interact (f);
@@ -48,6 +46,7 @@ public class Person2_Thug : Person2 {
 			if (room.NonTrapFurnitureCount ()<1){
 				isLeaving=true;
 			} else if (target!=null){
+				IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
 				if (destroyCooldown>0f){
 					destroyCooldown -= Time.deltaTime;
 				} else {
@@ -55,11 +54,10 @@ public class Person2_Thug : Person2 {
 					Attack (target);
 				}
 			}
-
+			isBusy = IS_ATTACKING;
 			if (anim!=null){
 				anim.SetBool ("attacking", IS_ATTACKING);
 			}
-
 			base.UpdateNormal ();
 		}
 	}
@@ -84,8 +82,7 @@ public class Person2_Thug : Person2 {
 	
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		if (t.Damage(1)){
-			t.Break ();
+		if (t.Damage(2)){
 			target=null;
 		}
 	}

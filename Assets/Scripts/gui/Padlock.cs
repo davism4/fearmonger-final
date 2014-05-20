@@ -24,7 +24,7 @@ public class Padlock : MonoBehaviour {
 	public void MoveToFloor(int floorno){
 		if (floorno >= rooms.Length){
 			//enabled=false;
-			Delete ();
+			//Delete ();
 			//Destroy (this);
 		} else {
 			transform.position = new Vector3(transform.position.x,

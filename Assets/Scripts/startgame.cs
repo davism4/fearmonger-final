@@ -18,6 +18,16 @@ public class startgame : MonoBehaviour {
 				Application.LoadLevel (1);
 			}
 		}
+		GUI.backgroundColor = Color.black;
+		GUI.Label(new Rect(20,2f*Screen.height/3,Screen.width-40,Screen.height*2f/3f),
+		          "CREDITS\n\n" +
+		          "Michael Davis: Project Lead, Code\n" +
+		          "Farah Khan: Lead Artist\n" +
+		          "Mark Henkel: Animation, Programming\n" +
+		          "Steve Hart: Animation, Programming\n" +
+		          "Kevin Jang: Sound, Programming\n" +
+		          "Jonathan Otterbein: Programming\n" +
+		          "Wendy Mao: Music Composer");
 		//GUI.DrawTexture (new Rect(Input.mousePosition.x-(texw/4)+offsetx,Screen.height-Input.mousePosition.y-(texh/4)+offsety,.6f*texw,.6f*texh),texes[0]);
 	}
 

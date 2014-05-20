@@ -13,7 +13,7 @@ public class Game2 : MonoBehaviour {
 	private const float fearDecayCooldownMax=6f;
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCooldown=0f, fearDecayCooldown=0f;
-	private const float enemyGenCooldownMax=20f, roomCheckCooldownMax=2f;
+	private const float enemyGenCooldownMax=20f, roomCheckCooldownMax=5f;
 	private const int fearEnergyMax=100;
 	private int days=1, currentRoomNumber=0;
 	public int Day{get { return days; }}
@@ -24,7 +24,7 @@ public class Game2 : MonoBehaviour {
 	public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
 	private GameObject priestObject, thugObject;
-	private Padlock padlock;
+	private HotelRoof hotelRoof;
 	private List<Room> tempRoomList = new List<Room>(); // this is used for checking in priests and thugs
 	private bool roomsHaveTraps=false, roomsHaveFurns=false, isChangingRooms=true;
 	private Vector3 dvCam=Vector3.zero;//private float dyCam=99f;
@@ -36,6 +36,9 @@ public class Game2 : MonoBehaviour {
 	static string tooltip;
 	public GUIStyle nostyle;
 	private Font mytype;
+	public int NextRoomCost {
+		get {return rooms[RoomsOpen].Cost;}
+	}
 
 	//private int count; // what was this supposed to do?
 
@@ -60,7 +63,8 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	private Texture2D fearBarTexture, fearBarTextureBlack;
 //	private Texture2D[] abilityIcons;
-	private float fearBarHeight=33f;
+	private int bottomGuiHeight, abilityButtonHeight, furnitureButtonHeight,
+	abilityButtonWidth, furnitureButtonWidth;
 	
 	private void RegisterHitDaytime(RaycastHit2D hit){
 		if (Input.GetMouseButtonDown (0)){
@@ -80,48 +84,69 @@ public class Game2 : MonoBehaviour {
 	
 	[ExecuteInEditMode]
 	private void OnGUI(){
-		GUI.skin.font = mytype;
+		bottomGuiHeight = Screen.height/6;
+		GUI.DrawTexture (new Rect(0,Screen.height-bottomGuiHeight,
+		                          Screen.width,bottomGuiHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
+		
 		if (Time.timeScale<=0) return;
-		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		hit = Physics2D.Raycast(ray.origin,ray.direction);
-		if (GameVars.IsNight){
+		abilityButtonHeight = bottomGuiHeight/2;
+		abilityButtonWidth = Screen.width/listAbilities.Length;
+		furnitureButtonHeight = bottomGuiHeight/2;
+		furnitureButtonWidth = Screen.width/(furnitureTypes.Length/2);
 
-			//Debug.Log (((float)fearEnergy)/fearEnergyMax);
-			GUI.DrawTexture (new Rect(0,Screen.height-40-fearBarHeight,Screen.width,40+fearBarHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
-			GUI.DrawTexture (new Rect(0,Screen.height-40-fearBarHeight,((float)Screen.width*fearEnergy)/fearEnergyMax,40+fearBarHeight),fearBarTexture,ScaleMode.ScaleAndCrop);
-			GUI.Box(new Rect(0,Screen.height-fearBarHeight,Screen.width,fearBarHeight),"Fear: "+fearEnergy+"%", nostyle);
-			//count = 0;
+		GUI.skin.font = mytype;
+		nostyle.fontSize = bottomGuiHeight/2;
+		string str;
+
+		//ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		//hit = Physics2D.Raycast(ray.origin,ray.direction);
+
+		if (GameVars.IsNight){
+		//	return;
+			//GUI.skin.button.fontSize = Mathf.Max (abilityButtonWidth,abilityButtonHeight)/10;
+
+			// Fear percentage bar
+			GUI.DrawTexture (new Rect(0,Screen.height-bottomGuiHeight,
+			                          Screen.width*(((fearEnergy-1)*fearDecayCooldownMax+fearDecayCooldown)/(fearDecayCooldownMax*fearEnergyMax)),
+			                          bottomGuiHeight),
+			                 fearBarTexture,ScaleMode.ScaleAndCrop);
+			GUI.backgroundColor = Color.magenta;
+			GUI.contentColor = Color.white;
+			nostyle.fontSize = abilityButtonHeight/2;
+			GUI.Label(new Rect(0,Screen.height - abilityButtonHeight,Screen.width,abilityButtonHeight),
+			          "F e a r:  "+fearEnergy+" %",nostyle);
 			for (int i=0;i<listAbilities.Length;i++){
-				GUI.backgroundColor = Color.magenta;
-				GUI.contentColor = Color.white;
+				str = listAbilities[i].ShowName();
+				GUI.skin.button.fontSize = Mathf.Min(2*abilityButtonHeight/5, abilityButtonWidth/(str.Length-3));
 				if(fearEnergy < listAbilities[i].MinFear){ 
 					GUI.contentColor=Color.gray;
 				} else {
 					if (listAbilities[i].isCooldown)
 						GUI.contentColor=Color.yellow;
 					else if (currentAbility==listAbilities[i])
-						GUI.backgroundColor=Color.green;
+						GUI.contentColor=Color.green;
 				}
-
-				if (GUI.Button (new Rect (i*Screen.width/listAbilities.Length, Screen.height-40-fearBarHeight,
-				                          Screen.width/listAbilities.Length, 40), new GUIContent(listAbilities[i].ShowName(),
+				if (GUI.Button (new Rect (i*abilityButtonWidth, Screen.height-bottomGuiHeight,
+				                          abilityButtonWidth, abilityButtonHeight),str/* new GUIContent(str,
 				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
-				                          + " Costs " + listAbilities[i].MinFear + " Fear"))) {
+				                          + " Costs " + listAbilities[i].MinFear + " Fear")*/)) {
 					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].MinFear){
 						currentAbility = listAbilities[i];
 					}
 				}
-				GUI.contentColor = Color.white;
-				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-140-fearBarHeight,
+				/*	GUI.contentColor = Color.white;
+				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-140-bottomGuiHeight,
 				                	Screen.width/listAbilities.Length, 100), GUI.tooltip);
-				GUI.tooltip = null;
+				GUI.tooltip = null;*/
 
 			}
 		} else {
 			// daytime GUI
 			int index=0;
-			GUI.DrawTexture (new Rect(0,Screen.height-70,Screen.width,70),fearBarTextureBlack,ScaleMode.StretchToFill);
+			GUI.skin.button.fontSize = Mathf.Max (furnitureButtonWidth,furnitureButtonHeight)/10;
+
+			GUI.DrawTexture (new Rect(0,Screen.height-2*furnitureButtonHeight,Screen.width,2.01f*furnitureButtonHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.backgroundColor = Color.magenta;
 			GUI.contentColor = Color.white;
 //			Debug.Log(currentFurnitureIndex);
@@ -135,23 +160,27 @@ public class Game2 : MonoBehaviour {
 					}
 					else
 						GUI.backgroundColor = Color.magenta;
+					str = furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost;
+					GUI.skin.button.fontSize = Mathf.Min(2*furnitureButtonHeight/5, furnitureButtonWidth/(str.Length-3));
 					if (GUI.Button (new Rect(1+x*Screen.width/(furnitureTypes.Length/2),
-					                         Screen.height-row*36,
+					                         Screen.height-row*furnitureButtonHeight,
 					                         Screen.width/(furnitureTypes.Length/2) - furnitureTypes.Length/2,
-					                         35), new GUIContent(furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost, 
-					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description))){
+					                         furnitureButtonHeight),
+					                str)){
+					                /*new GUIContent(furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost, 
+					                          furnitureTypes[index].DisplayName + ": " + furnitureTypes[index].description)*/
 						if (money >= furnitureTypes[index].buyCost) {
-							Debug.Log("Placing furniture: "+furnitureTypes[index].name);
+			//				Debug.Log("Placing furniture: "+furnitureTypes[index].name);
 							currentFurnitureIndex = index;
 							GameVars.IsPlacingFurniture=true;
 						}
 					}
-					GUI.contentColor = Color.white;
+					/*GUI.contentColor = Color.white;
 					GUI.Label (new Rect(x*Screen.width/(furnitureTypes.Length/2),
 					                    630,
 					                    Screen.width/(furnitureTypes.Length/2),
 					                    60), GUI.tooltip);
-					GUI.tooltip = null;
+					GUI.tooltip = null;*/
 					index++;
 				}
 			}
@@ -159,22 +188,16 @@ public class Game2 : MonoBehaviour {
 		GUI.skin.font = null;
 	}
 
-	private void BuyRoom(){
-		Debug.Log ("buy room");
+	public void BuyRoom(){
+	//	Debug.Log ("buy room");
 		if (money>= rooms[RoomsOpen].Cost){
-			if (RoomsOpen < rooms.Length){
-				rooms[RoomsOpen].Buy ();
-				RoomsOpen++;
-			}
-	//			Debug.Log ("Buying a room. There are now "+RoomsOpen+" open rooms.");
 			if (RoomsOpen < rooms.Length) {
-	//			Debug.Log ("Moving padlock to floor "+(RoomsOpen+1));
-				padlock.MoveToFloor(RoomsOpen);
-			}
-			else {
-	//			Debug.Log ("Destroying padlock");
-				padlock.Delete ();
-				padlock=null;
+
+				money -= rooms[RoomsOpen].Cost;
+				rooms[RoomsOpen].Buy ();
+				rooms[RoomsOpen-1].open = true;
+				hotelRoof.MoveToFloor(rooms[RoomsOpen]);
+				RoomsOpen++;
 			}
 		} else {
 			Debug.Log ("You need "+rooms[RoomsOpen].Cost+" to open a new floor.");
@@ -211,7 +234,9 @@ public class Game2 : MonoBehaviour {
 	// Update is called once per frame
 	private void Update () {
 		if (Input.GetKeyDown("m"))
-			BuyRoom ();
+			fearEnergy++;
+		else if (Input.GetKeyDown("n"))
+			money+=50;
 		if (Day==1){
 			if (START_AT_NIGHT){
 				START_AT_NIGHT = false; // only run once
@@ -261,13 +286,17 @@ public class Game2 : MonoBehaviour {
 				}
 			}
 		} else {
+			if (currentFurnitureIndex<0)
+				GameVars.IsPlacingFurniture=false;
 			// DAYTIME GAME LOGIC
 		}
 		// CLICKING ON STUFF
-		ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		hit = Physics2D.Raycast(ray.origin,ray.direction);
-		if (hit){
-			RegisterHit(hit);
+		if (!GameVars.IsPausedTutorial){
+			ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+			hit = Physics2D.Raycast(ray.origin,ray.direction);
+			if (hit){
+				RegisterHit(hit);
+			}
 		}
 	}
 
@@ -332,10 +361,11 @@ public class Game2 : MonoBehaviour {
 		}
 		if (tempRoomList.Count>0){
 			int roomIndex=UnityEngine.Random.Range (0,tempRoomList.Count-1);
+		//	Debug.Log("Checking priest into room "+roomIndex);
 			roomWithPriest = tempRoomList[roomIndex];
 			roomWithPriest.AddEnemy(priestObject);
 			enemyGenCooldown = enemyGenCooldownMax;
-			Debug.Log("WARNING - PRIEST HAS ENTERED INTO "+roomWithPriest.name);
+//			Debug.Log("WARNING - PRIEST HAS ENTERED INTO "+roomWithPriest.name);
 		}
 	}
 
@@ -352,7 +382,7 @@ public class Game2 : MonoBehaviour {
 			roomWithThug = tempRoomList[roomIndex];
 			roomWithThug.AddEnemy(thugObject);
 			enemyGenCooldown = enemyGenCooldownMax;
-			Debug.Log("WARNING - THUG HAS ENTERED INTO "+roomWithThug.name);
+	//		Debug.Log("WARNING - THUG HAS ENTERED INTO "+roomWithThug.name);
 		}
 	}
 
@@ -361,47 +391,31 @@ public class Game2 : MonoBehaviour {
 	// =============================================== //
 	
 	private void Start() {
-		padlock = GameObject.Find ("Padlock").GetComponent<Padlock>();
+		hotelRoof = GameObject.Find ("HotelRoof").GetComponent<HotelRoof>();
 		cam = Camera.main.transform.gameObject; // two distinct references?
 		mytype = Resources.Load<Font>("Fonts/my_type_of_font/mytype");
-		// Set up rooms
-		//rooms = new Room[GameObject.FindGameObjectsWithTag ("Room").Length];
-		//Debug.Log (rooms.Length);
-	//	foreach (Room r in rooms){
-	//		Debug.Log (r.transform.name);
-	//	}
+
 		for (int i=0;i<rooms.Length;i++){
-	//		string s = "Room "+(i+1).ToString ();
-	//		GameObject o = GameObject.Find (s);
-	//		Debug.Log ("Room "+s+" found: "+(bool)(o==null));
-	//		rooms[i] = GameObject.Find ("Room "+(i+1).ToString ()).GetComponent<Room>();
 			rooms[i].Cost = 500*(1+i);
 			rooms[i].Start();
 			if (i<RoomsOpen){
 				rooms[i].Buy ();
+			} else {
+				rooms[i].transform.position += new Vector3(100,0,0);
 			}
 		}
-//		Debug.Log("There are now "+RoomsOpen+" open rooms.");
-		padlock.Initialize(rooms);
-		padlock.MoveToFloor(RoomsOpen);
-		// Maybe the camera wasn't at the right place when game started - that's okay
-//		Vector3 d3 = rooms[0].transform.position - cam.transform.position;
-//		cam.transform.position += new Vector3(d3.x,d3.y,0);
+		hotelRoof.Initialize(rooms);
+		hotelRoof.MoveToFloor(rooms[RoomsOpen-1]);
 
 		GameMinutePerRealSecond = ((float)nightDurationGameMinutes/nightDurationRealSecondsMax);
 		GameVars.WallLeft=transform.FindChild("Marker LeftWall").transform.position.x;//rooms[0].XLeft;
 		GameVars.WallRight=transform.FindChild("Marker RightWall").transform.position.x;//rooms[0].XRight;
 		GameVars.WallLeftSoft=transform.FindChild("Marker LeftSoftWall").transform.position.x;//=GameVars.WallLeft+2f;
 		GameVars.WallRightSoft=transform.FindChild("Marker RightSoftWall").transform.position.x;//=GameVars.WallRight-2f;
-//		Debug.Log ("Walls: "+GameVars.WallLeft);
-//		Debug.Log ("Wall left (soft) = "+GameVars.WallLeftSoft);
-//		Debug.Log ("Walls: "+GameVars.WallRight);
-//		Debug.Log ("Wall right (soft) = "+GameVars.WallRightSoft);
+
 		fearBarTexture = Resources.Load<Texture2D>("Sprites/gui/fearprogress-purple");
 		fearBarTextureBlack = Resources.Load<Texture2D>("Sprites/gui/fearprogress-black");
-		//abilityIcons = Resources.LoadAll<Texture2D>("Sprites/gui/abilityicons");
-		//GameVars.hpBarRed = 
-		//GameVars.hpBarGreen = Resources.Load<Texture2D>("Sprites/gui/hpBarGreen");
+
 		listAbilities = new Ability[5]; // these are attached to the Main Game transform
 		listAbilities[0] = transform.GetComponent<Ability_Ghost>();
 		listAbilities[1] = transform.GetComponent<Ability_Repair>();
@@ -420,8 +434,6 @@ public class Game2 : MonoBehaviour {
 			Debug.LogError ("Missing furniture types");
 		priestObject = Resources.Load<GameObject>("Prefabs/Person/Priest");
 		thugObject = Resources.Load<GameObject> ("Prefabs/Person/Thug");
-		//GameVars.pickupCoin=Resources.Load<GameObject>("Prefabs/PickupCoin");
-		//GameVars.pickupFear=Resources.Load<GameObject>("Prefabs/PickupFear");
 		int alayer = 1 << LayerMask.NameToLayer("PersonLayer");
 		int blayer = 1 << LayerMask.NameToLayer("FurnitureLayer");
 		GameVars.interactLayer = (alayer | blayer);
@@ -461,36 +473,66 @@ public class Game2 : MonoBehaviour {
 	}
 	
 	public void StartNight(){
-		GameVars.IsNight=true;
-		GetComponent<Light>().enabled=false;
-		fearDecayCooldown = fearDecayCooldownMax;
-		roomCheckCooldown = roomCheckCooldownMax;
-
-		Debug.Log ("Starting night..");
-		if (sound != null)
-			sound.playBgmNight ();
-		else
-			Debug.LogWarning ("Night background music missing");
+		bool okay=false;
 		foreach (Room r in rooms){
-			r.DisplayGrid (false);
-//			Debug.Log (name + " is open: "+r.open);
-			if (r.open){
-				r.CheckIn();
+			if (!r.Empty){
+				okay=true;
+				break;
 			}
-			if (!roomsHaveFurns)
-				roomsHaveFurns = (bool)(r.NonTrapFurnitureCount()>0);
-			if (!roomsHaveTraps)
-				roomsHaveTraps = (bool)(r.TrapCount()>0);
 		}
-		// No non-trap furniture = no thug tonight
-		// No traps = no priest tonight
-		Debug.Log ("Checking for traps..."+roomsHaveTraps);
-		Debug.Log ("Checking for furniture..."+roomsHaveFurns);
-		if (roomsHaveFurns || roomsHaveTraps)
-			enemyGenCooldown=enemyGenCooldownMax;
+		if(okay){
+			GameVars.IsNight=true;
+			GetComponent<Light>().enabled=false;
+			fearDecayCooldown = fearDecayCooldownMax;
+			roomCheckCooldown = roomCheckCooldownMax;
+
+//			Debug.Log ("Starting night..");
+			if (sound != null)
+				sound.playBgmNight ();
+			else
+				Debug.LogWarning ("Night background music missing");
+			
+			foreach (Room r in rooms){
+				r.DisplayGrid (false);
+	//			Debug.Log (name + " is open: "+r.open);
+				if (r.open){
+//					Debug.Log (r.name+" is open.");
+					if (r.CheckIn()){
+		//				Debug.Log (r.name+" check in.");
+						if (!roomsHaveTraps)
+							roomsHaveTraps = (bool)(r.TrapCount()>0);
+						if (!roomsHaveFurns)
+							roomsHaveFurns = (bool)(r.NonTrapFurnitureCount()>0);
+					}
+				}
+			}
+			// No non-trap furniture = no thug tonight
+			// No traps = no priest tonight
+	//		Debug.Log ("Checking for traps..."+roomsHaveTraps);
+	//		Debug.Log ("Checking for furniture..."+roomsHaveFurns);
+			if (roomsHaveFurns || roomsHaveTraps)
+				enemyGenCooldown=enemyGenCooldownMax;
+		} else {
+			Debug.Log("Hotel is empty!");
+		}
 	}
-	
+
+	public void MoveUp(){
+		if(clickSound != null)
+			AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
+		currentRoomNumber++;
+		isChangingRooms=true;
+	}
+
+	public void MoveDown(){
+		if(clickSound != null)
+			AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
+		currentRoomNumber--;
+		isChangingRooms=true;
+	}
+
 	private void RegisterHit(RaycastHit2D hit){
+
 //		Debug.Log (hit.collider.gameObject.name);
 		if (hit.collider.gameObject.CompareTag ("Money")){
 			DestroyObject (hit.collider.gameObject);
@@ -501,8 +543,11 @@ public class Game2 : MonoBehaviour {
 			DestroyObject (hit.collider.gameObject);
 			if(collectFear != null)
 				AudioSource.PlayClipAtPoint (collectFear, Camera.main.transform.position);
-			if (fearEnergy<fearEnergyMax)
-				fearEnergy++;
+			if (fearEnergy<fearEnergyMax){
+				fearEnergy+=2;
+				fearEnergy = Mathf.Min (fearEnergy,fearEnergyMax);
+				fearDecayCooldown=fearDecayCooldownMax;
+			}
 			else
 				money+=10;
 		} else if (hit.collider.gameObject.CompareTag ("Person")){
@@ -513,26 +558,20 @@ public class Game2 : MonoBehaviour {
 			f.DisplayHP();
 		}
 		if (Input.GetMouseButtonDown (0)){
-			Debug.Log ("Hit: "+hit.collider.gameObject.name);
+//			Debug.Log ("Hit: "+hit.collider.gameObject.name);
 //			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
-				if(clickSound != null)
-					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
-				currentRoomNumber++;
-				isChangingRooms=true;
+				MoveUp ();
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
-				if(clickSound != null)
-					AudioSource.PlayClipAtPoint(clickSound, Camera.main.transform.position);
-				currentRoomNumber--;
-				isChangingRooms=true;
+				MoveDown ();
 			}
 		}
 		if (!GameVars.IsNight) {
-			if (padlock!=null && Input.GetMouseButtonDown (0) && hit.collider.gameObject.CompareTag ("Padlock")){
-				BuyRoom();
-			} else {
+			//if (hotelRoof!=null && Input.GetMouseButtonDown (0) && hit.collider.gameObject.CompareTag ("HotelRoof")){
+			//	BuyRoom();
+			//} else {
 				RegisterHitDaytime (hit);
-			}
+			//}
 		} else if (Input.GetMouseButtonDown (0)){
 //			Debug.Log ("registering click...");
 			if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
@@ -544,6 +583,8 @@ public class Game2 : MonoBehaviour {
 						currentAbility=null;
 					}
 				}
+			} else if (hit.collider.gameObject.CompareTag ("Hazard")){
+				hit.collider.GetComponent<Hazard>().Fade();
 			}
 			else if (currentAbility==listAbilities[4] && listAbilities[4].CanUse () && hit.collider.gameObject.CompareTag ("Person")){
 				currentAbility.UseAbility (hit);

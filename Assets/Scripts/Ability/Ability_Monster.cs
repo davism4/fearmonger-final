@@ -6,9 +6,9 @@ public class Ability_Monster : Ability {
 	// Ability #4
 
 	public Ability_Monster () {
-		FearDamage=9;
-		Name="Summon Monster";
-		Description = "A monster that chases people around. Explodes into fear damage on impact.";
+		FearDamage=7;
+		Name="Monster";
+		Description = "Chases people around the room.";
 		Duration = 15f;
 		minFear = 60;
 		useCost = 20;
