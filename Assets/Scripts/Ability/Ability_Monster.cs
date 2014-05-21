@@ -6,13 +6,13 @@ public class Ability_Monster : Ability {
 	// Ability #4
 
 	public Ability_Monster () {
-		FearDamage=9;
+		FearDamage=5;
 		Name="Monster";
 		Description = "Chases people around the room.";
 		Duration = 15f;
 		minFear = 60;
 		useCost = 15;
-		cooldownStart = 15f;
+		cooldownStart = 20f;
 	}
 
 	protected override void Start(){

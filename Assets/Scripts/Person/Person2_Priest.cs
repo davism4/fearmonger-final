@@ -24,12 +24,13 @@ public class Person2_Priest : Person2 {
 	}
 
 	protected override void Start(){
-		radius = GetComponent<BoxCollider2D>().size.x;
+		radius = 2*GetComponent<BoxCollider2D>().size.x;
 		base.Start();
 	}
 
 	public override void Interact(Furniture f){
 		if (f.IsTrap){
+			//Debug.Log ("priest found a trap");
 			//if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
 				target=f;
 		} else {
@@ -49,17 +50,24 @@ public class Person2_Priest : Person2 {
 			if (room.TrapCount ()<1){
 				isLeaving=true;
 			} else if (target!=null){
-				IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
-				if (destroyCooldown>0f){
-					destroyCooldown -= Time.deltaTime;
-				} else {
-					destroyCooldown=destroyCooldownMax;
-					Attack (target);
+		//		Debug.Log("Priest has a target, and distance is "+(target.transform.position - transform.position).magnitude);
+		//		Debug.Log ("Check to see if that is greater than radius of "+radius);
+				if ((target.transform.position - transform.position).magnitude>radius){
+					target=null;
+				} else {	
+					IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
+					if (destroyCooldown>0f){
+						destroyCooldown -= Time.deltaTime;
+					} else {
+						destroyCooldown=destroyCooldownMax;
+						Attack (target);
+					}
 				}
 			}
 			if (anim!=null){
 				anim.SetBool ("attacking", IS_ATTACKING);
 			}
+			
 			isBusy = IS_ATTACKING;
 			base.UpdateNormal ();
 		}
@@ -86,9 +94,7 @@ public class Person2_Priest : Person2 {
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
 //		Debug.Log((t.transform.position - transform.position).magnitude);
-		if ((t.transform.position - transform.position).magnitude>radius)
-			target = null;
-		else if (t.Damage(2)){
+		if (t.Damage(2)){
 			target=null;
 		}
 	}

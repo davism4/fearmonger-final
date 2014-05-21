@@ -2,34 +2,36 @@
 using System.Collections;
 
 public class Person2_Thug : Person2 {
-
+	
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
 	private Furniture target=null;
 	private float radius;
-
+	
 	public bool IS_ATTACKING {
 		get { return (target!=null); }
 	}
 	
-	// Use this for initialization
 	public Person2_Thug () {
 		moneyDropMax=1;
 		//fearDropMax=2;
 		admireCooldownMin=20f;
 		admireCooldownMax=50f;
 		sanityMax=25;
-		baseSpeedMin=11f;
+		baseSpeedMin=12f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;
 	}
 	
+	protected override void Start(){
+		radius = 2*GetComponent<BoxCollider2D>().size.x;
+		base.Start();
+	}
+	
 	public override void Interact(Furniture f){
-	//	Debug.Log ("Interact with "+f.name);
 		if (!f.IsTrap){
 			//if (UnityEngine.Random.value<(1.0f)/room.NonTrapFurnitureCount ())
-//			Debug.Log ("Targeting the "+f.name);
-				target=f;
+			target=f;
 		} else {
 			base.Interact (f);
 		}
@@ -47,38 +49,38 @@ public class Person2_Thug : Person2 {
 			if (room.NonTrapFurnitureCount ()<1){
 				isLeaving=true;
 			} else if (target!=null){
-				IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
-				if (destroyCooldown>0f){
-					destroyCooldown -= Time.deltaTime;
-				} else {
-					destroyCooldown=destroyCooldownMax;
-					Attack (target);
+				if ((target.transform.position - transform.position).magnitude>radius){
+					target=null;
+				} else {	
+					IS_FACING_RIGHT = (target.transform.position.x > transform.position.x);
+					if (destroyCooldown>0f){
+						destroyCooldown -= Time.deltaTime;
+					} else {
+						destroyCooldown=destroyCooldownMax;
+						Attack (target);
+					}
 				}
 			}
-			isBusy = IS_ATTACKING;
 			if (anim!=null){
 				anim.SetBool ("attacking", IS_ATTACKING);
 			}
+			
+			isBusy = IS_ATTACKING;
 			base.UpdateNormal ();
 		}
 	}
-
+	
 	public override void Exit(bool forced){
-		room.game.CheckOutThug();
 		/*if (!forced && GameVars.IsNight && sanity>0f){
 			room.RemoveEnemy (gameObject,true);
 		} else {
 			room.RemoveEnemy (gameObject,false);
 			base.Exit(forced);
 		}*/
+		room.game.CheckOutThug();
 		base.Exit (forced);
 	}
-
-	protected override void Start(){
-		radius = GetComponent<BoxCollider2D>().size.x;
-		base.Start();
-	}
-
+	
 	public override void Scare(int s){
 		// reset target trap
 		target=null;
@@ -88,10 +90,11 @@ public class Person2_Thug : Person2 {
 	
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		if ((t.transform.position - transform.position).magnitude>radius)
-			target = null;
-		else if (t.Damage(2)){
+		//		Debug.Log((t.transform.position - transform.position).magnitude);
+		if (t.Damage(2)){
 			target=null;
 		}
 	}
+	
 }
+

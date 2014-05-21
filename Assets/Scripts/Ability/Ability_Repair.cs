@@ -12,7 +12,7 @@ public class Ability_Repair : Ability {
 		Duration = 3;
 		minFear=20;
 		useCost=5;
-		cooldownStart = 5;
+		cooldownStart = 10;
 	}
 	
 	protected override void Start(){

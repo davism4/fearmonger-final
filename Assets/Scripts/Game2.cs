@@ -327,6 +327,8 @@ public class Game2 : MonoBehaviour {
 	void CheckInPriest(){
 		tempRoomList.Clear ();
 		foreach (Room r in rooms){
+			if (r==roomWithThug)
+				continue;
 			if (r.TrapCount()>0){
 				tempRoomList.Add (r);
 			}
@@ -345,6 +347,8 @@ public class Game2 : MonoBehaviour {
 	void CheckInThug(){
 		tempRoomList.Clear ();
 		foreach (Room r in rooms){
+			if (r==roomWithPriest)
+				continue;
 			if (r.NonTrapFurnitureCount()>0){
 				tempRoomList.Add (r);
 			}
@@ -517,7 +521,7 @@ public class Game2 : MonoBehaviour {
 			if(collectFear != null)
 				AudioSource.PlayClipAtPoint (collectFear, Camera.main.transform.position);
 			if (fearEnergy<fearEnergyMax){
-				fearEnergy += 3;
+				fearEnergy += 2;
 				fearEnergy = Mathf.Min (fearEnergy,fearEnergyMax);
 				fearDecayCooldown=fearDecayCooldownMax;
 			}
