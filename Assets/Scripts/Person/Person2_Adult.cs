@@ -4,11 +4,11 @@ using System.Collections;
 public class Person2_Adult : Person2 {
 	
 	public Person2_Adult(){
-		fearDropMax=2;
+	//	fearDropMax=2;
 		moneyDropMax=2;
-		admireCooldownMax=10f;
-		admireCooldownMin=20f;
-		sanityMax=60;
+		admireCooldownMax=30f;
+		admireCooldownMin=18f;
+		sanityMax=40;
 		baseSpeedMin=15f;
 		baseSpeedMax=18f;
 	}

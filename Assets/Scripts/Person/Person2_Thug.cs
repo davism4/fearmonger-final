@@ -15,10 +15,10 @@ public class Person2_Thug : Person2 {
 	// Use this for initialization
 	public Person2_Thug () {
 		moneyDropMax=1;
-		fearDropMax=2;
-		admireCooldownMin=15f;
-		admireCooldownMax=25f;
-		sanityMax=30;
+		//fearDropMax=2;
+		admireCooldownMin=20f;
+		admireCooldownMax=50f;
+		sanityMax=25;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;

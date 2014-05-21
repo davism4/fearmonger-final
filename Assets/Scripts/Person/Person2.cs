@@ -13,10 +13,10 @@ public class Person2 : MonoBehaviour {
 	[HideInInspector] public bool CanMove=true; // manual movement
 
 	// Set in the editor:
-	public int sanityMax,// = 20,
-	fearDropMax,//=2,
+	protected int sanityMax,// = 20,
+//	fearDropMax,//=2,
 	moneyDropMax;//=2,
-	public float baseSpeedMin,//=10,
+	protected float baseSpeedMin,//=10,
 	baseSpeedMax;//=15;
 	protected int fearDropMin=1, moneyDropMin=1;
 
@@ -314,6 +314,10 @@ public class Person2 : MonoBehaviour {
 	public virtual void Exit(bool forced){
 		if (!forced && room!=null)
 			room.PlayDoorSound();
+
+		room.occupants.Remove (this);
+		room.game.CheckEmptyHotel();
+
 		if (gameObject !=null)
 			DestroyImmediate(gameObject);
 	}

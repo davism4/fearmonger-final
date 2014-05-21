@@ -46,26 +46,30 @@ public class TutorialSlideshow : MonoBehaviour {
 				"clicking on it, although you get less money back if it is damaged."
 			);
 		DaySlides.Add (
-			"Some furniture is for " +
-			"making a room more valuable. More expensive pieces of furniture equal more value for " +
-				"that room. Other furniture pieces are traps, that you can click on at night to activate."
-			);
-		DaySlides.Add (
 			"You can navigate up and down floors by clicking on the up/down triangles on the right " +
 			"side of the screen. To buy a new floor, go to your top floor and click on the button that " +
-				"appears at the top of the screen. If you have enough money, your hotel grows by another floor."
+			"appears at the top of the screen. If you have enough money, your hotel grows by another floor."
 			);
 		DaySlides.Add (
-			"Some pieces of furniture are special and activate when clicked on:\n\n" +
-			"Lamp: Click on it to toggle the light on or off. When a person clicks this on their own, "+
-			"they regenerate some sanity.\n\n"+
-			"Scary lamp: It scares people when it turns on. If left off, person will attempt to " +
-			"turn it on, and then scare themselves.\n\n" +
-			"Armoire & Portrait: Click to activate when people are nearby, and they will get scared."
+			"Some furniture is for " +
+			"making a room more valuable. More expensive pieces of furniture equal more value for " +
+				"that room. The bed and chairs are normal furniture."
+			);
+		DaySlides.Add (
+			"Lamps are a special type of furniture that generate light and can be turned on or off. When " +
+			"a person touches a lamp that is turned off, they will turn it on. The normal and fancy lamps " +
+			"heal people's sanity when they turn it on. The scary lamp, on the other hand, scares them when " +
+			"they turn it on. You can also manually toggle lamps by clicking on them."
+			);
+		DaySlides.Add (
+			"ther furniture pieces are traps, that you can click on at night to activate. When people are " +
+			"in front of the Armoire or Portrait, click on the furniture to activate it like a trap. Any one " +
+			"standing nearby will get scared. Once you activate a trap, you cannot use it again until the next " +
+			"night or until you repair it."
 			);
 		DaySlides.Add (
 			"Remember, the nicer the floors are, the more likely it is to bring in " +
-				"wealthy visitors, who will drop more money overnight.\n\n" +
+			"wealthy visitors, who will drop more money overnight.\n\n" +
 			"Once you have placed some furniture in the hotel, press \"START\" to bring in visitors."
 			);
 		NightSlides.Add (
@@ -85,20 +89,19 @@ public class TutorialSlideshow : MonoBehaviour {
 			"won't be enough people around to drop money. If the hotel is empty during the " +
 			"night, then you will automatically go to daytime."
 			);
-		NightSlides.Add (
-			"There are two residents to look out for: The thug and the priest. " +
-				"The thug will actively try to destroy your furniture with his club, and the " +
-				"priest will try to destroy your scary traps. It is a wise idea to scare them " +
-				"out of the room as quickly as possible, although they will check back in " +
-				"after some time."
+		NightSlides.Add ( 
+			"The thug will actively try to destroy your furniture with his club, and the " +
+			"priest will try to destroy your scary traps. It is a wise idea to scare them " +
+			"out of the room as quickly as possible, although they will check back in " +
+			"after some time."
 			);
 		NightSlides.Add (
 			"In addition to clicking on traps you have placed, you can also spend some of " +
 			"your fear to use special abilities. There are 5 abilities you can use: Ghost, " +
-				"Repair, Claw, Monster, and Possession. Each does some damage to people who " +
-				"touch it. An ability requires a minimum amount of fear and " +
-				"energy cost to use, and has a cooldown on use. By using the ability, you pay its " +
-				"energy cost from your current fear level."
+			"Repair, Claw, Monster, and Possession. Each does some damage to people who " +
+			"touch it. An ability requires a minimum amount of fear and " +
+			"energy cost to use, and has a cooldown on use. By using the ability, you pay its " +
+			"energy cost from your current fear level."
 			);
 		NightSlides.Add (
 			"GHOST ability: Summon a ghost where you click.\n"+

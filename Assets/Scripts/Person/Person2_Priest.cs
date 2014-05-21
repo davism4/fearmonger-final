@@ -14,10 +14,10 @@ public class Person2_Priest : Person2 {
 
 	public Person2_Priest () {
 		moneyDropMax=0;
-		fearDropMax=2;
-		admireCooldownMin=15f;
-		admireCooldownMax=25f;
-		sanityMax=30;
+		//fearDropMax=2;
+		admireCooldownMin=20f;
+		admireCooldownMax=50f;
+		sanityMax=25;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;

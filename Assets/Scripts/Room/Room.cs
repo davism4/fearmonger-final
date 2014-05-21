@@ -208,7 +208,7 @@ public class Room : MonoBehaviour {
 				p = pero.GetComponent<Person2>();
 				p.SetRoom (this);
 				occupants.Add (p);
-				game.money += p.moneyDropMax*5;
+				game.money += quality*5;
 			}
 			return true;
 		} else {
@@ -219,7 +219,7 @@ public class Room : MonoBehaviour {
 	// Called at the end of the night
 	public void CheckOut() {
 		if (open){
-			Debug.Log("enabling "+name);
+	//		Debug.Log("enabling "+name);
 	//		Debug.Log ("Checking out "+occupants.Count+ " people");
 			foreach (Person2 p in occupants){
 				p.Leave ();
@@ -228,8 +228,8 @@ public class Room : MonoBehaviour {
 				n.BoxEnable();
 			}
 		}
-		game.CheckEmptyHotel ();
-		//occupants.Clear ();
+		occupants.Clear ();
+	//	DO NOT CALL //game.CheckEmptyHotel (); -> INFINITE LOOP
 	}
 
 	public void DisplayGrid(bool on){

@@ -101,9 +101,8 @@ public class Game2 : MonoBehaviour {
 			                          Screen.width*(((fearEnergy-1)*fearDecayCooldownMax+fearDecayCooldown)/(fearDecayCooldownMax*fearEnergyMax)),
 			                          bottomGuiHeight),
 			                 fearBarTexture,ScaleMode.ScaleAndCrop);
-			GUI.backgroundColor = Color.magenta;
-			GUI.contentColor = Color.white;
 			nostyle.fontSize = abilityButtonHeight/2;
+			GUI.contentColor=Color.white;
 			GUI.Label(new Rect(0,Screen.height - abilityButtonHeight,Screen.width,abilityButtonHeight),
 			          "F e a r:  "+fearEnergy+" %",nostyle);
 			for (int i=0;i<listAbilities.Length;i++){
@@ -111,11 +110,16 @@ public class Game2 : MonoBehaviour {
 				GUI.skin.button.fontSize = Mathf.Min(2*abilityButtonHeight/5, abilityButtonWidth/(str.Length-3));
 				if(fearEnergy < listAbilities[i].MinFear){ 
 					GUI.contentColor=Color.gray;
+					GUI.backgroundColor=Color.gray;
 				} else {
+					GUI.backgroundColor=Color.magenta;
 					if (listAbilities[i].isCooldown)
 						GUI.contentColor=Color.yellow;
-					else if (currentAbility==listAbilities[i])
+					else if (currentAbility==listAbilities[i]){
 						GUI.contentColor=Color.green;
+						GUI.backgroundColor=Color.green;
+					} else
+						GUI.contentColor=Color.white;
 				}
 				if (GUI.Button (new Rect (i*abilityButtonWidth, Screen.height-bottomGuiHeight,
 				                          abilityButtonWidth, abilityButtonHeight),str/* new GUIContent(str,
@@ -132,18 +136,22 @@ public class Game2 : MonoBehaviour {
 			GUI.skin.button.fontSize = Mathf.Max (furnitureButtonWidth,furnitureButtonHeight)/10;
 
 			GUI.DrawTexture (new Rect(0,Screen.height-2*furnitureButtonHeight,Screen.width,2.01f*furnitureButtonHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
-			GUI.backgroundColor = Color.magenta;
-			GUI.contentColor = Color.white;
+
 			for (int row=2; row>=1; row--) {
 				for (int x=0;x<furnitureTypes.Length/2;x++){
+					GUI.backgroundColor = Color.magenta;
 					GUI.contentColor = Color.white;
 					if (currentFurnitureIndex == index){
-						GUI.contentColor=Color.yellow;
+						GUI.contentColor=Color.green;
+						GUI.backgroundColor=Color.green;
 					} else if (money < furnitureTypes[index].buyCost){
 						GUI.contentColor=Color.gray;
+						GUI.backgroundColor= Color.gray;
 					}
-					else
+					else {
 						GUI.backgroundColor = Color.magenta;
+						GUI.contentColor = Color.white;
+					}
 					str = furnitureTypes[index].DisplayName + ": $" +furnitureTypes[index].buyCost;
 					GUI.skin.button.fontSize = Mathf.Min(2*furnitureButtonHeight/5, furnitureButtonWidth/(str.Length-3));
 					if (GUI.Button (new Rect(1+x*Screen.width/(furnitureTypes.Length/2),
@@ -204,12 +212,16 @@ public class Game2 : MonoBehaviour {
 	
 
 	public void CheckEmptyHotel(){
-		foreach (Room r in rooms){
-			if (r.occupants.Count>0)
-				return;
+		if (GameVars.IsNight){
+		//	Debug.Log("Checking empty hotel...");
+			foreach (Room r in rooms){
+				Debug.Log("Checking room "+r.name+" has "+r.occupants.Count);
+				if (r.occupants.Count>0)
+					return;
+			}
+			Debug.Log ("Nobody is left in the hotel!");
+			StartDay ();
 		}
-		Debug.Log ("Nobody is left in the hotel!");
-		StartDay ();
 	}
 
 	// Update is called once per frame
@@ -419,8 +431,10 @@ public class Game2 : MonoBehaviour {
 		money += 10*fearEnergy;
 		fearEnergy=0;
 		Debug.Log ("Starting day...");
-		if (sound != null)
+		if (sound != null) {
+			wait(0.2f);
 			sound.playBgmDay ();
+		}
 		else {
 			Debug.LogWarning ("Day background music missing");
 		}
@@ -433,7 +447,7 @@ public class Game2 : MonoBehaviour {
 	}
 	
 	public void StartNight(){
-		bool okay=false;
+		bool okay=true;
 		foreach (Room r in rooms){
 			if (!r.Empty){
 				okay=true;
@@ -445,6 +459,7 @@ public class Game2 : MonoBehaviour {
 			GetComponent<Light>().enabled=false;
 			fearDecayCooldown = fearDecayCooldownMax;
 			roomCheckCooldown = roomCheckCooldownMax;
+			nightTimerRealSeconds = 0;
 
 //			Debug.Log ("Starting night..");
 			if (sound != null)
