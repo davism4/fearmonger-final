@@ -26,11 +26,13 @@ public class Person2_Thug : Person2 {
 	protected override void Start(){
 		radius = 2*GetComponent<BoxCollider2D>().size.x;
 		base.Start();
+		speedFast = speedNormal*1.5f;
 	}
 	
 	public override void Interact(Furniture f){
 		if (!f.IsTrap){
 			//if (UnityEngine.Random.value<(1.0f)/room.NonTrapFurnitureCount ())
+			rigidbody2D.velocity = new Vector2(0,rigidbody2D.velocity.y);
 			target=f;
 		} else {
 			base.Interact (f);

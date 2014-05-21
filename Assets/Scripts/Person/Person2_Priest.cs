@@ -33,6 +33,7 @@ public class Person2_Priest : Person2 {
 			//Debug.Log ("priest found a trap");
 			//if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
 				target=f;
+			rigidbody2D.velocity = new Vector2(0,rigidbody2D.velocity.y);
 		} else {
 			base.Interact (f);
 		}

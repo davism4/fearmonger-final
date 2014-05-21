@@ -17,6 +17,7 @@ public class TutorialSlideshow : MonoBehaviour {
 	Ability_Monster ability4;
 	Ability_Possess ability5;
 	Ability_Repair ability2;
+	Game2 game;
 
 	int height, width;
 
@@ -31,6 +32,7 @@ public class TutorialSlideshow : MonoBehaviour {
 		ability3 = transform.GetComponent<Ability_Claw>();
 		ability4 = transform.GetComponent<Ability_Monster>();
 		ability5 = transform.GetComponent<Ability_Possess>();
+		game = transform.GetComponent<Game2>();
 		DaySlides.Add (
 			"HOW TO PLAY (DAYTIME)\n" +
 			"You are the owner of a haunted " +
@@ -38,12 +40,7 @@ public class TutorialSlideshow : MonoBehaviour {
 				"visitors, and then giving them a scare!\n" +
 				"During the daytime when nobody is around, you will set up furniture and traps " +
 				"in the hotel rooms. You can also purchase new floors to use for your hotel. " +
-				"\n\nHow many floors can YOU buy?"
-			);
-		DaySlides.Add (
-			"Each floor has 5 spaces where you can place furniture. To place furniture, select " +
-			"a type of furniture from the buttons at the bottom of the screen. You can also sell furniture by " +
-				"clicking on it, although you get less money back if it is damaged."
+				"\n\nCan you build the biggest, baddest, hauntel hotel???"
 			);
 		DaySlides.Add (
 			"You can navigate up and down floors by clicking on the up/down triangles on the right " +
@@ -51,8 +48,10 @@ public class TutorialSlideshow : MonoBehaviour {
 			"appears at the top of the screen. If you have enough money, your hotel grows by another floor."
 			);
 		DaySlides.Add (
-			"Some furniture is for " +
-			"making a room more valuable. More expensive pieces of furniture equal more value for " +
+			"Each floor has 5 spaces where you can place furniture. To place furniture, select " +
+			"a type of furniture from the buttons at the bottom of the screen. You can also sell furniture by " +
+			"clicking on it, although you get less money back if it is damaged.\n" +
+			"Furniture makes a room more valuable. More expensive pieces of furniture equal more value for " +
 				"that room. The bed and chairs are normal furniture."
 			);
 		DaySlides.Add (
@@ -62,8 +61,8 @@ public class TutorialSlideshow : MonoBehaviour {
 			"they turn it on. You can also manually toggle lamps by clicking on them."
 			);
 		DaySlides.Add (
-			"ther furniture pieces are traps, that you can click on at night to activate. When people are " +
-			"in front of the Armoire or Portrait, click on the furniture to activate it like a trap. Any one " +
+			"The Armoire and Portrait are traps that you can click on at night to activate. When people are " +
+			"in front of a trap, click on it to activate its scare effect. Any person " +
 			"standing nearby will get scared. Once you activate a trap, you cannot use it again until the next " +
 			"night or until you repair it."
 			);
@@ -77,17 +76,27 @@ public class TutorialSlideshow : MonoBehaviour {
 			"When night starts, people check in and give you initial money. " +
 			"They will also drop money at intervals during the night, based on how wealthy they are " +
 				"and how nice the room is. Your furniture will also sustain damage when people use it.\n" +
-				"You have from 6pm to 6am to meet your nightly goals (This is aroud 5 minutes realtime), " +
+				"Night time ends once you have scared everyone out of the hotel, or once the " +
+				"clock reaches 6:00 am (This is aroud "+game.GAME_MINUTES+" minutes realtime), " +
 				"but you can also quit manually by clicking the \"Finish\" button."
 			);
 		NightSlides.Add (
 			"At night, generate as much fear and money as possible. People will drop money throughout the " +
 			"night based on how nice their room is. At the end of the " +
-			"night, all of the fear you have collected will give you a huge money bonus.\n\n" +
+			"night, all of the fear you have collected will give you a huge money bonus."
+			);
+		NightSlides.Add (
 			"Warning: Your fear is constantly decreasing, so you need to keep it up!\n\n" +
 			"Be careful, though. If you scare too many people out of the hotel, then there " +
-			"won't be enough people around to drop money. If the hotel is empty during the " +
-			"night, then you will automatically go to daytime."
+			"won't be enough people around to drop money. The point is that you need to be smart " +
+			"about when to scare people and when to wait."
+			);
+		NightSlides.Add (
+			"Different types of people will check into the hotel based on how nice the rooms are. " +
+			"Each family has at least 1 adult. There are also boys and girls, who are easier to " +
+			"scare but don't drop as much money. If the room is very nice, and the total value of " +
+			"the furniture is over $1000, you may start to see rich men and women check in as well. " +
+			"They don't drop as much fear, but they drop a lot of money and very frequently."
 			);
 		NightSlides.Add ( 
 			"The thug will actively try to destroy your furniture with his club, and the " +

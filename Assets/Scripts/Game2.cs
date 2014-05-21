@@ -19,7 +19,11 @@ public class Game2 : MonoBehaviour {
 	public int Day{get { return days; }}
 	public int CurrentRoomNumber { get { return currentRoomNumber; }}
 	public int RoomsOpen=0;
-	private const int nightDurationRealSecondsMax = 300; // real seconds per night round
+	
+	private const int nightDurationRealSecondsMax = 180; // real seconds per night round
+	public int GAME_MINUTES {
+		get { return nightDurationRealSecondsMax/60; }
+	}
 	private const int nightDurationGameMinutes = 720; // 6pm to 6am =  12 hours * 60min/hr
 	public Room[] rooms;
 	private Room roomWithPriest, roomWithThug;
@@ -207,7 +211,7 @@ public class Game2 : MonoBehaviour {
 	}
 	private void Sell(GameObject obFurn){
 		money += obFurn.GetComponent<Furniture>().SellValue;
-		obFurn.GetComponent<Furniture>().node.Clear ();
+		obFurn.GetComponent<Furniture>().Sell();
 	}
 	
 
@@ -515,7 +519,7 @@ public class Game2 : MonoBehaviour {
 			DestroyObject (hit.collider.gameObject);
 			if(collectSound != null)
 				AudioSource.PlayClipAtPoint(collectSound, Camera.main.transform.position);
-			money += 50;
+			money += 25;
 		} else if (hit.collider.gameObject.CompareTag("FearPickup")){
 			DestroyObject (hit.collider.gameObject);
 			if(collectFear != null)

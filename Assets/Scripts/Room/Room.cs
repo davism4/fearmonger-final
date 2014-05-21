@@ -111,8 +111,9 @@ public class Room : MonoBehaviour {
 	}
 
 	public void RemoveItem(GameObject g){
-		items.Remove (g);
-		g.GetComponent<Furniture>().Sell ();
+		if (g!=null){
+			items.Remove (g);
+		}
 	}
 
 	public int TrapCount(){
@@ -190,9 +191,11 @@ public class Room : MonoBehaviour {
 			// calculate quality
 			int totalcost=0;
 			foreach (GameObject g in items){
-				totalcost += g.GetComponent<Furniture>().buyCost;
-				if (g.GetComponent<Furniture>() is Trap)
-					(g.GetComponent<Furniture>() as Trap).Reset();
+				if (g!=null){
+					totalcost += g.GetComponent<Furniture>().buyCost;
+					if (g.GetComponent<Furniture>() is Trap)
+						(g.GetComponent<Furniture>() as Trap).Reset();
+				}
 
 			}
 			quality = (totalcost/100)+1;
@@ -208,8 +211,8 @@ public class Room : MonoBehaviour {
 				p = pero.GetComponent<Person2>();
 				p.SetRoom (this);
 				occupants.Add (p);
-				game.money += quality*5;
 			}
+			game.money += quality*5;
 			return true;
 		} else {
 			return false;

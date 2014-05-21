@@ -61,7 +61,8 @@ public class Node : MonoBehaviour {
 	}
 
 	public void Clear(){
-		room.RemoveItem (this.content);
+		if (this.content!=null)
+			room.RemoveItem (this.content);
 		this.content = null;
 		BoxEnable ();
 		srenderer.enabled=true;

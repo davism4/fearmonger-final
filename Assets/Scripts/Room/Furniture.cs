@@ -60,7 +60,8 @@ public class Furniture : MonoBehaviour {
 	protected virtual void OnTriggerEnter2D(Collider2D other){
 		if (other.CompareTag ("Person")){
 			Person2 p = other.transform.GetComponent<Person2>();
-			Damage(1);
+			if (UnityEngine.Random.Range (0,10)>5)
+				Damage(1);
 			p.Interact (this);
 		}
 	}
@@ -91,10 +92,11 @@ public class Furniture : MonoBehaviour {
 	}
 
 	public void Break(){
+		node.Clear();
 		Destroy (this.gameObject);
 	}
 	public void Sell(){
-		Debug.Log ("Sold "+name);
+		node.Clear();
 		Destroy (this.gameObject);
 	}
 
