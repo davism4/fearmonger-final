@@ -6,12 +6,12 @@ public class Ability_Monster : Ability {
 	// Ability #4
 
 	public Ability_Monster () {
-		FearDamage=7;
+		FearDamage=9;
 		Name="Monster";
 		Description = "Chases people around the room.";
 		Duration = 15f;
 		minFear = 60;
-		useCost = 20;
+		useCost = 15;
 		cooldownStart = 15f;
 	}
 

@@ -10,12 +10,16 @@ public class Ability : MonoBehaviour {
 	private bool locked=true;
 	public bool Locked { get { return locked; } set { locked = value; }}
 
-	// Show in inspector:
+
 	protected int minFear, useCost, FearDamage;
+	public int UseCost { get {return useCost;}}
+	public int Damage { get {return FearDamage; }}
 	public int MinFear {
 		get {return minFear;}
 	}
-	public float Duration, cooldownStart; // in seconds
+	protected float Duration, cooldownStart; // in seconds
+	public int TimeDuration { get { return (int)Duration; }}
+	public int TimeCooldown { get { return (int)cooldownStart; }}
 
 	protected GameObject hazard=null, hazardInstance=null;
 	protected Game2 game;

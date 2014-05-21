@@ -69,9 +69,16 @@ public class hudText : MonoBehaviour {
 			//nightBarRect = new Rect(70,0,Screen.width - 70 - tutorial.Width,yheight);
 			y+=height+1;
 			if (GameVars.IsNight){
+
 				str = game.DigiClock();
 				style.fontSize = Mathf.Min(2*height/5, width/(str.Length-3));
 				GUI.Box (new Rect(1,y,width,height), "Time\n"+str,style);
+				y+=height+1;
+				str = "Finish";
+				buttonstyle.fontSize = Mathf.Min(2*height/5, width/(str.Length-2));
+				if (GUI.Button (new Rect(1,y,width,height), str,buttonstyle)){
+					game.StartDay ();
+				}
 				y+=height+1;
 			/*	if (GUI.Button (new Rect(1,y,width,height), "Check out",buttonstyle)){
 					game.StartDay ();

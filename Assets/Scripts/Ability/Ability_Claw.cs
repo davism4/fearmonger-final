@@ -6,13 +6,13 @@ public class Ability_Claw : Ability {
 	// Ability #3
 
 	public Ability_Claw () {
-		FearDamage=7;
+		FearDamage=8;
 		Name="Claw";
 		Description = "A hand appears and reaches out and pulls in the nearest victim.";
-		Duration = 8f;
+		Duration = 6f;
 		minFear=40;
 		useCost=10;
-		cooldownStart = 12f;
+		cooldownStart = 10f;
 	}
 
 	protected override void Start(){

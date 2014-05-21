@@ -6,6 +6,7 @@ public class Person2_Priest : Person2 {
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
 	private Furniture target=null;
+	private float radius;
 
 	public bool IS_ATTACKING {
 		get { return (target!=null); }
@@ -16,12 +17,17 @@ public class Person2_Priest : Person2 {
 		fearDropMax=2;
 		admireCooldownMin=15f;
 		admireCooldownMax=25f;
-		sanityMax=24;
+		sanityMax=30;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;
 	}
-	
+
+	protected override void Start(){
+		radius = GetComponent<BoxCollider2D>().size.x;
+		base.Start();
+	}
+
 	public override void Interact(Furniture f){
 		if (f.IsTrap){
 			//if (UnityEngine.Random.value<(1.0f)/room.TrapCount ())
@@ -79,7 +85,10 @@ public class Person2_Priest : Person2 {
 
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		if (t.Damage(2)){
+//		Debug.Log((t.transform.position - transform.position).magnitude);
+		if ((t.transform.position - transform.position).magnitude>radius)
+			target = null;
+		else if (t.Damage(2)){
 			target=null;
 		}
 	}

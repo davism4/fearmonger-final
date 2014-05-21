@@ -219,6 +219,7 @@ public class Room : MonoBehaviour {
 	// Called at the end of the night
 	public void CheckOut() {
 		if (open){
+			Debug.Log("enabling "+name);
 	//		Debug.Log ("Checking out "+occupants.Count+ " people");
 			foreach (Person2 p in occupants){
 				p.Leave ();

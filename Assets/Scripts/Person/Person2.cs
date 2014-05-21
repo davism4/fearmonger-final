@@ -18,7 +18,7 @@ public class Person2 : MonoBehaviour {
 	moneyDropMax;//=2,
 	public float baseSpeedMin,//=10,
 	baseSpeedMax;//=15;
-	protected int fearDropMin=1, moneyDropMin=0;
+	protected int fearDropMin=1, moneyDropMin=1;
 
 	public float healthPercent;
 	[HideInInspector] public Room room;
@@ -37,7 +37,7 @@ public class Person2 : MonoBehaviour {
 
 	// Determined by subclass
 	protected float speed;
-	protected float speedNormal, speedFast, admireCooldownMax=99f, admireCooldownMin=99f;
+	protected float speedNormal, speedFast, admireCooldownMax, admireCooldownMin;
 	
 	public AudioClip screamSound;
 	
@@ -114,7 +114,7 @@ public class Person2 : MonoBehaviour {
 		text=transform.GetComponent<GUIText>();
 //		text = transform.GetComponent<GUIText>();
 		//text.text="";
-
+		admireCooldown = UnityEngine.Random.Range(1f,admireCooldownMax);
 		anim = transform.GetComponent<Animator> ();
 		if (!anim.enabled)
 			anim=null;
@@ -126,10 +126,11 @@ public class Person2 : MonoBehaviour {
 		admireCooldownMax -= r.quality;
 		admireCooldownMin -= r.quality;
 		room = r;
-		if (admireCooldownMax<12f)
-			admireCooldownMax=12f;
-		if (admireCooldownMin<8f)
-			admireCooldownMin=8f;
+		if (admireCooldownMax<10f)
+			admireCooldownMax=10f;
+		if (admireCooldownMin<5f)
+			admireCooldownMin=5f;
+//		Debug.Log("Min: "+admireCooldownMin+", max: "+admireCooldownMax);
 	}
 
 		// Update is called once per frame

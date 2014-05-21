@@ -40,25 +40,30 @@ public class Node : MonoBehaviour {
 			this.content.GetComponent<Furniture>().SetNode(this);
 			srenderer.enabled=false;
 			GameVars.IsPlacingFurniture=false;
+			BoxDisable();
 			//GetComponent<BoxCollider2D>().enabled=false;
 		}
 	}
 
 	public void BoxDisable(){
 		GetComponent<BoxCollider2D>().enabled=false;
+		GameVars.IsPlacingFurniture=false;
 	}
 
 	public void BoxEnable(){
-		GetComponent<BoxCollider2D>().enabled=true;
 		if (content!=null){
 			if (content.GetComponent<Trap>()!=null)
 				content.GetComponent<Trap>().Reset ();
+		} else {
+			GetComponent<BoxCollider2D>().enabled=true;
 		}
+		GameVars.IsPlacingFurniture=false;
 	}
 
 	public void Clear(){
 		room.RemoveItem (this.content);
 		this.content = null;
+		BoxEnable ();
 		srenderer.enabled=true;
 	}
 }

@@ -10,7 +10,7 @@ public class Game2 : MonoBehaviour {
 	public float BASE_CAM_SPEED = 25f;
 
 	// don't edit these values:
-	private const float fearDecayCooldownMax=6f;
+	private const float fearDecayCooldownMax=9f;
 	private float nightTimerRealSeconds =0f, GameMinutePerRealSecond;
 	public float enemyGenCooldown=0f, roomCheckCooldown=0f, fearDecayCooldown=0f;
 	private const float enemyGenCooldownMax=20f, roomCheckCooldownMax=5f;
@@ -47,8 +47,6 @@ public class Game2 : MonoBehaviour {
 	private AudioClip collectFear;
 	private AudioClip clickSound;
 	private AudioClip lampSwitch;
-
-	// VARIABLES FOR DAYTIME INPUT AND UI GO DOWN HERE
 
 	// Values used in UI
 	
@@ -97,14 +95,7 @@ public class Game2 : MonoBehaviour {
 		GUI.skin.font = mytype;
 		nostyle.fontSize = bottomGuiHeight/2;
 		string str;
-
-		//ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-		//hit = Physics2D.Raycast(ray.origin,ray.direction);
-
 		if (GameVars.IsNight){
-		//	return;
-			//GUI.skin.button.fontSize = Mathf.Max (abilityButtonWidth,abilityButtonHeight)/10;
-
 			// Fear percentage bar
 			GUI.DrawTexture (new Rect(0,Screen.height-bottomGuiHeight,
 			                          Screen.width*(((fearEnergy-1)*fearDecayCooldownMax+fearDecayCooldown)/(fearDecayCooldownMax*fearEnergyMax)),
@@ -130,16 +121,10 @@ public class Game2 : MonoBehaviour {
 				                          abilityButtonWidth, abilityButtonHeight),str/* new GUIContent(str,
 				                          listAbilities[i].ShowName() + ": " + listAbilities[i].Description
 				                          + " Costs " + listAbilities[i].MinFear + " Fear")*/)) {
-					//cursorAppearance.SetSprite (2);
 					if(fearEnergy >= listAbilities[i].MinFear){
 						currentAbility = listAbilities[i];
 					}
 				}
-				/*	GUI.contentColor = Color.white;
-				GUI.Label(new Rect(i*Screen.width/listAbilities.Length, Screen.height-140-bottomGuiHeight,
-				                	Screen.width/listAbilities.Length, 100), GUI.tooltip);
-				GUI.tooltip = null;*/
-
 			}
 		} else {
 			// daytime GUI
@@ -149,7 +134,6 @@ public class Game2 : MonoBehaviour {
 			GUI.DrawTexture (new Rect(0,Screen.height-2*furnitureButtonHeight,Screen.width,2.01f*furnitureButtonHeight),fearBarTextureBlack,ScaleMode.StretchToFill);
 			GUI.backgroundColor = Color.magenta;
 			GUI.contentColor = Color.white;
-//			Debug.Log(currentFurnitureIndex);
 			for (int row=2; row>=1; row--) {
 				for (int x=0;x<furnitureTypes.Length/2;x++){
 					GUI.contentColor = Color.white;
@@ -208,16 +192,13 @@ public class Game2 : MonoBehaviour {
 		if (money >= f.buyCost){
 			money -= f.buyCost;
 			return true;
-			//hit.collider.GetComponent<Room>().AddFurniture (f);
-			// get new furniture thing
-			// place it somewhere
 		} else {
 			return false;
 			// Not enough money!
 		}
 	}
 	private void Sell(GameObject obFurn){
-		money += obFurn.GetComponent<Furniture>().buyCost;
+		money += obFurn.GetComponent<Furniture>().SellValue;
 		obFurn.GetComponent<Furniture>().node.Clear ();
 	}
 	
@@ -233,10 +214,9 @@ public class Game2 : MonoBehaviour {
 
 	// Update is called once per frame
 	private void Update () {
-		if (Input.GetKeyDown("m"))
-			fearEnergy++;
-		else if (Input.GetKeyDown("n"))
-			money+=50;
+		if (Input.GetKeyDown(KeyCode.Escape)) {
+			Application.Quit ();
+		}
 		if (Day==1){
 			if (START_AT_NIGHT){
 				START_AT_NIGHT = false; // only run once
@@ -330,26 +310,6 @@ public class Game2 : MonoBehaviour {
 		Debug.Log ("Checked out the priest");
 		enemyGenCooldown=enemyGenCooldownMax;
 	}
-	/*
-	// called from Room when the Thug or Priest exits it
-	public void CheckOutEnemy(Person2 p, bool stay){
-		bool isThug=false;
-		if (p is Person2_Priest){
-			isThug=false;
-			roomWithPriest=null;
-		} else {
-			isThug=true;
-			roomWithThug=null;
-		}/*
-		if (!stay){
-			if (isThug)
-				(p as Person2_Thug).Reset ();
-			else
-				(p as Person2_Priest).Reset ();
-			enemyGenCooldown=2.5f*enemyGenCooldownMax;
-		} else
-			enemyGenCooldown=enemyGenCooldownMax;*/
-	//}
 
 	// Find a room with at least 1 trap, and put the priest in it
 	void CheckInPriest(){
@@ -532,24 +492,22 @@ public class Game2 : MonoBehaviour {
 	}
 
 	private void RegisterHit(RaycastHit2D hit){
-
-//		Debug.Log (hit.collider.gameObject.name);
 		if (hit.collider.gameObject.CompareTag ("Money")){
 			DestroyObject (hit.collider.gameObject);
 			if(collectSound != null)
 				AudioSource.PlayClipAtPoint(collectSound, Camera.main.transform.position);
-			money += 10;
+			money += 50;
 		} else if (hit.collider.gameObject.CompareTag("FearPickup")){
 			DestroyObject (hit.collider.gameObject);
 			if(collectFear != null)
 				AudioSource.PlayClipAtPoint (collectFear, Camera.main.transform.position);
 			if (fearEnergy<fearEnergyMax){
-				fearEnergy+=2;
+				fearEnergy += 3;
 				fearEnergy = Mathf.Min (fearEnergy,fearEnergyMax);
 				fearDecayCooldown=fearDecayCooldownMax;
 			}
 			else
-				money+=10;
+				money+=50;
 		} else if (hit.collider.gameObject.CompareTag ("Person")){
 			Person2 p = hit.collider.gameObject.GetComponent<Person2>();
 			p.DisplayHP ();
@@ -558,8 +516,6 @@ public class Game2 : MonoBehaviour {
 			f.DisplayHP();
 		}
 		if (Input.GetMouseButtonDown (0)){
-//			Debug.Log ("Hit: "+hit.collider.gameObject.name);
-//			Debug.Log ("Clicked on "+hit.collider.name);
 			if (currentRoomNumber<RoomsOpen && hit.collider.gameObject.CompareTag("Triangle Up")){
 				MoveUp ();
 			} else if (currentRoomNumber > 0 && hit.collider.gameObject.CompareTag("Triangle Down")){
@@ -567,15 +523,10 @@ public class Game2 : MonoBehaviour {
 			}
 		}
 		if (!GameVars.IsNight) {
-			//if (hotelRoof!=null && Input.GetMouseButtonDown (0) && hit.collider.gameObject.CompareTag ("HotelRoof")){
-			//	BuyRoom();
-			//} else {
 				RegisterHitDaytime (hit);
-			//}
 		} else if (Input.GetMouseButtonDown (0)){
-//			Debug.Log ("registering click...");
 			if (currentAbility!=null && currentAbility!=listAbilities[1] && currentAbility!=listAbilities[4]) {
-				//			Debug.Log ("registering click...with ability");
+
 				if (hit.collider.gameObject.CompareTag ("Room") || hit.collider.gameObject.CompareTag ("Node") ||
 				    hit.collider.gameObject.CompareTag ("Furniture") || hit.collider.gameObject.CompareTag ("Person")){
 					if (currentAbility.CanUse ()){
@@ -590,10 +541,8 @@ public class Game2 : MonoBehaviour {
 				currentAbility.UseAbility (hit);
 				currentAbility=null;  // possession
 			} else if (hit.collider.gameObject.CompareTag ("Furniture")){
-	//			Debug.Log ("registering click...on furniture");
 				Furniture f = hit.collider.gameObject.GetComponent<Furniture>();
 				if (currentAbility==listAbilities[1] && listAbilities[1].CanUse()){
-					//Debug.Log (hit.collider.name);
 					currentAbility.UseAbility (hit);
 					currentAbility=null;
 				} else if (f is Lamp){
@@ -610,7 +559,4 @@ public class Game2 : MonoBehaviour {
 		}
 
 	}
-
-
-
 }

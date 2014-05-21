@@ -25,18 +25,24 @@ public class Hazard_Claw : Hazard {
 	private void FindTarget(){
 		GameObject[] people = GameObject.FindGameObjectsWithTag ("Person");
 		Debug.Log("Found "+people.Length+" people.");
-		float minY=999f, minX=999f, disY, disX;
+	//	float minY=999f, minX=999f, disY, disX;
+		float mindist=999f, dist;
 		// approximates the closest person, usually within the same or closest floor
 		foreach (GameObject o in people){
-			disY = Mathf.Abs (o.transform.position.y-origin.y);
+		/*	disY = Mathf.Abs (o.transform.position.y-origin.y);
 			if (minY - disY > 4f){
 				minY = disY;
-				target = o;
+		//		target = o;
 				disX = Mathf.Abs (o.transform.position.x-origin.x);
 				if (minX > disX){
 					minX = disX;
 					target = o;
 				}
+			}*/
+			dist = (transform.position - o.transform.position).magnitude;
+			if (dist < mindist){
+				mindist = dist;
+				target = o;
 			}
 		}
 		if (target!=null) {

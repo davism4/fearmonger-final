@@ -80,7 +80,13 @@ public class Furniture : MonoBehaviour {
 			showHPCooldown -= Time.deltaTime;
 		}
 		if (damageCooldown>0f){
+
 			damageCooldown -= Time.deltaTime;
+
+			if (damageCooldown >0f)
+				GetComponent<SpriteRenderer>().color = Color.red;
+			else
+				GetComponent<SpriteRenderer>().color = Color.white;
 		}
 	}
 

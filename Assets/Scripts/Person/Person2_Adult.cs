@@ -6,9 +6,9 @@ public class Person2_Adult : Person2 {
 	public Person2_Adult(){
 		fearDropMax=2;
 		moneyDropMax=2;
-		admireCooldownMax=25f;
+		admireCooldownMax=10f;
 		admireCooldownMin=20f;
-		sanityMax=50;
+		sanityMax=60;
 		baseSpeedMin=15f;
 		baseSpeedMax=18f;
 	}

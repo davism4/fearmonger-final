@@ -6,6 +6,7 @@ public class Person2_Thug : Person2 {
 	private float destroyCooldown;
 	private const float destroyCooldownMax=1.5f;
 	private Furniture target=null;
+	private float radius;
 
 	public bool IS_ATTACKING {
 		get { return (target!=null); }
@@ -15,9 +16,9 @@ public class Person2_Thug : Person2 {
 	public Person2_Thug () {
 		moneyDropMax=1;
 		fearDropMax=2;
-		admireCooldownMin=20f;
+		admireCooldownMin=15f;
 		admireCooldownMax=25f;
-		sanityMax=20;
+		sanityMax=30;
 		baseSpeedMin=11f;
 		baseSpeedMax=14f;
 		destroyCooldown=destroyCooldownMax;
@@ -73,6 +74,11 @@ public class Person2_Thug : Person2 {
 		base.Exit (forced);
 	}
 
+	protected override void Start(){
+		radius = GetComponent<BoxCollider2D>().size.x;
+		base.Start();
+	}
+
 	public override void Scare(int s){
 		// reset target trap
 		target=null;
@@ -82,7 +88,9 @@ public class Person2_Thug : Person2 {
 	
 	private void Attack(Furniture t){
 		destroyCooldown=destroyCooldownMax;
-		if (t.Damage(2)){
+		if ((t.transform.position - transform.position).magnitude>radius)
+			target = null;
+		else if (t.Damage(2)){
 			target=null;
 		}
 	}
